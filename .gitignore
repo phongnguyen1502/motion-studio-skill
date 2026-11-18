@@ -1,0 +1,9 @@
+node_modules/
+.asr-venv/
+__pycache__/
+render/
+*.mp4
+*.wav
+*.f32
+.DS_Store
+Thumbs.db
