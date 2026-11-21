@@ -152,6 +152,11 @@ Follow "Build" in the engine file. With any engine: everything is a function of 
 - **Voice-driven timing:** anchor every reveal to a keyword time, e.g.
   `K(lineIndex, 'word')` → the time that word is spoken, minus about 0.08 s. Never hard-code
   seconds.
+- **Effect library:** for counters, charts, checklists, comparisons, timelines, quotes, stamps,
+  word slams, name bars, arrows/circles, notifications, polls, disclaimers and stickers, use
+  `assets/fx/` (20 effects, 4 themes, face-avoiding zones, cues on spoken words) instead of
+  redrawing them. It also renders a transparent WebM layer over talking-head footage.
+  Read `references/fx-library.md` and the catalogue `assets/fx/hieu-ung.json` first.
 
 ## 6. Sound in code
 

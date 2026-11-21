@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Thư viện hiệu ứng — xem thử</title>
+<!-- Gallery of every effect in fx.js. Serve the ASSETS folder so ../template/ is reachable:
+       node SKILL_DIR/scripts/render.mjs SKILL_DIR/assets --entry fx/index.html --serve --format 9x16
+     URL options: ?theme=kinh|giay|dam|sach  &only=dem-so,con-dau  &face=0 (no silhouette)  &alpha=1 (transparent) -->
+<link rel="stylesheet" href="../template/fonts-vi/gf.css">
+<style>
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  #stage { position: relative; overflow: hidden; background: radial-gradient(120% 80% at 50% 25%, #6a7a8c 0%, #2c3542 55%, #161b22 100%); }
+  html.alpha, html.alpha body, html.alpha #stage { background: transparent; }
+  #person { position: absolute; }
+  #person .head { position: absolute; border-radius: 50%; background: linear-gradient(#c9a58c, #a47f66); }
+  #person .body { position: absolute; border-radius: 48% 48% 0 0; background: linear-gradient(#34495e, #1f2d3a); }
+  #tag { position: absolute; left: 24px; top: 20px; font: 700 26px/1 ui-monospace, Consolas, monospace; color: #fff; background: rgba(0,0,0,.55); padding: 8px 12px; border-radius: 8px; }
+</style>
+</head>
+<body>
+<div id="stage"><div id="person"><div class="body"></div><div class="head"></div></div></div>
+<script type="module">
+import { createFx, FX, fxSounds, playFxSounds } from './fx.js';
+import { format, preview, renderMix, sfx } from '../template/kit.js';
+
+const Q = new URLSearchParams(location.search);
+const F = format(), V = F.vertical, alpha = Q.has('alpha'), showFace = Q.get('face') !== '0' && !alpha;
+const theme = Q.get('theme') || 'kinh';
+const stage = document.getElementById('stage');
+stage.style.width = F.w + 'px'; stage.style.height = F.h + 'px';
+if (alpha) document.documentElement.classList.add('alpha');
+
+// A stand-in speaker so you can see cards avoid the face.
+const face = V ? { x: F.w * 0.33, y: F.h * 0.17, w: F.w * 0.34, h: F.h * 0.22 } : { x: F.w * 0.4, y: F.h * 0.14, w: F.w * 0.2, h: F.h * 0.4 };
+const person = document.getElementById('person');
+if (showFace) {
+  const [hd, bd] = [person.querySelector('.head'), person.querySelector('.body')];
+  Object.assign(hd.style, { left: face.x + 'px', top: face.y + 'px', width: face.w + 'px', height: face.h + 'px' });
+  const bw = face.w * 2.6;
+  Object.assign(bd.style, { left: face.x + face.w / 2 - bw / 2 + 'px', top: face.y + face.h * 0.92 + 'px', width: bw + 'px', height: F.h + 'px' });
+} else person.remove();
+
+const W = F.w, H = F.h;
+const DEMO = {
+  'dem-so': { label: 'Gia đình được bảo vệ', value: 12500, unit: 'gia đình', delta: '▲ 38% so với năm trước' },
+  'bieu-do-cot': { title: 'Quỹ tiết kiệm sau 3 năm', unit: 'tr', bars: [{ label: 'Năm 1', value: 24 }, { label: 'Năm 2', value: 60 }, { label: 'Năm 3', value: 108 }] },
+  'so-sanh': { left: { title: 'KHÔNG CHUẨN BỊ', items: ['Lo lắng khi ốm đau', 'Vay mượn khi có biến cố'] }, right: { title: 'CÓ KẾ HOẠCH', items: ['Yên tâm điều trị', 'Tài chính ổn định'] } },
+  'danh-sach': {},
+  'tien-do': { label: 'Mục tiêu quỹ học vấn', value: 72, note: 'Còn 2 năm để hoàn thành' },
+  'vong-tron': { value: 94, label: 'Hồ sơ duyệt trong 24 giờ' },
+  'moc-thoi-gian': { title: 'Hành trình 5 năm' },
+  'trich-dan': { author: 'HLV An Tâm' },
+  'con-dau': { text: 'Đã chi trả', sub: 'Hồ sơ bồi thường' },
+  'go-chu': {},
+  'chu-dap': { lines: ['Bình an', 'không phải', '*may mắn*'] },
+  'the-ten': {},
+  'mui-ten': { label: 'Điều khoản quan trọng', from: { x: W * 0.2, y: H * (V ? 0.66 : 0.78) }, to: { x: W * (V ? 0.62 : 0.56), y: H * (V ? 0.47 : 0.45) } },
+  'khoanh-tron': { label: 'Chú ý điểm này', target: { x: W * (V ? 0.2 : 0.3), y: H * (V ? 0.5 : 0.6), w: W * (V ? 0.6 : 0.4), h: H * (V ? 0.08 : 0.14) } },
+  'gach-thay': { old: 'Chi phí', new: 'Khoản đầu tư' },
+  'thong-bao': { notes: [
+    { app: 'Lịch hẹn', icon: 'L', color: '#0a84ff', title: 'Nhắc lịch', msg: 'Tư vấn cho chị Lan lúc 9:00' },
+    { app: 'Tin nhắn', icon: 'T', color: '#34c759', title: 'Anh Minh', msg: 'Cảm ơn em đã hỗ trợ hồ sơ!' },
+    { app: 'Nhắc nhở', icon: 'N', color: '#ff9500', title: 'Hôm nay', msg: 'Gửi bảng minh hoạ quyền lợi' }] },
+  'binh-chon': {},
+  'luu-y': {},
+  'bieu-do-tron': { center: 'Thu\nnhập' },
+  'nhan-dan': { text: 'Bảo vệ\n*cả gia đình*' },
+};
+
+const only = Q.get('only')?.split(',');
+const list = Object.keys(FX).filter(k => !only || only.includes(k));
+const ready = (async () => {
+  await document.fonts.ready;
+  for (const w of [500, 600, 700, 800, 900]) await document.fonts.load(`${w} 40px "Be Vietnam Pro"`, 'Ậ ư ữ ỹ đ Ừ');
+})();
+
+let t0 = 0;
+const fxs = [], slots = [];
+window.MOTION = { width: F.w, height: F.h, fps: 30, duration: 1, ready: ready.then(() => {
+  const tag = alpha ? null : Object.assign(document.createElement('div'), { id: 'tag' });
+  if (tag) stage.appendChild(tag);
+  for (const type of list) {
+    const d = FX[type].dur, start = t0 + 0.15;
+    fxs.push(createFx(stage, { type, start, end: start + d, params: DEMO[type] || {}, theme, format: F, avoid: showFace ? [face] : [] }));
+    slots.push({ type, a: t0, b: t0 + d + 0.4 });
+    t0 += d + 0.4;
+  }
+  window.MOTION.duration = t0;
+  window.MOTION.tag = tag;
+}) };
+
+window.seek = t => {
+  for (const f of fxs) f.seek(t);
+  const tag = window.MOTION.tag;
+  if (tag) { const s = slots.find(s => t >= s.a && t < s.b) || slots.at(-1); tag.textContent = `${s.type} · ${theme}`; }
+};
+window.renderAudio = sr => renderMix(window.MOTION.duration, sr, (ctx, out) => playFxSounds(ctx, out, sfx, fxSounds(fxs)));
+
+ready.then(() => { preview(stage); window.seek(0); });
+</script>
+</body>
+</html>

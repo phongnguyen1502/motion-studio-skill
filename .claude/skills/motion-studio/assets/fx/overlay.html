@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>fx overlay</title>
+<!-- Plan-driven effect layer. Copy assets/fx/ into the project as PROJ/fx/, write PROJ/fx-plan.json, then:
+       node SKILL_DIR/scripts/render.mjs PROJ --entry fx/overlay.html --query plan=../fx-plan.json --format 9x16 --alpha --name fx
+     -> PROJ/render/fx-9x16.webm (transparent VP9 + effect sounds). Without --alpha it renders over the plan's "bg" colour.
+     Preview: same command with --serve instead of --alpha.
+     fx-plan.json: { "duration"?, "theme": "sach", "words"?: "timing.json", "avoid"?: [{x,y,w,h}], "bg"?: "#222",
+                     "sfx"?: true, "fx": [{ "type", "start", "end"?, "cues"?, "params"?, "zone"? }] }
+     start/end/cues accept seconds (12.4), "+0.8" (after start) or a spoken word/phrase found in `words`. -->
+<style>
+  html, body { margin: 0; overflow: hidden; background: transparent; }
+  #stage { position: relative; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<script type="module">
+import { createFx, resolvePlan, fxSounds, playFxSounds } from './fx.js';
+// kit.js sits next to fx/ in an engine-code project (PROJ/kit.js); in the skill it is ../template/kit.js.
+let kit;
+for (const p of ['../kit.js', '../template/kit.js']) { try { kit = await import(p); break; } catch {} }
+if (!kit) throw new Error('[fx] cần kit.js cạnh thư mục fx/ (cp SKILL_DIR/assets/template/kit.js PROJ/)');
+const { format, preview, renderMix, sfx } = kit;
+
+const Q = new URLSearchParams(location.search), F = format();
+const stage = document.getElementById('stage');
+stage.style.width = F.w + 'px'; stage.style.height = F.h + 'px';
+const alpha = Q.has('alpha');
+
+async function loadFonts() {
+  for (const href of [Q.get('fonts'), '../fonts-vi/gf.css', '../template/fonts-vi/gf.css', 'fonts-vi/gf.css'].filter(Boolean)) {
+    if ((await fetch(href, { method: 'HEAD' }).catch(() => ({ ok: false }))).ok) {
+      const l = Object.assign(document.createElement('link'), { rel: 'stylesheet', href });
+      await new Promise(r => { l.onload = l.onerror = r; document.head.appendChild(l); });
+      for (const w of [500, 600, 700, 800, 900]) await document.fonts.load(`${w} 40px "Be Vietnam Pro"`, 'Ậ ư ữ ỹ đ Ừ');
+      return;
+    }
+  }
+  console.error('[fx] không tìm thấy fonts-vi/gf.css — chữ tiếng Việt có thể sai font (truyền &fonts=đường-dẫn)');
+}
+
+const fxs = [];
+let plan = { fx: [] };
+window.MOTION = { width: F.w, height: F.h, fps: 30, duration: 1, ready: (async () => {
+  await loadFonts();
+  const url = Q.get('plan') || '../fx-plan.json';
+  plan = await (await fetch(url)).json();
+  const base = new URL(url, location.href);
+  const words = plan.words ? await (await fetch(new URL(plan.words, base))).json() : [];
+  const { items, warnings } = resolvePlan(plan.fx || [], words);
+  warnings.forEach(w => console.error('[fx] ' + w));
+  if (!alpha && plan.bg) stage.style.background = plan.bg;
+  for (const it of items) fxs.push(createFx(stage, { ...it, theme: it.theme || plan.theme || 'kinh', format: F, avoid: it.avoid || plan.avoid || [] }));
+  window.MOTION.duration = plan.duration || Math.max(1, ...items.map(i => i.end)) + 0.5;
+})() };
+
+window.seek = t => { for (const f of fxs) f.seek(t); };
+window.renderAudio = sr => renderMix(window.MOTION.duration, sr, (ctx, out) => { if (plan.sfx !== false) playFxSounds(ctx, out, sfx, fxSounds(fxs)); });
+window.MOTION.ready.then(() => { preview(stage); window.seek(0); });
+</script>
+</body>
+</html>

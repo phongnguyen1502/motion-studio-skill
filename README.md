@@ -49,6 +49,15 @@ Khi skill có thay đổi: kéo bản mới về (`git pull`) rồi chạy lại
 5. **Dựng bằng code:** sau đó chụp ảnh thử, chấm điểm và sửa (kể cả kiểm tra chữ: không rớt dòng, canh đều không hở).
 6. **Render MP4:** kiểm tra thời lượng, mức âm thanh, và giọng to hơn nhạc 7–10 dB.
 
+## Thư viện hiệu ứng (`assets/fx/`)
+
+20 hiệu ứng dùng lại được: đếm số, biểu đồ cột, so sánh, danh sách tick, thanh và vòng tiến độ, mốc thời gian, trích dẫn, đóng dấu, gõ chữ, chữ đập, thẻ tên, mũi tên và khoanh tròn vẽ tay, thông báo điện thoại, bình chọn, lưu ý, biểu đồ tròn, nhãn dán. Có 4 giao diện (`kinh`, `giay`, `dam`, `sach`), tự tránh mặt người, tự tránh vùng phụ đề, và gắn chuyển động vào đúng chữ được nói.
+
+- Xem thử tất cả: `node scripts/render.mjs assets --entry fx/index.html --serve --format 9x16`
+- Danh mục (hiệu ứng nào hợp câu nào, giới hạn chữ): `assets/fx/hieu-ung.json`
+- Xuất lớp hiệu ứng nền trong suốt (WebM) để chồng lên video quay: xem `references/fx-library.md`
+- Trình dựng có thêm `--alpha` (WebM trong suốt) và `--query` (tham số cho trang).
+
 ## Nguồn
 
 Dựa trên skill Motion Studio của flaviorg (bản đã rà soát ở commit 7e9e70f), có chỉnh sửa. Font Be Vietnam Pro dùng giấy phép SIL OFL 1.1. Repo này để dùng nội bộ, nên giữ ở chế độ riêng tư (private).

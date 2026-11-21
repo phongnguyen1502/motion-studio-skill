@@ -8,6 +8,9 @@
 //   node render.mjs <project> --every 0.5                            (a still every 0.5 s)
 //   node render.mjs <project> --serve [--port 4321]                  (live preview in the browser)
 //   node render.mjs <project> --audio-only [--out dir] [--name soundtrack]  (export only the renderAudio WAV)
+//   --query "theme=sach&only=dem-so"   extra URL parameters for the page
+//   --alpha    transparent background: the page gets ?alpha=1, frames keep alpha, output is WebM VP9 (yuva420p)
+//              to lay over footage: ffmpeg -i base.mp4 -c:v libvpx-vp9 -i fx.webm -filter_complex overlay ...
 
 import { chromium } from 'playwright';
 import http from 'node:http';
@@ -69,7 +72,7 @@ async function openPage(browser, base, fmt) {
   const page = await ctx.newPage();
   page.on('pageerror', e => console.error(`[page error] ${e.message}`));
   page.on('console', m => { if (m.type() === 'error') console.error(`[console] ${m.text()}`); });
-  await page.goto(`${base}/${ENTRY}?render=1&format=${fmt}`, { waitUntil: 'networkidle' });
+  await page.goto(`${base}/${ENTRY}?render=1&format=${fmt}${args.alpha ? '&alpha=1' : ''}${args.query && args.query !== true ? '&' + args.query : ''}`, { waitUntil: 'networkidle' });
   await page.waitForFunction(() => window.MOTION && typeof window.seek === 'function', null, { timeout: 30000 });
   const motion = await page.evaluate(async () => {
     await document.fonts.ready;
@@ -156,7 +159,7 @@ async function stills(browser, base, fmt) {
   for (const t of times) {
     await drawAt(page, t);
     const f = `t_${t.toFixed(2).padStart(6, '0')}.png`;
-    await page.screenshot({ path: path.join(dir, f) });
+    await page.screenshot({ path: path.join(dir, f), omitBackground: !!args.alpha });
     files.push(f);
   }
   contactSheet(dir, files);
@@ -189,7 +192,7 @@ async function video(browser, base, fmt) {
     const { ctx, page } = await openPage(browser, base, fmt);
     for (let i = start; i < end; i++) {
       await drawAt(page, from + i / fps);
-      await page.screenshot({ path: path.join(framesDir, `${String(i).padStart(6, '0')}.png`) });
+      await page.screenshot({ path: path.join(framesDir, `${String(i).padStart(6, '0')}.png`), omitBackground: !!args.alpha });
       done++;
       const pct = Math.floor((done / total) * 20) * 5;
       if (pct !== lastPct) { lastPct = pct; process.stdout.write(`\r  frames ${pct}% (${done}/${total})   `); }
@@ -198,10 +201,12 @@ async function video(browser, base, fmt) {
   }));
   console.log(`\n  capture: ${((Date.now() - t0) / 1000).toFixed(1)} s`);
 
-  const out = path.join(OUT, `${name}-${fmt}.mp4`);
+  const out = path.join(OUT, `${name}-${fmt}.${args.alpha ? 'webm' : 'mp4'}`);
   const ff = ['-y', '-loglevel', 'error', '-framerate', String(fps), '-i', path.join(framesDir, '%06d.png')];
-  if (wav) ff.push('-ss', String(from), '-t', String(to - from), '-i', wav, '-map', '0:v', '-map', '1:a', '-c:a', 'aac', '-b:a', '192k');
-  ff.push('-c:v', 'libx264', '-preset', 'slow', '-crf', String(args.crf || 18), '-pix_fmt', 'yuv420p',
+  if (wav) ff.push('-ss', String(from), '-t', String(to - from), '-i', wav, '-map', '0:v', '-map', '1:a', ...(args.alpha ? ['-c:a', 'libopus', '-b:a', '160k'] : ['-c:a', 'aac', '-b:a', '192k']));
+  if (args.alpha) ff.push('-c:v', 'libvpx-vp9', '-pix_fmt', 'yuva420p', '-b:v', '0', '-crf', String(args.crf || 30), '-auto-alt-ref', '0', '-row-mt', '1',
+    '-r', String(fps), '-t', String(to - from), out);
+  else ff.push('-c:v', 'libx264', '-preset', 'slow', '-crf', String(args.crf || 18), '-pix_fmt', 'yuv420p',
     '-r', String(fps), '-movflags', '+faststart', '-t', String(to - from), out);
   const r = spawnSync('ffmpeg', ff, { stdio: 'inherit' });
   if (r.status !== 0) { console.error('ffmpeg failed'); process.exit(1); }

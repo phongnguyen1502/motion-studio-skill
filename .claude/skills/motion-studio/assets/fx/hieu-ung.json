@@ -1,0 +1,165 @@
+{
+  "_ve": "Danh mục 20 hiệu ứng của fx.js. Mỗi mục: ten (tên đọc), nhom, hop_voi (loại câu nói hợp), tu_khoa (từ trong lời nói gợi ý hiệu ứng này), cues (mốc thời gian + mặc định tính từ lúc bắt đầu), params (nội dung cần điền + giới hạn), nang (hiệu ứng mạnh, không đặt liền nhau), khong_dung_khi (tránh), am_thanh. Thời lượng mặc định: dur (giây). Không bịa số liệu: chỉ điền số có trong lời nói hoặc tài liệu gốc.",
+  "dem-so": {
+    "ten": "Đếm số", "nhom": "so-lieu", "dur": 3.6,
+    "hop_voi": "Câu có MỘT con số nổi bật: doanh thu, số khách hàng, số tiền, số năm.",
+    "tu_khoa": ["triệu", "tỷ", "nghìn", "khách hàng", "người", "đạt", "lên tới", "tổng cộng"],
+    "cues": { "run": "bắt đầu đếm (mặc định +0.35) — gắn vào chính con số được nói" },
+    "params": { "label": "nhãn ≤ 32 ký tự", "value": "số (bắt buộc, đúng lời nói)", "from": "số bắt đầu, mặc định 0", "decimals": "số chữ số thập phân", "prefix": "vd '+'", "unit": "≤ 12 ký tự", "delta": "chip phụ ≤ 30 ký tự, vd '▲ 38% so với năm trước' (tuỳ chọn)" },
+    "nang": false, "am_thanh": "pop + tiếng tick khi đếm"
+  },
+  "bieu-do-cot": {
+    "ten": "Biểu đồ cột", "nhom": "so-lieu", "dur": 4,
+    "hop_voi": "So sánh 2–5 giá trị theo thời gian hoặc theo nhóm; câu nói về tăng trưởng.",
+    "tu_khoa": ["tăng", "gấp", "năm", "qua các năm", "tăng trưởng", "so với"],
+    "cues": { "run": "cột bắt đầu mọc (mặc định +0.4) — gắn vào từ 'tăng', 'gấp'…" },
+    "params": { "title": "≤ 36 ký tự", "bars": "2–5 mục {label ≤ 8 ký tự, value}", "unit": "≤ 4 ký tự (hiện cạnh số)", "hl": "cột tô màu, mặc định -1 = cột cuối" },
+    "nang": false, "am_thanh": "pop mỗi cột"
+  },
+  "so-sanh": {
+    "ten": "So sánh hai cột", "nhom": "so-lieu", "dur": 4.2,
+    "hop_voi": "Trước/sau, có/không, cách cũ/cách mới, sai/đúng.",
+    "tu_khoa": ["trước", "sau", "thay vì", "ngược lại", "so với", "còn", "nhưng"],
+    "cues": { "left": "hiện cột trái (+0.25)", "right": "hiện cột phải (+1.2) — gắn vào vế thứ hai của câu" },
+    "params": { "left": "{title ≤ 16 ký tự, items 1–3 mục ≤ 26 ký tự}", "right": "như left" },
+    "nang": false, "am_thanh": "tick, pop"
+  },
+  "danh-sach": {
+    "ten": "Danh sách tick", "nhom": "giao-dien", "dur": 4.5,
+    "hop_voi": "Liệt kê 2–5 việc, bước, điều kiện, quyền lợi.",
+    "tu_khoa": ["thứ nhất", "thứ hai", "bước", "cần", "gồm", "bao gồm", "danh sách", "đầu tiên"],
+    "cues": { "tick": "tick ô đầu (+0.8), các ô sau cách 0.55 s", "t1…t5": "hoặc gắn từng ô vào từ được nói" },
+    "params": { "title": "≤ 28 ký tự (tuỳ chọn)", "items": "2–5 mục ≤ 30 ký tự" },
+    "nang": false, "am_thanh": "pop mỗi tick"
+  },
+  "tien-do": {
+    "ten": "Thanh tiến độ", "nhom": "so-lieu", "dur": 3.6,
+    "hop_voi": "Tỷ lệ hoàn thành, mức độ, phần trăm đạt mục tiêu.",
+    "tu_khoa": ["phần trăm", "%", "hoàn thành", "đạt", "mục tiêu", "được"],
+    "cues": { "run": "thanh chạy (+0.35)" },
+    "params": { "label": "≤ 30 ký tự", "value": "0–100", "note": "dòng phụ ≤ 40 ký tự (tuỳ chọn)" },
+    "nang": false, "am_thanh": "tick nhỏ"
+  },
+  "vong-tron": {
+    "ten": "Vòng phần trăm", "nhom": "so-lieu", "dur": 3.6,
+    "hop_voi": "Một tỷ lệ phần trăm đáng nhớ.",
+    "tu_khoa": ["phần trăm", "%", "tỷ lệ", "trên", "trong số"],
+    "cues": { "run": "vòng chạy (+0.35)" },
+    "params": { "value": "0–100", "unit": "mặc định '%'", "label": "≤ 30 ký tự" },
+    "nang": false, "am_thanh": "pop + tick"
+  },
+  "moc-thoi-gian": {
+    "ten": "Mốc thời gian", "nhom": "so-lieu", "dur": 4.6,
+    "hop_voi": "Hành trình, lịch sử, lộ trình 2–5 mốc.",
+    "tu_khoa": ["năm", "từ", "đến nay", "hành trình", "giai đoạn", "lộ trình", "sau đó"],
+    "cues": { "run": "đường kẻ bắt đầu (+0.3), mỗi mốc cách 0.5 s" },
+    "params": { "title": "≤ 28 ký tự (tuỳ chọn)", "items": "2–5 mục {time ≤ 10 ký tự, text ≤ 30 ký tự}" },
+    "nang": false, "am_thanh": "tick mỗi mốc"
+  },
+  "trich-dan": {
+    "ten": "Trích dẫn", "nhom": "chu", "dur": 5,
+    "hop_voi": "Câu chốt, câu nói đáng nhớ, lời khách hàng.",
+    "tu_khoa": ["như", "từng nói", "câu", "nhớ rằng", "chia sẻ"],
+    "cues": { "on": "từng chữ hiện ra (+0.3)" },
+    "params": { "text": "≤ 120 ký tự, *từ* để tô màu", "author": "≤ 30 ký tự (tuỳ chọn)" },
+    "nang": false, "am_thanh": "whoosh nhẹ"
+  },
+  "con-dau": {
+    "ten": "Đóng dấu", "nhom": "boi-canh", "dur": 3,
+    "hop_voi": "Kết luận chắc chắn: đã duyệt, đã chi trả, cam kết, xác nhận, sai lầm.",
+    "tu_khoa": ["duyệt", "xác nhận", "chắc chắn", "cam kết", "chi trả", "xong", "chốt"],
+    "cues": { "hit": "con dấu đập xuống (+0.35) — gắn vào từ khẳng định" },
+    "params": { "text": "≤ 14 ký tự", "sub": "≤ 24 ký tự (tuỳ chọn)", "color": "mặc định màu accent2", "rotate": "độ, mặc định -9" },
+    "nang": true, "am_thanh": "impact + snare"
+  },
+  "go-chu": {
+    "ten": "Gõ chữ", "nhom": "chu", "dur": 4,
+    "hop_voi": "Câu hỏi gợi mở, câu dẫn vào chủ đề, câu hook.",
+    "tu_khoa": ["bạn có", "bạn đã", "liệu", "tại sao", "làm sao", "câu hỏi"],
+    "cues": { "on": "bắt đầu gõ (+0.25)" },
+    "params": { "text": "≤ 60 ký tự, *từ* để tô màu", "cps": "ký tự/giây, mặc định 18", "card": "true/false: có khung thẻ" },
+    "nang": false, "am_thanh": "tiếng gõ"
+  },
+  "chu-dap": {
+    "ten": "Chữ đập", "nhom": "chu", "dur": 3,
+    "hop_voi": "Câu hook, khẳng định mạnh, 2–4 cụm ngắn đập từng dòng.",
+    "tu_khoa": ["không phải", "chính là", "quan trọng nhất", "sự thật"],
+    "cues": { "l1…l4": "lúc mỗi dòng đập xuống (mặc định cách 0.38 s) — gắn vào đúng từ đó" },
+    "params": { "lines": "2–4 dòng ≤ 14 ký tự, *từ* để tô màu", "size": "mặc định 2.6", "gap": "giây giữa các dòng" },
+    "nang": true, "am_thanh": "kick mỗi dòng"
+  },
+  "the-ten": {
+    "ten": "Thẻ tên", "nhom": "boi-canh", "dur": 4,
+    "hop_voi": "Lần đầu người nói xuất hiện hoặc tự giới thiệu.",
+    "tu_khoa": ["tôi là", "mình là", "xin chào", "tên"],
+    "cues": {},
+    "params": { "name": "≤ 24 ký tự", "role": "≤ 36 ký tự" },
+    "nang": false, "am_thanh": "whoosh"
+  },
+  "mui-ten": {
+    "ten": "Mũi tên vẽ tay", "nhom": "ve-tay", "dur": 3,
+    "hop_voi": "Chỉ vào một chi tiết trên hình (sản phẩm, điều khoản, vùng trên màn hình).",
+    "tu_khoa": ["ở đây", "chỗ này", "nhìn", "chú ý", "điểm này"],
+    "cues": { "draw": "mũi tên được vẽ (+0.2)" },
+    "params": { "from": "{x,y} px trên khung hình", "to": "{x,y} px — điểm được chỉ", "label": "≤ 24 ký tự (tuỳ chọn)", "bend": "độ cong, mặc định 0.28" },
+    "nang": false, "khong_dung_khi": "chỉ có giọng đọc mà không có hình để chỉ vào", "am_thanh": "whoosh"
+  },
+  "khoanh-tron": {
+    "ten": "Khoanh tròn", "nhom": "ve-tay", "dur": 3,
+    "hop_voi": "Nhấn mạnh một vùng trên hình hoặc một dòng chữ trên màn hình.",
+    "tu_khoa": ["chỗ này", "quan trọng", "chú ý", "đặc biệt"],
+    "cues": { "draw": "nét khoanh (+0.2)" },
+    "params": { "target": "{x,y,w,h} px — vùng được khoanh", "label": "≤ 20 ký tự (tuỳ chọn)" },
+    "nang": false, "khong_dung_khi": "không có gì cụ thể trên hình để khoanh", "am_thanh": "whoosh nhẹ"
+  },
+  "gach-thay": {
+    "ten": "Gạch và thay chữ", "nhom": "chu", "dur": 3.4,
+    "hop_voi": "Đổi cách nghĩ: 'không phải X mà là Y', 'đừng gọi là X'.",
+    "tu_khoa": ["không phải", "mà là", "thay vì", "đừng", "hãy gọi"],
+    "cues": { "strike": "gạch chữ cũ (+0.6)", "swap": "chữ mới hiện (+1.15) — gắn vào 'mà là'/từ mới" },
+    "params": { "old": "≤ 16 ký tự", "new": "≤ 16 ký tự", "size": "mặc định 2.4" },
+    "nang": true, "am_thanh": "whoosh + pop"
+  },
+  "thong-bao": {
+    "ten": "Thông báo điện thoại", "nhom": "giao-dien", "dur": 4,
+    "hop_voi": "Lịch hẹn, tin nhắn, lời nhắc — câu chuyện đời thường.",
+    "tu_khoa": ["tin nhắn", "nhắn", "thông báo", "nhắc", "lịch", "điện thoại"],
+    "cues": { "n1…n3": "lúc mỗi thông báo trượt xuống (mặc định cách 0.7 s)" },
+    "params": { "notes": "1–3 mục {app ≤ 14, icon 1 ký tự, color, title ≤ 22, msg ≤ 40, time}" },
+    "nang": false,
+    "khong_dung_khi": "dùng tên, logo ngân hàng hoặc ứng dụng thật để làm 'bằng chứng' (chuyển khoản, lượt xem, doanh thu) — dễ thành bằng chứng giả",
+    "am_thanh": "pop + tick"
+  },
+  "binh-chon": {
+    "ten": "Bình chọn", "nhom": "giao-dien", "dur": 4.4,
+    "hop_voi": "Câu hỏi khảo sát, kết quả khảo sát, kêu gọi khán giả tự trả lời.",
+    "tu_khoa": ["bao nhiêu người", "khảo sát", "bạn chọn", "đa số", "phần lớn"],
+    "cues": { "run": "thanh chạy (+0.6)" },
+    "params": { "question": "≤ 40 ký tự", "options": "2–4 mục {text ≤ 20, pct}" },
+    "nang": false, "am_thanh": "whoosh + pop"
+  },
+  "luu-y": {
+    "ten": "Lưu ý", "nhom": "giao-dien", "dur": 5,
+    "hop_voi": "Điều kiện, miễn trừ, cảnh báo — BẮT BUỘC cho số liệu bảo hiểm/tài chính có điều kiện.",
+    "tu_khoa": ["lưu ý", "điều kiện", "tuỳ", "áp dụng", "chú ý", "cảnh báo"],
+    "cues": {},
+    "params": { "title": "≤ 14 ký tự, mặc định 'Lưu ý'", "text": "≤ 140 ký tự" },
+    "nang": false, "am_thanh": "tick"
+  },
+  "bieu-do-tron": {
+    "ten": "Biểu đồ tròn", "nhom": "so-lieu", "dur": 4.4,
+    "hop_voi": "Cơ cấu, phân bổ, tỷ trọng 2–4 phần.",
+    "tu_khoa": ["chia", "phân bổ", "chiếm", "phần", "cơ cấu", "tỷ trọng"],
+    "cues": { "run": "các phần lần lượt mọc (+0.4)" },
+    "params": { "title": "≤ 28 ký tự", "center": "chữ giữa ≤ 10 ký tự (tuỳ chọn, \\n để xuống dòng)", "parts": "2–4 mục {label ≤ 14, value}" },
+    "nang": false, "am_thanh": "pop mỗi phần"
+  },
+  "nhan-dan": {
+    "ten": "Nhãn dán", "nhom": "chu", "dur": 3,
+    "hop_voi": "Hook đầu video, CTA cuối video, tiêu đề phần.",
+    "tu_khoa": ["hôm nay", "bí quyết", "cách", "theo dõi", "comment", "bình luận"],
+    "cues": {},
+    "params": { "text": "1–3 dòng ≤ 16 ký tự, \\n xuống dòng, *từ* để tô màu", "size": "mặc định 1.9", "rotate": "độ, mặc định -3", "wiggle": "true để rung nhẹ" },
+    "nang": false, "am_thanh": "pop"
+  }
+}
