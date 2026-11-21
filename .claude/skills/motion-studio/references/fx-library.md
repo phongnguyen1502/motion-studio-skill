@@ -76,6 +76,39 @@ const fx = [
      -map "[v]" -map "[a]" -c:v libx264 -crf 18 -c:a aac out.mp4
    ```
 
+## Subtitles (shared)
+
+`createSubtitles(stage, lines, { F, theme, style: 'tiktok' | 'pill', highlight, glue })` — lines = `voice-timing.py`
+format. Chunks ≤ 24 chars (9:16 TikTok style), never split a compound word (`KEEP_VI` from typeset.js) or a highlight
+phrase, no orphan tail; the word being spoken lights up. `overlay.html` draws them when the plan has `"subtitles": true`
+(hidden while a free-text effect — slam, strike, typewriter — repeats the words); `video.html` uses the pill style while
+an effect is on screen. Talking-head videos: tao-video `scripts/dung-video-quay.py` builds the plan, cut and layer.
+
+## Voiceover → full video (auto effects)
+
+For a voice file (recorded, or TTS) when the user wants a fast explainer/short without hand-building scenes.
+Still pitch the theme as part of 2–3 style directions; this path replaces the scene build, not the brief.
+
+1. `PROJ/script.txt` (one sentence per line, numbers written as spoken words so they align) + `PROJ/voice.mp3`.
+   No voice yet: `edge-tts --voice vi-VN-HoaiMyNeural --text "$(cat script.txt)" --write-media voice.mp3`
+   (Windows: `-f script.txt` fails on encoding — pass `--text`).
+2. `python SKILL_DIR/scripts/voice-timing.py voice.mp3 script.txt timing.json` (asr-venv python).
+3. `node SKILL_DIR/scripts/fx-suggest.mjs timing.json --voice voice.mp3 --theme sach` → `fx-plan.json` draft + a table
+   "line → pick (score) alternatives". About 10 effects per minute; hook and CTA lines always get one.
+4. **Agent pass (required):** read each `_loi`, swap the pick when another effect says it better (e.g. "7 in 10 families"
+   → `vong-tron` 70 %), fill `params` from the words actually spoken (`_dien` lists fields and limits), fix `cues`,
+   delete `_dien`. Add `"highlight": [...]` (accent words in the spoken text, kept on one subtitle line) and
+   `"music": "pad" | "nhac.mp3" | null`.
+5. Copy the page and helpers: `cp -R SKILL_DIR/assets/fx PROJ/fx; cp SKILL_DIR/assets/template/{kit.js,typeset.js} PROJ/; cp -R SKILL_DIR/assets/template/fonts-vi PROJ/`.
+6. Stills, fix, render:
+   `node SKILL_DIR/scripts/render.mjs PROJ --entry fx/video.html --query plan=../fx-plan.json --format 9x16 --stills 3,8,15`
+   then `--name <video>` instead of `--stills`. `[fx]` lines in the output = unmatched cue words or unfilled params.
+
+`video.html` draws a slow themed background, shows the spoken sentence as **big kinetic text** (words light up as
+they are said) whenever no effect is on screen, and switches to a **small subtitle** (current word lit) while an effect
+is visible. Voice + effect sounds + optional music ducked under the voice. On light themes (`sach`, `giay`) free text
+(word slams, strike) turns to ink colour automatically. Measured on a 40 s test: −12.6 LUFS, ~8 s capture per second of video.
+
 ## Gallery and checks
 
 ```bash

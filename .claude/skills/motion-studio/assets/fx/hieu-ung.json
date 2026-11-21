@@ -3,7 +3,7 @@
   "dem-so": {
     "ten": "Đếm số", "nhom": "so-lieu", "dur": 3.6,
     "hop_voi": "Câu có MỘT con số nổi bật: doanh thu, số khách hàng, số tiền, số năm.",
-    "tu_khoa": ["triệu", "tỷ", "nghìn", "khách hàng", "người", "đạt", "lên tới", "tổng cộng"],
+    "tu_khoa": ["triệu", "tỷ", "nghìn", "khách hàng", "đạt", "lên tới", "tổng cộng"],
     "cues": { "run": "bắt đầu đếm (mặc định +0.35) — gắn vào chính con số được nói" },
     "params": { "label": "nhãn ≤ 32 ký tự", "value": "số (bắt buộc, đúng lời nói)", "from": "số bắt đầu, mặc định 0", "decimals": "số chữ số thập phân", "prefix": "vd '+'", "unit": "≤ 12 ký tự", "delta": "chip phụ ≤ 30 ký tự, vd '▲ 38% so với năm trước' (tuỳ chọn)" },
     "nang": false, "am_thanh": "pop + tiếng tick khi đếm"
@@ -51,7 +51,7 @@
   "moc-thoi-gian": {
     "ten": "Mốc thời gian", "nhom": "so-lieu", "dur": 4.6,
     "hop_voi": "Hành trình, lịch sử, lộ trình 2–5 mốc.",
-    "tu_khoa": ["năm", "từ", "đến nay", "hành trình", "giai đoạn", "lộ trình", "sau đó"],
+    "tu_khoa": ["đến nay", "hành trình", "giai đoạn", "lộ trình", "sau đó", "từ năm"],
     "cues": { "run": "đường kẻ bắt đầu (+0.3), mỗi mốc cách 0.5 s" },
     "params": { "title": "≤ 28 ký tự (tuỳ chọn)", "items": "2–5 mục {time ≤ 10 ký tự, text ≤ 30 ký tự}" },
     "nang": false, "am_thanh": "tick mỗi mốc"

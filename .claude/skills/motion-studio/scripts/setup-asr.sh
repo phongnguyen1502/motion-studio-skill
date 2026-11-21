@@ -8,5 +8,5 @@ VENV="$HOME/.motion-studio/asr-venv"; mkdir -p "$HOME/.motion-studio"
 [ -d "$VENV" ] || "$PY" -m venv "$VENV"
 VPY="$VENV/bin/python"; [ -x "$VPY" ] || VPY="$VENV/Scripts/python.exe"
 "$VPY" -m pip install --quiet --upgrade pip
-"$VPY" -m pip install --quiet faster-whisper
+"$VPY" -m pip install --quiet faster-whisper "opencv-python-headless<5"
 echo "ASR ready: $VPY $DIR/voice-timing.py <voice> <script.txt> <timing.json>"

@@ -9,6 +9,6 @@ $venv = Join-Path $env:USERPROFILE '.motion-studio\asr-venv'
 New-Item -ItemType Directory -Force (Split-Path $venv) | Out-Null
 if (-not (Test-Path $venv)) { python -m venv $venv }
 & (Join-Path $venv 'Scripts\python.exe') -m pip install --quiet --upgrade pip
-& (Join-Path $venv 'Scripts\python.exe') -m pip install --quiet faster-whisper
-if ($LASTEXITCODE -ne 0) { throw 'pip install faster-whisper failed' }
+& (Join-Path $venv 'Scripts\python.exe') -m pip install --quiet faster-whisper "opencv-python-headless<5"
+if ($LASTEXITCODE -ne 0) { throw 'pip install faster-whisper opencv failed' }
 Write-Host "ASR ready: $venv\Scripts\python.exe $dir\voice-timing.py <voice> <script.txt> <timing.json>"

@@ -3,13 +3,16 @@
 <head>
 <meta charset="utf-8">
 <title>fx overlay</title>
-<!-- Plan-driven effect layer. Copy assets/fx/ into the project as PROJ/fx/, write PROJ/fx-plan.json, then:
+<!-- Plan-driven effect layer (+ subtitles). Copy assets/fx/ into the project as PROJ/fx/ (and template/kit.js,
+     typeset.js, fonts-vi/ next to it), write PROJ/fx-plan.json, then:
        node SKILL_DIR/scripts/render.mjs PROJ --entry fx/overlay.html --query plan=../fx-plan.json --format 9x16 --alpha --name fx
-     -> PROJ/render/fx-9x16.webm (transparent VP9 + effect sounds). Without --alpha it renders over the plan's "bg" colour.
-     Preview: same command with --serve instead of --alpha.
+     -> PROJ/render/fx-9x16.webm (transparent VP9 + effect sounds). Preview: --serve instead of --alpha.
+     Stills to lay over footage: --stills 3,8 --alpha (Playwright's Chromium cannot decode H.264, so no <video> here).
      fx-plan.json: { "duration"?, "theme": "sach", "words"?: "timing.json", "avoid"?: [{x,y,w,h}], "bg"?: "#222",
-                     "sfx"?: true, "fx": [{ "type", "start", "end"?, "cues"?, "params"?, "zone"? }] }
-     start/end/cues accept seconds (12.4), "+0.8" (after start) or a spoken word/phrase found in `words`. -->
+                     "sfx"?: true, "subtitles"?: true, "subStyle"?: "tiktok"|"pill", "highlight"?: ["…"],
+                     "fx": [{ "type", "start", "end"?, "cues"?, "params"?, "zone"? }] }
+     start/end/cues accept seconds (12.4), "+0.8" (after start) or a spoken word/phrase found in `words`.
+     Subtitles need `words` in voice-timing.py format (lines with text + words). -->
 <style>
   html, body { margin: 0; overflow: hidden; background: transparent; }
   #stage { position: relative; overflow: hidden; }
@@ -18,11 +21,13 @@
 <body>
 <div id="stage"></div>
 <script type="module">
-import { createFx, resolvePlan, fxSounds, playFxSounds } from './fx.js';
-// kit.js sits next to fx/ in an engine-code project (PROJ/kit.js); in the skill it is ../template/kit.js.
-let kit;
-for (const p of ['../kit.js', '../template/kit.js']) { try { kit = await import(p); break; } catch {} }
+import { createFx, resolvePlan, fxSounds, playFxSounds, createSubtitles, fold } from './fx.js';
+
+// kit.js sits next to fx/ in a project (PROJ/kit.js); in the skill it is ../template/kit.js.
+const imp = async (paths) => { for (const p of paths) { try { return await import(p); } catch {} } return null; };
+const kit = await imp(['../kit.js', '../template/kit.js']);
 if (!kit) throw new Error('[fx] cần kit.js cạnh thư mục fx/ (cp SKILL_DIR/assets/template/kit.js PROJ/)');
+const ts = await imp(['../typeset.js', '../template/typeset.js']);
 const { format, preview, renderMix, sfx } = kit;
 
 const Q = new URLSearchParams(location.search), F = format();
@@ -43,7 +48,7 @@ async function loadFonts() {
 }
 
 const fxs = [];
-let plan = { fx: [] };
+let plan = { fx: [] }, subs = null;
 window.MOTION = { width: F.w, height: F.h, fps: 30, duration: 1, ready: (async () => {
   await loadFonts();
   const url = Q.get('plan') || '../fx-plan.json';
@@ -52,12 +57,21 @@ window.MOTION = { width: F.w, height: F.h, fps: 30, duration: 1, ready: (async (
   const words = plan.words ? await (await fetch(new URL(plan.words, base))).json() : [];
   const { items, warnings } = resolvePlan(plan.fx || [], words);
   warnings.forEach(w => console.error('[fx] ' + w));
+  items.forEach((it, n) => { if (it._dien) console.error(`[fx] #${n + 1} ${it.type}: chưa điền xong params (còn _dien)`); });
   if (!alpha && plan.bg) stage.style.background = plan.bg;
   for (const it of items) fxs.push(createFx(stage, { ...it, theme: it.theme || plan.theme || 'kinh', format: F, avoid: it.avoid || plan.avoid || [] }));
-  window.MOTION.duration = plan.duration || Math.max(1, ...items.map(i => i.end)) + 0.5;
+  if (plan.subtitles && Array.isArray(words) && words[0]?.words)
+    subs = createSubtitles(stage, words, { F, theme: plan.theme || 'kinh', style: plan.subStyle || 'tiktok', highlight: plan.highlight || [],
+                                           glue: (ts?.KEEP_VI || []).map(fold) });
+  window.MOTION.duration = plan.duration || Math.max(1, ...items.map(i => i.end), ...(Array.isArray(words) ? words.map(l => l.end || 0) : [])) + 0.5;
 })() };
 
-window.seek = t => { for (const f of fxs) f.seek(t); };
+window.seek = t => {
+  for (const f of fxs) f.seek(t);
+  // while a full-width free-text effect (slam, strike, sticker) is up, the subtitle would repeat it: hide it
+  const loud = fxs.some(f => ['chu-dap', 'gach-thay', 'go-chu'].includes(f.type) && t >= f.start && t <= f.end);
+  subs?.seek(t, !loud);
+};
 window.renderAudio = sr => renderMix(window.MOTION.duration, sr, (ctx, out) => { if (plan.sfx !== false) playFxSounds(ctx, out, sfx, fxSounds(fxs)); });
 window.MOTION.ready.then(() => { preview(stage); window.seek(0); });
 </script>

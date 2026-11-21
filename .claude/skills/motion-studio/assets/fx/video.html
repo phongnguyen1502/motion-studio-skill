@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>fx voice video</title>
+<!-- Voiceover -> full video: themed moving background, spoken text (big kinetic words between effects, small
+     subtitles while an effect is on screen), the effects of fx-plan.json, the voice, effect sounds and optional music.
+       PROJ/  voice.mp3  timing.json (voice-timing.py)  fx-plan.json (fx-suggest.mjs, then filled by the agent)
+              fx/ (cp -R SKILL_DIR/assets/fx)  kit.js typeset.js fonts-vi/ (from SKILL_DIR/assets/template)
+       node SKILL_DIR/scripts/render.mjs PROJ --entry fx/video.html --query plan=../fx-plan.json --format 9x16 --stills 3,8
+       node SKILL_DIR/scripts/render.mjs PROJ --entry fx/video.html --query plan=../fx-plan.json --format 9x16 --name video
+     fx-plan.json keys used here (besides fx/theme/words, see overlay.html): "voice", "music" (file | "pad" | null),
+       "musicGain" (0.22), "subtitles" (true), "highlight" (["quỹ dự phòng", …] accent words in the big text),
+       "bg" ({ base, blobs: [3 colours], grid } to override the theme background), "avoid" (face boxes, rarely needed). -->
+<style>
+  html, body { margin: 0; overflow: hidden; background: #000; }
+  #stage { position: relative; overflow: hidden; }
+  #bg { position: absolute; inset: 0; }
+  .big { position: absolute; text-align: center; font-weight: 800; line-height: 1.22; letter-spacing: -.01em; text-wrap: balance; }
+  .big span { display: inline-block; margin: 0 .13em; transform-origin: 50% 70%; }
+  .big span.hl { color: var(--hl); }
+</style>
+</head>
+<body>
+<div id="stage"><canvas id="bg"></canvas></div>
+<script type="module">
+import { createFx, resolvePlan, fxSounds, playFxSounds, THEMES, fold, prog, spring, E, spokenTokens, chunkTokens, createSubtitles } from './fx.js';
+
+const imp = async (paths) => { for (const p of paths) { try { return await import(p); } catch {} } return null; };
+const kit = await imp(['../kit.js', '../template/kit.js']);
+if (!kit) throw new Error('[fx] cần kit.js cạnh thư mục fx/ (cp SKILL_DIR/assets/template/kit.js PROJ/)');
+const ts = await imp(['../typeset.js', '../template/typeset.js']);
+const KEEP = (ts?.KEEP_VI || []).map(fold);
+const { format, preview, renderMix, sfx, loadAudio, duckUnder, ins } = kit;
+
+const Q = new URLSearchParams(location.search), F = format(), V = F.vertical;
+const stage = document.getElementById('stage'), cv = document.getElementById('bg'), g = cv.getContext('2d');
+stage.style.width = F.w + 'px'; stage.style.height = F.h + 'px'; cv.width = F.w; cv.height = F.h;
+
+const BG = {
+  sach: { base: '#eef3fa', blobs: ['#c9dcff', '#ffe0c4', '#d2f3e3'], grid: 'rgba(16,36,63,.05)' },
+  kinh: { base: '#0b1120', blobs: ['#27408f', '#5d2a78', '#0e5a63'], grid: 'rgba(255,255,255,.045)' },
+  giay: { base: '#f5eddc', blobs: ['#f0d6b2', '#d5e6dd', '#f3c4b4'], grid: 'rgba(29,42,68,.06)' },
+  dam:  { base: '#111113', blobs: ['#3d3700', '#3d0f1b', '#12301f'], grid: 'rgba(255,255,255,.05)' },
+};
+
+async function loadFonts() {
+  for (const href of [Q.get('fonts'), '../fonts-vi/gf.css', '../template/fonts-vi/gf.css'].filter(Boolean)) {
+    if ((await fetch(href, { method: 'HEAD' }).catch(() => ({ ok: false }))).ok) {
+      const l = Object.assign(document.createElement('link'), { rel: 'stylesheet', href });
+      await new Promise(r => { l.onload = l.onerror = r; document.head.appendChild(l); });
+      for (const w of [500, 600, 700, 800, 900]) await document.fonts.load(`${w} 40px "Be Vietnam Pro"`, 'Ậ ư ữ ỹ đ Ừ');
+      return;
+    }
+  }
+  console.error('[fx] không tìm thấy fonts-vi/gf.css');
+}
+
+const lineTokens = spokenTokens;
+const chunks = (toks, max) => chunkTokens(toks, max, [...KEEP, ...HLK.filter(x => x.includes(' '))]);
+
+let HLK = [];
+let plan, lines = [], fxs = [], big = [], subs = null, th, bg, voiceUrl, D = 1;
+
+window.MOTION = { width: F.w, height: F.h, fps: 30, duration: 1, ready: (async () => {
+  await loadFonts();
+  const url = Q.get('plan') || '../fx-plan.json', base = new URL(url, location.href);
+  plan = await (await fetch(url)).json();
+  lines = plan.words ? await (await fetch(new URL(plan.words, base))).json() : [];
+  if (!Array.isArray(lines) || !lines[0]?.words) throw new Error('[fx] video.html cần "words" = timing.json của voice-timing.py');
+  const themeName = typeof plan.theme === 'string' ? plan.theme : plan.theme?.base || 'sach';
+  th = typeof plan.theme === 'string' ? THEMES[plan.theme] : { ...THEMES[themeName], ...plan.theme };
+  bg = { ...BG[themeName], ...(plan.bg || {}) };
+  HLK = (plan.highlight || []).map(fold);
+  // free text (word slams, strike) is styled for footage; on a light background swap it to ink on a light outline
+  const light = themeName === 'sach' || themeName === 'giay';
+  const fxTheme = typeof plan.theme === 'object' ? plan.theme : { base: themeName };
+  if (light) Object.assign(fxTheme, { free: th.ink, freeStroke: bg.base });
+  plan.theme = fxTheme;
+  stage.style.setProperty('--hl', th.accent); stage.style.color = th.ink; stage.style.fontFamily = th.font;
+
+  voiceUrl = plan.voice ? new URL(plan.voice, base).href : null;
+  let vDur = 0;
+  if (voiceUrl) { const b = await (await fetch(voiceUrl)).arrayBuffer(); vDur = (await new OfflineAudioContext(1, 1, 44100).decodeAudioData(b)).duration; }
+  D = Math.max(vDur, lines.at(-1).end) + 0.6;
+
+  // effects
+  const { items, warnings } = resolvePlan(plan.fx || [], lines);
+  warnings.forEach(w => console.error('[fx] ' + w));
+  items.forEach((it, n) => { if (it._dien && !Object.keys(it.params || {}).length) console.error(`[fx] #${n + 1} ${it.type}: chưa điền params (còn _dien)`); });
+  fxs = items.map(it => createFx(stage, { ...it, theme: it.theme || plan.theme || 'sach', format: F, avoid: it.avoid || plan.avoid || [] }));
+
+  // spoken text
+  const HL = (plan.highlight || []).map(h => fold(h).split(' '));
+  const bigMax = V ? 44 : 60;
+  const bigSize = V ? 92 : 76, bigW = F.w * (V ? 0.84 : 0.72);
+  lines.forEach((line, li) => {
+    const toks = lineTokens(line), next = lines[li + 1];
+    const lineEnd = next ? Math.min(next.start - 0.05, line.end + 0.9) : D - 0.3;
+    // accent: digits + plan.highlight phrases
+    toks.forEach((t, k) => { t.hl = /\d/.test(t.f) || HL.some(h => h.every((w, j) => toks[k + j - h.indexOf(t.f)]?.f === w) && h.includes(t.f)); });
+    const cs = chunks(toks, bigMax);
+    cs.forEach((c, ci) => {
+      const el = document.createElement('div'); el.className = 'big';
+      Object.assign(el.style, { left: (F.w - bigW) / 2 + 'px', width: bigW + 'px', fontSize: bigSize + 'px' });
+      const spans = c.map(t => { const s = document.createElement('span'); s.textContent = t.raw; if (t.hl) s.className = 'hl'; el.appendChild(s); return { s, t: t.s }; });
+      stage.insertBefore(el, fxs[0]?.root || null);
+      el.style.top = F.h * (V ? 0.43 : 0.45) - el.offsetHeight / 2 + 'px';
+      big.push({ el, spans, a: c[0].s - 0.12, b: cs[ci + 1] ? cs[ci + 1][0].s - 0.12 : lineEnd });
+    });
+  });
+  // small subtitle while an effect is on screen (shared with overlay.html)
+  if (plan.subtitles !== false) subs = createSubtitles(stage, lines, { F, theme: plan.theme, style: plan.subStyle || 'pill', highlight: plan.highlight || [], glue: KEEP });
+  window.MOTION.duration = D;
+})() };
+
+function drawBg(t) {
+  g.fillStyle = bg.base; g.fillRect(0, 0, F.w, F.h);
+  const R = Math.max(F.w, F.h) * 0.55;
+  bg.blobs.forEach((c, i) => {
+    const x = F.w * (0.5 + 0.38 * Math.sin(t * 0.13 + i * 2.1)), y = F.h * (0.45 + 0.35 * Math.cos(t * 0.11 + i * 1.7));
+    const gr = g.createRadialGradient(x, y, 0, x, y, R); gr.addColorStop(0, c); gr.addColorStop(1, c + '00');
+    g.fillStyle = gr; g.fillRect(0, 0, F.w, F.h);
+  });
+  g.strokeStyle = bg.grid; g.lineWidth = 2; const step = F.w / 9, off = (t * 12) % step;
+  g.beginPath();
+  for (let x = -step + off; x < F.w + step; x += step) { g.moveTo(x, 0); g.lineTo(x, F.h); }
+  for (let y = -step + off; y < F.h + step; y += step) { g.moveTo(0, y); g.lineTo(F.w, y); }
+  g.stroke();
+}
+
+window.seek = t => {
+  drawBg(t);
+  for (const f of fxs) f.seek(t);
+  const busy = fxs.some(f => t >= f.start && t <= f.end);
+  for (const b of big) {
+    const on = !busy && t >= b.a && t < b.b;
+    b.el.style.display = on ? '' : 'none';
+    if (!on) continue;
+    const a = prog(t, b.a, 0.3, E.outCubic), o = prog(t, b.b - 0.2, 0.2);
+    b.el.style.opacity = a * (1 - o); b.el.style.transform = `translateY(${(1 - a) * 30 - o * 20}px)`;
+    for (const { s, t: ws } of b.spans) {
+      const said = t >= ws - 0.04, k = spring(t - ws, { stiffness: 380, damping: 20 });
+      s.style.opacity = said ? 1 : 0.24;
+      s.style.transform = said ? `scale(${1 + 0.08 * (1 - k)})` : 'none';
+    }
+  }
+  const loud = fxs.some(f => ['chu-dap', 'gach-thay', 'go-chu'].includes(f.type) && t >= f.start && t <= f.end);
+  subs?.seek(t, busy && !loud);
+};
+
+window.renderAudio = sr => renderMix(D, sr, async (ctx, out) => {
+  let voice = null;
+  if (voiceUrl) { voice = await loadAudio(ctx, voiceUrl); const s = ctx.createBufferSource(); s.buffer = voice; s.connect(out); s.start(0); }
+  const fxBus = ctx.createGain(); fxBus.gain.value = 0.8; fxBus.connect(out);
+  playFxSounds(ctx, fxBus, sfx, fxSounds(fxs));
+  if (!plan.music) return;
+  const mus = ctx.createGain(); mus.gain.value = plan.musicGain ?? 0.22; const duck = ctx.createGain(); duck.connect(mus).connect(out);
+  if (plan.music === 'pad') {
+    const prog4 = [[57, 60, 64], [53, 57, 60], [48, 52, 55], [55, 59, 62]];   // Am F C G, 4 s each
+    for (let k = 0, t = 0; t < D; k++, t += 4) ins.strings(ctx, duck, t, prog4[k % 4], 4, { gain: 0.05 });
+  } else {
+    const m = await loadAudio(ctx, new URL(plan.music, new URL(Q.get('plan') || '../fx-plan.json', location.href)).href);
+    const s = ctx.createBufferSource(); s.buffer = m; s.loop = true; s.connect(duck); s.start(0);
+  }
+  if (voice) duckUnder(duck, voice, { talkGain: 0.4 });
+});
+
+window.MOTION.ready.then(() => { preview(stage); window.seek(0); });
+</script>
+</body>
+</html>

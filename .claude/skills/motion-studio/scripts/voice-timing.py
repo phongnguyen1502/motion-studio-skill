@@ -15,6 +15,8 @@ Needs a Python with faster-whisper (pip install faster-whisper) and ffmpeg on PA
 """
 import argparse, json, re, subprocess, sys, unicodedata, difflib
 import numpy as np
+for _s in (sys.stdout, sys.stderr):  # Windows pipes default to cp1252 -> Vietnamese print crashes
+    if hasattr(_s, 'reconfigure'): _s.reconfigure(encoding='utf-8', errors='replace')
 
 
 def norm(s):

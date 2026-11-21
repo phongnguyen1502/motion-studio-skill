@@ -296,12 +296,15 @@ export const FX = {
       if (p.unit) h('span', 'fx-unit', row, rich(p.unit));
       num.textContent = p.prefix + fmtNum(p.value, p.decimals);
       fit(row, innerW(el));
-      num.style.minWidth = num.offsetWidth + 'px'; num.style.textAlign = 'right';
+      // No reserved width: the number grows from the left and the unit follows it (tabular digits, so it only
+      // moves when a digit is added). Before the cue the number waits dimmed instead of showing a bare "0".
       const chip = p.delta ? h('div', 'fx-chip', el, esc(p.delta)) : null;
       const T = c.cues.run, D = 1.3;
       return {
         seek(t) {
           num.textContent = p.prefix + fmtNum(lerp(+p.from, +p.value, prog(t, T, D, E.outQuint)), p.decimals);
+          const w = prog(t, T - 0.15, 0.15);
+          num.style.opacity = 0.25 + 0.75 * w; num.style.transform = `scale(${0.85 + 0.15 * w})`; num.style.transformOrigin = '0 70%';
           if (chip) { const s = spring(t - (T + D - 0.25), { stiffness: 300, damping: 14 }); chip.style.transform = `scale(${s})`; chip.style.opacity = clamp(s * 3); }
         },
         sounds: [{ t: c.start, s: 'pop' }, ...ticks(T, D, 10), ...(chip ? [{ t: T + D - 0.25, s: 'pop', gain: 0.3 }] : [])],
@@ -794,8 +797,13 @@ export function createFx(stage, spec) {
     const hEm = root.offsetHeight / em(box);           // height in em: the same in any zone
     const top = b => { const ht = hEm * em(b); return b.a === 'center' ? b.y - ht / 2 : b.a === 'bottom' ? b.y - ht : b.y; };
     if (!spec.box && spec.avoid?.length) {
-      const free = prefs.map(z => Z[z]).find(b => !spec.avoid.some(r => overlap({ x: b.x, y: top(b), w: b.w, h: hEm * em(b) }, r)));
-      if (free && free !== box) { box = free; api = build(box); }
+      // try every zone at full size, then smaller (close-ups leave little room); else the least overlap, smallest size
+      const scaled = (b, s) => (s === 1 ? b : { ...b, x: b.x + (b.w * (1 - s)) / 2, w: b.w * s });
+      const rect = b => ({ x: b.x, y: top(b), w: b.w, h: hEm * em(b) });
+      const area = b => spec.avoid.reduce((sum, r) => { const q = rect(b), w = Math.min(q.x + q.w, r.x + r.w) - Math.max(q.x, r.x), h = Math.min(q.y + q.h, r.y + r.h) - Math.max(q.y, r.y); return sum + (w > 0 && h > 0 ? w * h : 0); }, 0);
+      const cands = [1, 0.85, 0.72].flatMap(s => prefs.map(z => scaled(Z[z], s)));
+      const pick = cands.find(b => area(b) === 0) || cands.slice(-prefs.length).sort((p, q) => area(p) - area(q))[0];
+      if (pick && pick !== box) { box = pick; api = build(box); }
     }
     root.style.top = top(box) + 'px';
   }
@@ -871,4 +879,90 @@ export function resolvePlan(items, words = []) {
     return r;
   });
   return { items: out, warnings };
+}
+
+// ---------- spoken text: tokens, chunks, subtitles ----------
+// Tokens of a voice-timing.py line with their spoken time. A token counts when it has a letter, digit or _
+// (the rule voice-timing.py uses), so times stay aligned after a lone "%" or "–".
+export function spokenTokens(line) {
+  const ws = line.words || [], out = [];
+  let j = 0, last = line.start;
+  for (const raw of String(line.text).split(/\s+/).filter(Boolean)) {
+    const counted = /[\p{L}\p{N}_]/u.test(raw), s = counted ? (ws[j++]?.[1] ?? last) : last;
+    last = s; out.push({ raw, f: fold(raw), s });
+  }
+  return out;
+}
+// Greedy chunks ≤ max chars, preferring breaks after punctuation, never between the two words of a pair in
+// `glue` (folded "a b" strings: compound words, highlighted phrases), and no orphan tail.
+export function chunkTokens(toks, max, glue = []) {
+  const out = []; let cur = [];
+  const len = a => a.map(t => t.raw).join(' ').length;
+  const glued = (a, b) => a && b && glue.some(g => g === a.f + ' ' + b.f || g.includes(a.f + ' ' + b.f));
+  toks.forEach((t, k) => {
+    if (cur.length && len([...cur, t]) > max && !glued(cur.at(-1), t)) { out.push(cur); cur = []; }
+    cur.push(t);
+    if (/[,.?!:;…]$/.test(t.raw) && len(cur) >= max * 0.45 && k < toks.length - 1) { out.push(cur); cur = []; }
+  });
+  if (cur.length) out.push(cur);
+  if (out.length > 1 && len(out.at(-1)) < max * 0.35 && len([...out.at(-2), ...out.at(-1)]) <= max * 1.3) out.splice(-2, 2, [...out.at(-2), ...out.at(-1)]);
+  return out;
+}
+const SUB_CSS = `
+.fx-sub{position:absolute;left:0;right:0;display:flex;justify-content:center;pointer-events:none;z-index:20}
+.fx-sub>div{font-family:var(--fx-font);white-space:nowrap;text-align:center}
+.fx-sub.tiktok>div{font-weight:900;color:var(--fx-free);-webkit-text-stroke:.14em var(--fx-free-stroke);paint-order:stroke fill;text-shadow:0 .08em .3em rgba(0,0,0,.35);letter-spacing:-.01em}
+.fx-sub.pill>div{font-weight:800;color:var(--fx-ink);background:var(--fx-card);padding:.22em .6em .28em;border-radius:.5em;box-shadow:0 .3em 1em rgba(0,0,0,.18)}
+.fx-sub span{display:inline-block;transform-origin:50% 70%}
+.fx-sub.tiktok span{margin:0 .1em}
+`;
+// lines = voice-timing.py output. style 'tiktok' (white + outline, current word in accent; for footage) or 'pill'.
+// Returns { seek(t, visible = true) }.
+export function createSubtitles(stage, lines, { F, theme = 'kinh', style = 'tiktok', max, y, size, highlight = [], glue = [] } = {}) {
+  injectCSS();
+  if (!document.getElementById('fx-sub-css')) { const s = h('style', null, document.head); s.id = 'fx-sub-css'; s.textContent = SUB_CSS; }
+  F ??= { w: stage.offsetWidth, h: stage.offsetHeight };
+  const V = F.h > F.w, th = themeVars(theme);
+  const box = h('div', 'fx-sub ' + style, stage), inner = h('div', null, box);
+  for (const [k, v] of Object.entries(th)) box.style.setProperty('--fx-' + k.replace(/[A-Z]/g, m => '-' + m.toLowerCase()), v);
+  const fs = size || (style === 'tiktok' ? (V ? 66 : 54) : (V ? 50 : 40));
+  inner.style.fontSize = fs + 'px';
+  box.style.top = (y ?? (V ? F.h * 0.775 : F.h * 0.86)) - fs * 0.75 + 'px';   // centre of the subtitle band
+  max ??= style === 'tiktok' ? (V ? 24 : 40) : (V ? 30 : 48);
+  const HL = highlight.map(x => fold(x).split(' '));
+  const G = [...glue, ...highlight.map(fold).filter(x => x.includes(' '))];
+  const chunks = [];
+  lines.forEach((line, li) => {
+    const toks = spokenTokens(line), next = lines[li + 1];
+    toks.forEach((t, k) => { t.hl = /\d/.test(t.f) || HL.some(p => { const i = p.indexOf(t.f); return i >= 0 && p.every((w, j) => toks[k - i + j]?.f === w); }); });
+    const end = next ? Math.min(next.start - 0.05, line.end + 0.6) : line.end + 0.8;
+    const cs = chunkTokens(toks.filter(t => t.f), max, G);
+    cs.forEach((c, ci) => chunks.push({ toks: c, a: c[0].s - 0.08, b: cs[ci + 1] ? cs[ci + 1][0].s - 0.08 : end }));
+  });
+  let shown = null, spans = [];
+  return {
+    chunks,
+    seek(t, visible = true) {
+      const c = visible ? chunks.find(c => t >= c.a && t < c.b) : null;
+      box.style.display = c ? '' : 'none';
+      if (!c) return;
+      if (shown !== c) {
+        inner.innerHTML = ''; spans = c.toks.map((tk, i) => { if (i) inner.appendChild(document.createTextNode(' ')); const s = h('span', null, inner, esc(tk.raw)); return { s, tk }; });
+        const maxW = F.w * 0.9; inner.style.transform = ''; const wdt = inner.scrollWidth;
+        inner.dataset.k = wdt > maxW ? maxW / wdt : 1; shown = c;
+      }
+      const pop = spring(t - c.a, { stiffness: 420, damping: 22 });
+      inner.style.transform = `scale(${inner.dataset.k * (0.88 + 0.12 * pop)})`;
+      spans.forEach(({ s, tk }, i) => {
+        const nextS = spans[i + 1]?.tk.s ?? c.b, now = t >= tk.s - 0.04 && t < nextS - 0.04, said = t >= tk.s - 0.04;
+        if (style === 'tiktok') {
+          s.style.color = now || tk.hl ? 'var(--fx-accent)' : '';
+          s.style.opacity = said ? 1 : 0.78;
+          s.style.transform = now ? `scale(${1 + 0.1 * spring(t - tk.s, { stiffness: 500, damping: 18 })})` : 'none';
+        } else {
+          s.style.color = said ? (tk.hl ? 'var(--fx-accent)' : 'var(--fx-ink)') : 'var(--fx-muted)';
+        }
+      });
+    },
+  };
 }
