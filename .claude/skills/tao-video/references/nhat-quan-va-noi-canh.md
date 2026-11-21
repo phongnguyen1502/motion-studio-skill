@@ -4,7 +4,7 @@ Ba tầng, làm đủ cả ba thì video không giật cục:
 
 ## 1. Bộ nhân vật (lưu kho, dùng lại)
 
-Kho: `~/Downloads/tao-video-kho/<ten-bo>/`
+Kho: `<KHO>/<ten-bo>/`
 ```
 bo.json
 nhan-vat/<ten>.png     ← 1 nhân vật 1 ảnh, nền trơn hoặc đúng bối cảnh, thấy rõ mặt + trang phục

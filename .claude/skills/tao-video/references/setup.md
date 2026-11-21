@@ -21,7 +21,7 @@ python SKILL_DIR/scripts/kiem-moi-truong.py
 Đồ nghề có thể đã được cài ngầm ở Prompt 1 workshop (`~/.gabee/cong-cu-video.log`). Bảng còn ❌ thì **cài luôn,
 không hỏi lại** nếu người dùng đã đồng ý cài đồ nghề ở Prompt 1 (hoặc đã nói "cài luôn"); chưa đồng ý thì hỏi MỘT
 lần cho cả lô. Cần: Python ≥ 3.9, Pillow, ffmpeg có libass, edge-tts **bản mới** (`pip install -U edge-tts` — bản
-cũ bị Microsoft trả 403), thư mục kho `~/Downloads/tao-video-kho`. **Không cài whisper** (nặng hàng GB).
+cũ bị Microsoft trả 403), thư mục kho `<KHO>`. **Không cài whisper** (nặng hàng GB).
 - Windows: `winget install --id Gyan.FFmpeg -e --silent --accept-source-agreements --accept-package-agreements`,
   rồi nạp lại PATH trong cùng cửa sổ: `$env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User')`.
   `winget install ffmpeg` (không `--id`) có thể hỏi chọn gói → treo.
@@ -41,7 +41,7 @@ Mở `video.mp4` vừa ra cho người dùng xem có tiếng + phụ đề + chu
 | Có profile | kết quả `get_status` có ≥ 1 profile | bảo người dùng tạo 1 profile trong app (Hồ sơ → Tạo) |
 | Có flow cần dùng | `list_flows(query="muse")`, `"gemini"`, `"vbee"`… | thiếu flow nào thì cài từ bộ workshop: đọc file `flows/<id>.json` rồi `save_flow(<id>, <nội dung>)` |
 
-Thư mục kho nằm trong `~/Downloads` nên GaBee đọc được ảnh tham chiếu ở đó. **Đừng** để ảnh tham chiếu
+Thư mục kho nằm trong `<Downloads>` nên GaBee đọc được ảnh tham chiếu ở đó. **Đừng** để ảnh tham chiếu
 trong thư mục dự án ngoài Downloads/Documents/Desktop/Pictures — GaBee chặn (400 `path_not_allowed`).
 
 ## Bước 3 — Hỏi người dùng chọn nguồn (MỘT lần, gộp ba câu)
@@ -104,7 +104,7 @@ run_flow("<flow ảnh>", profile_id=<profile>, headless=false, wait=false,
          vars={"prompt": "một cậu bé cầm quả bóng đỏ, hoạt hình màu nước, nền kem trơn, không chữ"})
 → get_run_status(run_id) mỗi ~20s tới khi xong; quá 150s → stop_run, thử lại 1 lần
 ```
-✅ khi `output.media_result` có đường dẫn ảnh và mở ra được → chép vào `~/Downloads/tao-video-kho/_thu/`.
+✅ khi `output.media_result` có đường dẫn ảnh và mở ra được → chép vào `<KHO>/_thu/`.
 
 **Hình API:** `python SKILL_DIR/scripts/anh-api.py thu gemini` (hoặc `openai`) — tốn 1 lượt, ra
 `_thu/anh-api-<nguon>.png`. Gemini lỗi 429 = hết hạn mức free, không phải khoá sai.
@@ -116,7 +116,7 @@ python SKILL_DIR/scripts/giong-mau.py gemini Kore          # Kore nữ ấm · C
 python SKILL_DIR/scripts/giong-mau.py openai nova | eleven <voice_id> | soniox Linh
 ```
 Script tự mở file mp3. Rồi kiểm luôn **giọng → chữ** trên chính file đó (nếu có khoá Soniox/OpenAI/Gemini):
-`python SKILL_DIR/scripts/chu-tu-giong.py ~/Downloads/tao-video-kho/_thu/giong-<nguồn>.mp3` → ✅ khi chép ra đúng câu.
+`python SKILL_DIR/scripts/chu-tu-giong.py <KHO>/_thu/giong-<nguồn>.mp3` → ✅ khi chép ra đúng câu.
 Vbee: `run_flow("vbee-tts", profile_id=…, headless=false, vars={"text": "Xin chào, đây là
 giọng thử.", "voice": "Ngọc Huyền nâng cao (Beta)", "filename": "thu"})` → mở `output.audio_path`.
 Hỏi người dùng thích giọng nào; ✅ khi họ đã nghe và chọn.
@@ -128,7 +128,7 @@ Hỏi người dùng thích giọng nào; ✅ khi họ đã nghe và chọn.
 
 ## Bước 6 — Chốt
 
-Ghi `~/Downloads/tao-video-kho/setup-ok.json`:
+Ghi `<KHO>/setup-ok.json`:
 ```json
 {"ngay": "<hôm nay>", "may": "ok", "dung_thu": "ok", "gabee": "ok", "profile": "<id>",
  "nguon_anh": ["chatgpt"], "nguon_giong": ["edge", "gemini:Kore"], "nguon_video": ["muse"],
@@ -154,7 +154,7 @@ Còn ❌ ở loại bắt buộc thì nói rõ làm gì để sửa, **đừng b
 
 | Lỗi | Nghĩa | Xử lý |
 |---|---|---|
-| `path_not_allowed` / "chưa được phép đọc file" | ảnh tham chiếu ngoài thư mục được phép | để ảnh trong `~/Downloads/tao-video-kho`, hoặc GaBee → Cài đặt → Thư mục được phép |
+| `path_not_allowed` / "chưa được phép đọc file" | ảnh tham chiếu ngoài thư mục được phép | để ảnh trong `<KHO>`, hoặc GaBee → Cài đặt → Thư mục được phép |
 | `not_authenticated` | profile chưa đăng nhập trang đó | mở trang (`open_page`), người dùng tự đăng nhập |
 | `blocked` | màn Cloudflare "Just a moment" (hay gặp khi chạy ẩn) | chạy `headless=false` |
 | `ui_changed` | trang đổi giao diện, selector của flow không khớp | báo người dùng + giảng viên; dùng nguồn khác trong lúc chờ sửa flow |

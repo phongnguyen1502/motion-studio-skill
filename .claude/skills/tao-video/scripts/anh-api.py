@@ -19,6 +19,8 @@ import urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import khoa  # noqa: E402
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from kho import KHO  # noqa: E402  (kho theo thư mục Downloads thật, kể cả khi đã chuyển sang ổ khác)
 # Windows: màn hình/ống dẫn mặc định cp1252 → in tiếng Việt là UnicodeEncodeError (máy Windows thật 15/10/2026).
 for _s in (sys.stdout, sys.stderr):
     if hasattr(_s, "reconfigure"):
@@ -82,7 +84,7 @@ def main():
     khoa.load_env()
     if len(sys.argv) >= 3 and sys.argv[1] == "thu":
         nguon = sys.argv[2]
-        dst = os.path.expanduser(f"~/Downloads/tao-video-kho/_thu/anh-api-{nguon}.png")
+        dst = os.path.join(KHO, "_thu", f"anh-api-{nguon}.png")
         os.makedirs(os.path.dirname(dst), exist_ok=True)
         args = argparse.Namespace(nguon=nguon, prompt="một quả táo đỏ trên bàn gỗ, ánh sáng buổi sáng, không chữ",
                                   dst=dst, khung="1:1", tham_chieu=[], model=None)

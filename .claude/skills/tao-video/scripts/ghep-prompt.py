@@ -7,7 +7,7 @@ Mô tả nhân vật + bối cảnh + phong cách được CHÉP NGUYÊN VĂN t�
 Cảnh `noi_tiep: true` thêm ảnh cảnh trước làm mốc tư thế/ánh sáng; nối tối đa 2 cảnh
 liền rồi tự NEO lại bằng ảnh tham chiếu gốc (nối dài làm nhân vật trôi — bài học Muse 10/2026).
 
-kich_ban["bo"] = tên bộ trong kho (~/Downloads/tao-video-kho/<tên>) hoặc đường dẫn thư mục bộ.
+kich_ban["bo"] = tên bộ trong kho (<KHO>/<tên>) hoặc đường dẫn thư mục bộ.
 Mỗi cảnh: nhan_vat [tên…], boi_canh "tên", mo_ta_hinh "hành động/khung hình", noi_tiep bool.
 """
 import json
@@ -20,7 +20,8 @@ for _s in (sys.stdout, sys.stderr):
 os.environ.setdefault("PYTHONUTF8", "1")  # tiến trình Python con cũng in UTF-8
 
 
-KHO = os.path.expanduser("~/Downloads/tao-video-kho")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from kho import KHO  # noqa: E402  (kho theo thư mục Downloads thật, kể cả khi đã chuyển sang ổ khác)
 MAX_NOI = 2
 
 plan_path = sys.argv[1]

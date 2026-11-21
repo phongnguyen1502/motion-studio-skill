@@ -14,7 +14,7 @@ Một video 4 nhân vật + 4 bối cảnh + 17 cảnh từng mất hơn nửa t
 | **Chỉ có 1 profile đăng nhập** | Dùng đúng profile đó, đừng mở profile khác (không có phiên đăng nhập) | người dùng chỉ login Cloak1 |
 | **Tab gác cổng (quan trọng nhất)** | Trước khi chạy loạt ảnh: `open_page` mở 1 tab `https://muse.ai/thread/new` trên profile và **giữ nguyên suốt loạt** (chiếm 1/3 chỗ, còn đúng 2 chỗ cho 2 lượt). Không có tab này, khi lượt trước vừa xong và đóng tab, browser hết tab → log worker ghi `hot pool: đóng browser ... (hết tab)` → mọi lượt đang khởi động chết `browser has been closed` ở giây 8–15 (thấy 5 lần). Có tab gác cổng thì 2 lượt liền sống và ra ảnh. Xong loạt thì `close_tab` | 12/10/2026, log `~/Library/Application Support/com.beeflow.app/logs/worker.log` |
 | **Bắn 2 lượt** | Cách nhau ~15–20s; kiểm lượt 1 còn `running` rồi bắn lượt 2 | 12/10/2026 |
-| **Thư mục được phép** | GaBee chỉ đọc ảnh tham chiếu trong thư mục đã cho phép (Cài đặt → "Thư mục được phép"). Để ảnh cảnh trong `~/Downloads/tao-video-kho/<bo>/canh/`, KHÔNG để trong thư mục dự án. Vi phạm → worker trả **400**, mà `run_flow wait=false` vẫn báo `started` rồi `get_run_status` ra `unknown` — mất 3 lượt, ~10 phút mới ra nguyên nhân. Nghi lỗi → chạy `wait=true` một lần để đọc lỗi thật, hoặc `grep run-flow worker.log` | 12/10/2026 |
+| **Thư mục được phép** | GaBee chỉ đọc ảnh tham chiếu trong thư mục đã cho phép (Cài đặt → "Thư mục được phép"). Để ảnh cảnh trong `<KHO>/<bo>/canh/`, KHÔNG để trong thư mục dự án. Vi phạm → worker trả **400**, mà `run_flow wait=false` vẫn báo `started` rồi `get_run_status` ra `unknown` — mất 3 lượt, ~10 phút mới ra nguyên nhân. Nghi lỗi → chạy `wait=true` một lần để đọc lỗi thật, hoặc `grep run-flow worker.log` | 12/10/2026 |
 | **Lẫn ảnh đính kèm giữa 2 tab** | Có lượt Muse tự báo "ảnh đính kèm lần này là ảnh của cảnh khác" (cảnh 11, 12) → cảnh 12 ra sai bối cảnh (máy CRT nhà quê thay vì văn phòng laptop). Nghi do 2 tab bắn sát nhau. Cách làm: **luôn ghép ảnh lưới soi cả loạt**; cảnh sai thì tạo lại riêng, **chạy một mình một tab**, ghi rõ "KHÔNG có <thứ sai>" trong prompt. Cảnh cần chính xác bối cảnh thì bắn lệch ≥ 30s | 12/10/2026, 2 lần thấy trong 17 cảnh |
 | **Nối nhiều ảnh** | Cảnh nối: nhân vật + ảnh cảnh trước là đủ (ảnh cảnh trước đã chứa bối cảnh); bỏ ảnh bối cảnh để còn ≤ 3 ảnh đính kèm | 12/10/2026 |
 | **Cắt sớm** | Lượt quá **150s** chưa ra ảnh → `stop_run` rồi chạy lại. Từng để treo 8 phút mới cắt | 12/10/2026 |
@@ -33,7 +33,7 @@ Một video 4 nhân vật + 4 bối cảnh + 17 cảnh từng mất hơn nửa t
 
 | Flow | Hợp với | Ghi chú |
 |---|---|---|
-| **`dola-image`** | **free, nhiều lượt** — mặc định cho người mới; giữ nhân vật tốt khi đính ảnh tham chiếu, có `aspect_ratio` | ~55s/ảnh, 1600×2848 (đo 15/10/2026, 4/4 cảnh đạt). File lưu thẳng `~/Downloads/dola_*.png` (xem `output_paths`) |
+| **`dola-image`** | **free, nhiều lượt** — mặc định cho người mới; giữ nhân vật tốt khi đính ảnh tham chiếu, có `aspect_ratio` | ~55s/ảnh, 1600×2848 (đo 15/10/2026, 4/4 cảnh đạt). File lưu thẳng `<Downloads>/dola_*.png` (xem `output_paths`) |
 | `gemini-image` | ảnh đời thường, sản phẩm, có ảnh tham chiếu | nhanh, không có tham số tỉ lệ → ghi "dọc 9:16" trong prompt |
 | `chatgpt-image-v2` | chữ trong ảnh, minh hoạ, giữ nhân vật | có tham số tỉ lệ khung → đặt 9:16. Tài khoản free HẾT LƯỢT nhanh và flow không báo — chỉ thấy lượt treo (xem SKILL.md bước 5) |
 | `muse-image` | phong cách điện ảnh | chờ tối đa 5 phút |

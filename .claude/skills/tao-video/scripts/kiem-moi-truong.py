@@ -23,7 +23,8 @@ os.environ.setdefault("PYTHONUTF8", "1")  # tiến trình Python con cũng in UT
 
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-KHO = os.path.expanduser("~/Downloads/tao-video-kho")
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from kho import KHO  # noqa: E402  (kho theo thư mục Downloads thật, kể cả khi đã chuyển sang ổ khác)
 HE = platform.system()  # Darwin / Linux / Windows
 
 

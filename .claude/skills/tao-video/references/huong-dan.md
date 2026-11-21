@@ -44,7 +44,7 @@ Muốn tự động: nói "chạy tự động".
 - **Đừng đóng cửa sổ trình duyệt GaBee** khi đang tạo ảnh — lượt đang chạy sẽ hỏng.
 - Muốn quay màn hình lúc làm: bật quay trước, rồi mới bảo Claude chạy.
 - Ảnh tạo hơi chậm là bình thường (~1–1,5 phút/ảnh, chạy 2 ảnh một lúc). 17 cảnh ≈ 15 phút.
-- Bộ nhân vật được lưu ở `~/Downloads/tao-video-kho/` — video sau dùng lại, khỏi tạo mới.
+- Bộ nhân vật được lưu ở `<KHO>/` — video sau dùng lại, khỏi tạo mới.
 - Một cảnh lệch: nói số cảnh, Claude tạo lại riêng cảnh đó.
 - Sửa một câu giọng: nói số cảnh, chỉ tạo lại câu đó.
 
@@ -61,7 +61,7 @@ Muốn tự động: nói "chạy tự động".
 | Thấy | Làm |
 |---|---|
 | Không tạo được ảnh, hỏi đăng nhập | đăng nhập Muse trong cửa sổ GaBee, rồi nói "tiếp" |
-| "Chưa được phép đọc thư mục" | GaBee → Cài đặt → Thư mục được phép → thêm `~/Downloads/tao-video-kho` |
+| "Chưa được phép đọc thư mục" | GaBee → Cài đặt → Thư mục được phép → thêm `<KHO>` |
 | Ảnh quá lâu (> 3 phút) | báo Claude, nó sẽ dừng và chạy lại |
 | Giọng đọc thiếu/sai chữ | nói số cảnh, tạo lại câu đó |
 | Mọi thứ lạ | chạy lại `/tao-video setup` |

@@ -31,7 +31,7 @@ Gọi tuần tự, mỗi cảnh một lần, `filename` = id cảnh, rồi chép
 ```
 run_flow("vbee-tts", profile_id=<profile đã login Vbee>, headless=true,
          vars={"text": "<loi cảnh 01>", "voice": "Ngọc Huyền nâng cao (Beta)", "speed": "1.05", "filename": "01"})
-→ output.audio_path = ~/Downloads/vbee-tts/01.mp3  →  cp vào du-an/giong/01.mp3
+→ output.audio_path = <Downloads>/vbee-tts/01.mp3  →  cp vào du-an/giong/01.mp3
 ```
 Tốc độ 1.05–1.1 hợp lồng tiếng video ngắn. 
 

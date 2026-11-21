@@ -59,7 +59,7 @@ Cảnh cần liền mạch hành động trong cùng một căn phòng thì ghi 
 | Ghi công nhạc | Kevin MacLeod = CC BY 4.0 → ghi vào mô tả video | xem SKILL.md "Nhạc nền free" |
 
 Chọn nhạc theo cảm xúc: hoài niệm → *Dreamy Flashback*, *Almost in F* (incompetech.com). Bài đã tải lưu ở
-`~/Downloads/tao-video-kho/nhac/` dùng lại cho video sau. Chưa có file nhạc thì **tìm và hỏi người dùng cho tải**
+`<KHO>/nhac/` dùng lại cho video sau. Chưa có file nhạc thì **tìm và hỏi người dùng cho tải**
 (tải file cần họ đồng ý), đừng bỏ trống rồi đợi họ đưa.
 
 ## 5. Phụ đề (người dùng chê chữ to, 12/10/2026)

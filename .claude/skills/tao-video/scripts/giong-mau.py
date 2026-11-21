@@ -6,7 +6,7 @@
   python giong-mau.py gemini Kore               # cần GEMINI_API_KEY
   python giong-mau.py openai nova | eleven <voice_id> | soniox Linh
 
-Ra file ~/Downloads/tao-video-kho/_thu/giong-<nguon>[-<ten>].mp3 rồi tự mở để nghe.
+Ra file <KHO>/_thu/giong-<nguon>[-<ten>].mp3 rồi tự mở để nghe.
 Dùng đúng đường của giong.py nên giọng nghe được ở đây là giọng sẽ ra trong video.
 Giọng Vbee (web, không có API) thì chạy flow GaBee `vbee-tts` — xem references/nguon-giong.md.
 """
@@ -17,6 +17,8 @@ import shutil
 import subprocess
 import sys
 import tempfile
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from kho import KHO  # noqa: E402  (kho theo thư mục Downloads thật, kể cả khi đã chuyển sang ổ khác)
 # Windows: màn hình/ống dẫn mặc định cp1252 → in tiếng Việt là UnicodeEncodeError (máy Windows thật 15/10/2026).
 for _s in (sys.stdout, sys.stderr):
     if hasattr(_s, "reconfigure"):
@@ -64,7 +66,7 @@ def main():
             # Microsoft đổi khoá bắt tay định kỳ; bản edge-tts cũ bị 403 (7.2.8 hỏng, 7.3.1 chạy — 15/10/2026).
             print("→ edge-tts quá cũ: chạy  pip install -U edge-tts  (hoặc uv tool upgrade edge-tts) rồi thử lại")
         return 1
-    out_dir = os.path.expanduser("~/Downloads/tao-video-kho/_thu")
+    out_dir = os.path.join(KHO, "_thu")
     os.makedirs(out_dir, exist_ok=True)
     dst = os.path.join(out_dir, f"giong-{nguon}" + (f"-{ten}" if ten else "") + ".mp3")
     shutil.copyfile(src, dst)

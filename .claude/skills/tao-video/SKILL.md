@@ -10,6 +10,9 @@ description: 'Dựng video ngắn hoàn chỉnh (ra file video.mp4, khổ dọc 
 **Windows: gõ `python`, KHÔNG gõ `python3`** (python3 trên Windows mở Microsoft Store — "Python was not found").
 `SKILL_DIR` = thư mục chứa file này. Lệnh mẫu ghi `~/.claude/skills/tao-video/…` (Claude Code); agent khác
 (Codex, Gemini, Cursor…) thay bằng chỗ đã cài skill. Khoá API: `scripts/khoa.py` (`~/.tao-video/.env`).
+**`<Downloads>` và `<KHO>`**: chạy `python SKILL_DIR/scripts/kho.py --downloads` / `python SKILL_DIR/scripts/kho.py` một lần
+đầu phiên để biết đường dẫn thật (`<KHO>` = `<Downloads>/tao-video-kho`). Windows cho chuyển Downloads sang ổ khác
+(vd `E:\Downloads`), nên **đừng gõ `~/Downloads`**: thư mục đó có thể không còn, sẽ sinh kho rỗng mới ở ổ C.
 
 ## Lệnh con — kiểm đối số TRƯỚC, rồi mới vào quy trình
 
@@ -19,7 +22,7 @@ description: 'Dựng video ngắn hoàn chỉnh (ra file video.mp4, khổ dọc 
 |---|---|
 | `setup`, `cai dat`, `cài đặt`, `thiet lap`, `kiểm tra`, `test` | đọc `references/setup.md` rồi chạy từng bước, dừng ở bước nào chưa ✅ |
 | `huong-dan`, `huong dan`, `hướng dẫn`, `help`, `?` | đọc `references/huong-dan.md`, nói lại gọn bằng lời đơn giản |
-| trống hoặc là kịch bản/ý tưởng | vào quy trình làm video bên dưới. Nếu chưa có `~/Downloads/tao-video-kho/setup-ok.json` → nhắc 1 câu "chưa setup, nên chạy `/tao-video setup` trước", rồi vẫn làm nếu người dùng muốn |
+| trống hoặc là kịch bản/ý tưởng | vào quy trình làm video bên dưới. Nếu chưa có `<KHO>/setup-ok.json` → nhắc 1 câu "chưa setup, nên chạy `/tao-video setup` trước", rồi vẫn làm nếu người dùng muốn |
 
 Ba khâu, khâu nào cũng ra **file đặt đúng chỗ** rồi khâu sau dùng. Hình và giọng thay
 nguồn thoải mái; khâu dựng cố định.
@@ -77,7 +80,7 @@ Cần skill **motion-studio** (thư viện hiệu ứng) và môi trường `~/.
    `mo_ta_hinh` có **cầu nối** với cảnh trước, `nhan_vat`, `boi_canh`, `noi_tiep`, `chuyen`.
    Kiểu **ảnh → kể chuyện** (`"kieu":"anh"`) hay **clip → ghép** (`"kieu":"clip"`). ⛳ duyệt kịch bản.
 2. **Bộ nhân vật + bối cảnh** — xem `references/nhat-quan-va-noi-canh.md`. Có bộ hợp trong
-   kho `~/Downloads/tao-video-kho/` → hỏi dùng lại. Chưa có → tạo ảnh tham chiếu từng
+   kho `<KHO>/` → hỏi dùng lại. Chưa có → tạo ảnh tham chiếu từng
    nhân vật/bối cảnh, lưu bộ. ⛳ duyệt ảnh nhân vật + bối cảnh.
 3. **Chọn giọng — BẮT BUỘC hỏi, không tự chọn.** Menu `references/nguon-giong.md`
    (chỉ giọng free nghe tự nhiên ở đầu). Người mới: tạo mẫu 1 câu cho 2–3 giọng để nghe. ⛳

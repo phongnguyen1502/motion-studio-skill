@@ -10,7 +10,7 @@ Ví dụ đã chạy trọn: video "Không thành công thì thành công nhân"
    (người dùng chê "chưa nghe mà đã tỏ thái độ"). Cú chốt hài nên chơi vào sự sĩ diện/ngây thơ của nhân vật, không hạ thấp một nhóm
    người (nghề nghiệp, vùng miền): câu đùa "thành công nhân" bị cân nhắc rủi ro vì coi công nhân là phương án tệ nhất.
 2. **Ảnh tham chiếu nhân vật**: tạo bằng ChatGPT (`chatgpt-image-v2`, profile đã đăng nhập ChatGPT — máy gốc dùng Cloak1) hoặc **cắt từ video cũ** (nhân vật dùng lại).
-   Ảnh phải ở thư mục GaBee cho phép (`~/Downloads/...`).
+   Ảnh phải ở thư mục GaBee cho phép (`<Downloads>/...`).
 3. **Ảnh khung đầu từng cảnh** (ChatGPT, kèm ảnh tham chiếu + ảnh cảnh 1 để giữ cùng bối cảnh; nói rõ ai bên TRÁI/PHẢI, "chỉ hai nhân vật này").
    Có cảnh mở toàn cảnh (nhân vật nhỏ trong khung, thấy cả bối cảnh) trước cảnh đối thoại. **Ghép lưới 4–5 ảnh xem một lần** ⛳.
 4. **Tạo clip**: `google-flow-anh-thanh-video` (profile đã đăng nhập Google Flow — máy gốc dùng `idex`; ~100–120s/clip, 10s, mp4 720p). Dùng chung `project_url`. Chạy MỘT lượt/lần trên một profile.
