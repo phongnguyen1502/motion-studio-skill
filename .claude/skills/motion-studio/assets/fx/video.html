@@ -11,14 +11,21 @@
        node SKILL_DIR/scripts/render.mjs PROJ --entry fx/video.html --query plan=../fx-plan.json --format 9x16 --name video
      fx-plan.json keys used here (besides fx/theme/words, see overlay.html): "voice", "music" (file | "pad" | null),
        "musicGain" (0.22), "subtitles" (true), "highlight" (["quỹ dự phòng", …] accent words in the big text),
-       "bg" ({ base, blobs: [3 colours], grid } to override the theme background), "avoid" (face boxes, rarely needed). -->
+       "bg" ({ base, blobs: [3 colours], grid } to override the theme background), "avoid" (face boxes, rarely needed),
+       "scenes" ([{ img, start, end }] illustrations), "keep" (compound words of the script, array or JSON file),
+       "bigMin" (1.2 s, shortest big-text stretch), "subY" (subtitle centre, share of the height). -->
 <style>
   html, body { margin: 0; overflow: hidden; background: #000; }
   #stage { position: relative; overflow: hidden; }
   #bg { position: absolute; inset: 0; }
   .big { position: absolute; text-align: center; font-weight: 800; line-height: 1.22; letter-spacing: -.01em; text-wrap: balance; }
-  .big span { display: inline-block; margin: 0 .13em; transform-origin: 50% 70%; }
+  .big .grp { display: inline-block; white-space: nowrap; }
+  .big .grp span { display: inline-block; margin: 0 .13em; transform-origin: 50% 70%; }
   .big span.hl { color: var(--hl); }
+  .big.on-img { text-shadow: 0 .06em .35em rgba(0,0,0,.85), 0 0 .12em rgba(0,0,0,.6); }
+  #scenes { position: absolute; inset: 0; overflow: hidden; }
+  #scenes img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; will-change: transform, opacity; }
+  #scenes .shade { position: absolute; inset: 0; }
 </style>
 </head>
 <body>
@@ -60,7 +67,8 @@ const lineTokens = spokenTokens;
 const chunks = (toks, max) => chunkTokens(toks, max, [...KEEP, ...HLK.filter(x => x.includes(' '))]);
 
 let HLK = [];
-let plan, lines = [], fxs = [], big = [], subs = null, th, bg, voiceUrl, D = 1;
+let plan, lines = [], fxs = [], big = [], subs = null, th, bg, voiceUrl, D = 1, scenes = [], shade = null;
+const sceneAt = t => scenes.find(s => t >= s.start && t < s.end);
 
 window.MOTION = { width: F.w, height: F.h, fps: 30, duration: 1, ready: (async () => {
   await loadFonts();
@@ -72,6 +80,10 @@ window.MOTION = { width: F.w, height: F.h, fps: 30, duration: 1, ready: (async (
   th = typeof plan.theme === 'string' ? THEMES[plan.theme] : { ...THEMES[themeName], ...plan.theme };
   bg = { ...BG[themeName], ...(plan.bg || {}) };
   HLK = (plan.highlight || []).map(fold);
+  // "keep": extra compound words of this script (array, or a JSON file of one) that must never wrap or split
+  let keep = plan.keep || [];
+  if (typeof keep === 'string') keep = await (await fetch(new URL(keep, base))).json();
+  KEEP.push(...keep.map(fold));
   // free text (word slams, strike) is styled for footage; on a light background swap it to ink on a light outline
   const light = themeName === 'sach' || themeName === 'giay';
   const fxTheme = typeof plan.theme === 'object' ? plan.theme : { base: themeName };
@@ -90,6 +102,23 @@ window.MOTION = { width: F.w, height: F.h, fps: 30, duration: 1, ready: (async (
   items.forEach((it, n) => { if (it._dien && !Object.keys(it.params || {}).length) console.error(`[fx] #${n + 1} ${it.type}: chưa điền params (còn _dien)`); });
   fxs = items.map(it => createFx(stage, { ...it, theme: it.theme || plan.theme || 'sach', format: F, avoid: it.avoid || plan.avoid || [] }));
 
+  // illustrations: "scenes" = [{ img, start, end }], full-bleed pictures with a slow push-in, dimmed while an effect plays
+  if (plan.scenes?.length) {
+    const layer = document.createElement('div'); layer.id = 'scenes'; stage.insertBefore(layer, cv.nextSibling);
+    for (const [n, sc] of plan.scenes.entries()) {
+      const img = new Image(); img.src = new URL(sc.img, base).href; layer.appendChild(img);
+      await img.decode().catch(() => console.error('[fx] không đọc được hình ' + sc.img));
+      scenes.push({ ...sc, img, dir: n % 2 ? 1 : -1 });
+    }
+    shade = document.createElement('div'); shade.className = 'shade'; layer.appendChild(shade);
+  }
+  const busyIv = fxs.map(f => [f.start, f.end]).sort((a, b) => a[0] - b[0]);
+  const freeParts = (a, b) => {          // [a,b) minus the effect intervals
+    let out = [[a, b]];
+    for (const [s, e] of busyIv) out = out.flatMap(([x, y]) => (e <= x || s >= y) ? [[x, y]] : [[x, Math.min(y, s)], [Math.max(x, e), y]].filter(([p, q]) => q - p > 0.01));
+    return out;
+  };
+
   // spoken text
   const HL = (plan.highlight || []).map(h => fold(h).split(' '));
   const bigMax = V ? 44 : 60;
@@ -103,14 +132,29 @@ window.MOTION = { width: F.w, height: F.h, fps: 30, duration: 1, ready: (async (
     cs.forEach((c, ci) => {
       const el = document.createElement('div'); el.className = 'big';
       Object.assign(el.style, { left: (F.w - bigW) / 2 + 'px', width: bigW + 'px', fontSize: bigSize + 'px' });
-      const spans = c.map(t => { const s = document.createElement('span'); s.textContent = t.raw; if (t.hl) s.className = 'hl'; el.appendChild(s); return { s, t: t.s }; });
+      // a compound word or highlighted phrase ("cuộc sống", "ranh giới") never breaks across two lines: its words share
+      // one nowrap group, so the browser can only wrap between groups
+      const glue = [...KEEP, ...HLK.filter(x => x.includes(' '))];
+      const joined = (a, b) => a && b && glue.some(g => g === a.f + ' ' + b.f || g.includes(a.f + ' ' + b.f));
+      let group = null;
+      const spans = c.map((t, k) => {
+        if (!group || !joined(c[k - 1], t)) { group = document.createElement('span'); group.className = 'grp'; el.appendChild(group); }
+        const s = document.createElement('span'); s.textContent = t.raw; if (t.hl) s.className = 'hl'; group.appendChild(s); return { s, t: t.s };
+      });
       stage.insertBefore(el, fxs[0]?.root || null);
-      el.style.top = F.h * (V ? 0.43 : 0.45) - el.offsetHeight / 2 + 'px';
-      big.push({ el, spans, a: c[0].s - 0.12, b: cs[ci + 1] ? cs[ci + 1][0].s - 0.12 : lineEnd });
+      const a = c[0].s - 0.12, b = cs[ci + 1] ? cs[ci + 1][0].s - 0.12 : lineEnd;
+      // over a picture the text sits in the lower third; on the plain background, in the middle
+      const onImg = !!sceneAt(c[0].s);
+      if (onImg) el.classList.add('on-img');
+      el.style.top = F.h * (onImg ? (V ? 0.74 : 0.76) : (V ? 0.43 : 0.45)) - el.offsetHeight / 2 + 'px';
+      // only the stretches with no effect on screen, and only those long enough to read (no flashes)
+      const segs = freeParts(a, b).filter(([p, q]) => q - p >= (plan.bigMin ?? 1.2));
+      big.push({ el, spans, a, b, segs });
     });
   });
   // small subtitle while an effect is on screen (shared with overlay.html)
-  if (plan.subtitles !== false) subs = createSubtitles(stage, lines, { F, theme: plan.theme, style: plan.subStyle || 'pill', highlight: plan.highlight || [], glue: KEEP });
+  if (plan.subtitles !== false) subs = createSubtitles(stage, lines, { F, theme: plan.theme, style: plan.subStyle || 'pill', highlight: plan.highlight || [], glue: KEEP,
+                                                             y: plan.subY ? F.h * plan.subY : undefined });
   window.MOTION.duration = D;
 })() };
 
@@ -133,20 +177,38 @@ window.seek = t => {
   drawBg(t);
   for (const f of fxs) f.seek(t);
   const busy = fxs.some(f => t >= f.start && t <= f.end);
+  // pictures: crossfade 0.6 s, slow push-in, dim under effects (eased in and out), dark foot for the big text
+  if (scenes.length) {
+    const fxK = Math.max(0, ...fxs.map(f => Math.min(prog(t, f.start - 0.25, 0.4), 1 - prog(t, f.end - 0.1, 0.4))));
+    for (const s of scenes) {
+      const vis = Math.min(prog(t, s.start - 0.3, 0.6, E.inOutCubic), 1 - prog(t, s.end - 0.3, 0.6, E.inOutCubic));
+      s.img.style.display = vis > 0 ? '' : 'none';
+      if (vis <= 0) continue;
+      const k = (t - s.start + 0.3) / (s.end - s.start + 0.6);
+      s.img.style.opacity = vis * (1 - 0.7 * fxK);
+      s.img.style.transform = `scale(${1.04 + 0.08 * k}) translateX(${s.dir * (k - 0.5) * 2.2}%)`;
+    }
+    const foot = sceneAt(t) ? 1 - fxK : 0;
+    shade.style.background = `linear-gradient(180deg, rgba(15,9,5,0) 45%, rgba(15,9,5,${0.82 * foot}) 78%, rgba(15,9,5,${0.9 * foot}) 100%)`;
+  }
+  let shown = false;
   for (const b of big) {
-    const on = !busy && t >= b.a && t < b.b;
-    b.el.style.display = on ? '' : 'none';
-    if (!on) continue;
-    const a = prog(t, b.a, 0.3, E.outCubic), o = prog(t, b.b - 0.2, 0.2);
+    const seg = b.segs.find(([p, q]) => t >= p && t < q);
+    b.el.style.display = seg ? '' : 'none';
+    if (!seg) continue;
+    shown = true;
+    const a = prog(t, seg[0], 0.35, E.outCubic), o = prog(t, seg[1] - 0.25, 0.25);
     b.el.style.opacity = a * (1 - o); b.el.style.transform = `translateY(${(1 - a) * 30 - o * 20}px)`;
     for (const { s, t: ws } of b.spans) {
       const said = t >= ws - 0.04, k = spring(t - ws, { stiffness: 380, damping: 20 });
-      s.style.opacity = said ? 1 : 0.24;
+      s.style.opacity = said ? 1 : 0.45;
       s.style.transform = said ? `scale(${1 + 0.08 * (1 - k)})` : 'none';
     }
   }
   const loud = fxs.some(f => ['chu-dap', 'gach-thay', 'go-chu'].includes(f.type) && t >= f.start && t <= f.end);
-  subs?.seek(t, busy && !loud);
+  // the small subtitle carries the words whenever the big text is not on screen (effects, gaps too short for big text)
+  const dropped = !shown && big.some(b => t >= b.a && t < b.b);
+  subs?.seek(t, (busy || dropped) && !loud);
 };
 
 window.renderAudio = sr => renderMix(D, sr, async (ctx, out) => {

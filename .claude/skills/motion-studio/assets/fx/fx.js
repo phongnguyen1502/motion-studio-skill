@@ -159,9 +159,9 @@ const CSS = `
 .fx-col span{font-size:.62em;font-weight:700;color:var(--fx-muted);margin-top:.35em;white-space:nowrap}
 /* compare */
 .fx-cmp{display:grid;grid-template-columns:1fr 1fr;gap:.7em}
-.fx-cmp h4{margin:0 0 .45em;font-weight:900;font-size:.68em;letter-spacing:.06em;padding:.25em .6em;border-radius:.3em;display:inline-block;color:#fff;white-space:nowrap}
+.fx-cmp h4{margin:0 0 .45em;font-weight:900;font-size:.74em;letter-spacing:.06em;padding:.25em .6em;border-radius:.3em;display:inline-block;color:#fff;white-space:nowrap}
 .fx-cmp .l h4{background:var(--fx-bad)} .fx-cmp .r h4{background:var(--fx-good)}
-.fx-cmp p{margin:.3em 0;font-weight:700;font-size:.78em;display:flex;gap:.4em;line-height:1.2}
+.fx-cmp p{margin:.35em 0;font-weight:700;font-size:.95em;display:flex;gap:.4em;line-height:1.2}
 .fx-cmp p span{text-wrap:pretty} .fx-cmp .l p{color:var(--fx-muted)} .fx-cmp p s{text-decoration:none;font-weight:900;flex:none}
 .fx-cmp .l p s{color:var(--fx-bad)} .fx-cmp .r p s{color:var(--fx-good)}
 /* checklist */
@@ -229,7 +229,7 @@ const CSS = `
 .fx-stk span{display:block;background:var(--fx-card);color:var(--fx-ink);padding:.08em .35em .12em;font-weight:900;text-transform:uppercase;line-height:1.08;border-radius:.12em;box-shadow:var(--fx-shadow);white-space:nowrap}
 /* slam / strike */
 .fx-sl{display:flex;flex-direction:column;align-items:center;text-align:center}
-.fx-sl div{display:block;white-space:nowrap;transform-origin:50% 60%}
+.fx-sl div{display:block;white-space:nowrap;transform-origin:50% 60%;line-height:1.12;margin:.03em 0}
 .fx-st{position:relative;display:flex;flex-direction:column;align-items:center}
 .fx-st .old{position:relative;color:var(--fx-free);opacity:1}
 .fx-st .line{position:absolute;left:-4%;right:-4%;top:52%;height:.13em;background:var(--fx-accent2);transform-origin:0 50%;border-radius:1em}

@@ -109,6 +109,18 @@ they are said) whenever no effect is on screen, and switches to a **small subtit
 is visible. Voice + effect sounds + optional music ducked under the voice. On light themes (`sach`, `giay`) free text
 (word slams, strike) turns to ink colour automatically. Measured on a 40 s test: −12.6 LUFS, ~8 s capture per second of video.
 
+Optional plan keys (first used on a 5-minute talk; the viewer asked for "pictures, not only text"):
+- `"scenes": [{ "img": "minh-hoa/01.jpg", "start": 20.2, "end": 34.7 }, …]` — one illustration per passage, full
+  bleed, slow push-in, 0.6 s crossfades, dimmed to 30 % while an effect plays; the big text moves to the lower third
+  over a dark foot. One picture per 10–20 s; prefer pictures over text-only cards (`nhan-dan`). Pictures come from any
+  image tool; a local image model at 768x1344 in one fixed style prefix keeps them consistent.
+- `"keep": "tu-ghep.json"` (or an array) — every compound word of this script (`"trách móc"`, `"bản thân"` …).
+  `KEEP_VI` is short; without the list, Vietnamese words split across lines. Write it from the script before rendering.
+- `"bigMin": 1.2` — big text shows only in effect-free stretches at least this long; shorter ones use the small
+  subtitle, so text never flashes for a few frames.
+- `"subY": 0.9` — subtitle centre as a share of the height (also in `overlay.html`). A shoulders-up talking head
+  fills ~80 % of a 9:16 frame: put subtitles at 0.9, on the shirt, not over the mouth.
+
 ## Gallery and checks
 
 ```bash

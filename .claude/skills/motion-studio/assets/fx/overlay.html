@@ -55,6 +55,8 @@ window.MOTION = { width: F.w, height: F.h, fps: 30, duration: 1, ready: (async (
   plan = await (await fetch(url)).json();
   const base = new URL(url, location.href);
   const words = plan.words ? await (await fetch(new URL(plan.words, base))).json() : [];
+  let keep = plan.keep || [];   // extra compound words of this script (array or JSON file) that never wrap
+  if (typeof keep === 'string') keep = await (await fetch(new URL(keep, base))).json();
   const { items, warnings } = resolvePlan(plan.fx || [], words);
   warnings.forEach(w => console.error('[fx] ' + w));
   items.forEach((it, n) => { if (it._dien) console.error(`[fx] #${n + 1} ${it.type}: chưa điền xong params (còn _dien)`); });
@@ -62,7 +64,7 @@ window.MOTION = { width: F.w, height: F.h, fps: 30, duration: 1, ready: (async (
   for (const it of items) fxs.push(createFx(stage, { ...it, theme: it.theme || plan.theme || 'kinh', format: F, avoid: it.avoid || plan.avoid || [] }));
   if (plan.subtitles && Array.isArray(words) && words[0]?.words)
     subs = createSubtitles(stage, words, { F, theme: plan.theme || 'kinh', style: plan.subStyle || 'tiktok', highlight: plan.highlight || [],
-                                           glue: (ts?.KEEP_VI || []).map(fold) });
+                                           y: plan.subY ? F.h * plan.subY : undefined, glue: [...(ts?.KEEP_VI || []), ...keep].map(fold) });
   window.MOTION.duration = plan.duration || Math.max(1, ...items.map(i => i.end), ...(Array.isArray(words) ? words.map(l => l.end || 0) : [])) + 0.5;
 })() };
 
