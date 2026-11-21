@@ -1,0 +1,284 @@
+{
+ "che_do": "tu-dong",
+ "kieu": "anh",
+ "khung": [
+  1920,
+  1080
+ ],
+ "bo": "con-so-tren-tuong-v1",
+ "giong": {
+  "nguon": "soniox",
+  "ten": "Linh"
+ },
+ "the_dau": {
+  "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/02.png",
+  "dong": [
+   "NHỮNG CON SỐ",
+   "TRÊN TƯỜNG"
+  ],
+  "phu": "Chương trình đầu tiên tôi viết cho mẹ",
+  "giay": 5.5
+ },
+ "the_ket": {
+  "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/17.png",
+  "dong": [
+   "Từ một người,",
+   "rồi đến nhiều người."
+  ],
+  "phu": "Nhạc: Dreamy Flashback — Kevin MacLeod (incompetech.com), CC BY 4.0",
+  "giay": 7
+ },
+ "nhac": [
+  "~/Documents/deepseek-harness/default-workspace/video-nuoc-mo/music/dreamy-flashback.mp3",
+  "~/Documents/deepseek-harness/default-workspace/video-nuoc-mo/music/bed.mp3"
+ ],
+ "nhac_lufs": -31,
+ "chuyen_mac_dinh": "hoa",
+ "dem": 0.5,
+ "vao": 0.8,
+ "canh": [
+  {
+   "id": "01",
+   "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/01.png",
+   "loai_khung": "TOÀN CẢNH rộng mở đầu, nhiều chiều sâu, nhân vật nhỏ trong khung",
+   "anh_sang": "hoàng hôn xanh tím, ô cửa sổ sáng vàng ấm giữa rặng tre tối",
+   "nhan_vat": [
+    "Tôi bé",
+    "Mẹ"
+   ],
+   "mo_ta_hinh": "Ngôi nhà mái ngói nhỏ giữa vườn tre lúc chạng vạng, nhìn từ ngoài sân vào qua ô cửa sổ sáng đèn: bên trong cậu bé ngồi trước máy tính cũ, mẹ đứng phía sau nhìn",
+   "chuyen_dong": "vao",
+   "loi": "Chương trình đầu tiên trong đời tôi, tôi viết cho đúng một người: mẹ tôi. Nó đơn giản lắm. Chỉ cần gõ tên một người, số điện thoại của người đó sẽ hiện ra.",
+   "loi_doc": "[warm] [slowly] Chương trình đầu tiên trong đời tôi, tôi viết cho đúng một người: mẹ tôi. Nó đơn giản lắm. Chỉ cần gõ tên một người, số điện thoại của người đó sẽ hiện ra."
+  },
+  {
+   "id": "02",
+   "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/02.png",
+   "loai_khung": "TOÀN CẢNH gian nhà, không có người",
+   "anh_sang": "nắng chiều xiên qua cửa, vệt bụi lấp lánh trong luồng sáng",
+   "nhan_vat": [],
+   "mo_ta_hinh": "Gian ngoài vắng lặng, chiếc điện thoại bàn màu kem trên bàn gỗ thấp, bức tường vôi phía sau chi chít tên và số viết tay",
+   "chuyen_dong": "phai",
+   "loi": "Hồi đó nhà chưa có internet. Điện thoại bàn đặt ở gian ngoài, cạnh bức tường vôi. Mẹ ghi số điện thoại của những người quen lên đó, để khi cần thì gọi.",
+   "loi_doc": "[warm] Hồi đó nhà chưa có internet. Điện thoại bàn đặt ở gian ngoài, cạnh bức tường vôi. Mẹ ghi số điện thoại của những người quen lên đó, để khi cần thì gọi.",
+   "boi_canh": "gian-ngoai",
+   "chuyen": "den"
+  },
+  {
+   "id": "03",
+   "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/03.png",
+   "loai_khung": "CẬN CẢNH chi tiết bức tường, trường ảnh nông",
+   "anh_sang": "nắng chiều lướt xiên trên mặt vôi, bóng đổ nhỏ ở từng vết sần",
+   "nhan_vat": [],
+   "mo_ta_hinh": "Cận cảnh mặt tường vôi loang lổ: những dòng tên và số viết tay bằng bút bi xanh, nét chữ mỗi người một kiểu, chen chúc lệch lên lệch xuống chẳng thẳng hàng (chỉ là nét viết mờ, không đọc được chữ)",
+   "chuyen_dong": "ra",
+   "loi": "Chú Hai, thím Ba, anh Diền, cô Tư tạp hoá, bác Sáu sửa xe. Tên và số nằm lẫn nhau. Chữ người nọ người kia, số lệch lên lệch xuống, chẳng thẳng hàng.",
+   "loi_doc": "[warm] Chú Hai, thím Ba, anh Diền, cô Tư tạp hoá, bác Sáu sửa xe. Tên và số nằm lẫn nhau. Chữ người nọ người kia, số lệch lên lệch xuống, chẳng thẳng hàng.",
+   "boi_canh": "gian-ngoai"
+  },
+  {
+   "id": "04",
+   "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/04.png",
+   "loai_khung": "trung cảnh từ phía sau lưng",
+   "anh_sang": "nắng chiều ấm qua cửa, bụi lấp lánh, mặt tường sáng",
+   "nhan_vat": [
+    "Mẹ"
+   ],
+   "mo_ta_hinh": "Mẹ đứng quay lưng trước bức tường chi chít số, một tay cầm ống nghe điện thoại, ngón tay kia dò từng dòng trên tường, dáng kiên nhẫn hơi mệt",
+   "chuyen_dong": "trai",
+   "loi": "Mà thật ra, người ta nhớ tên nhau chứ mấy ai nhớ số điện thoại. Mẹ tôi cũng vậy. Mỗi lần gọi ai, mẹ lại đứng nhìn lên tường, dò một lúc lâu mới tìm ra.",
+   "loi_doc": "[warm] Mà thật ra, người ta nhớ tên nhau chứ mấy ai nhớ số điện thoại. Mẹ tôi cũng vậy. Mỗi lần gọi ai, mẹ lại đứng nhìn lên tường, dò một lúc lâu mới tìm ra.",
+   "boi_canh": "gian-ngoai"
+  },
+  {
+   "id": "05",
+   "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/05.png",
+   "loai_khung": "QUA VAI: cậu bé quay lưng ở tiền cảnh, mẹ ở hậu cảnh",
+   "anh_sang": "bóng chiều ấm, vùng tối ở tiền cảnh, mẹ đứng trong vệt nắng",
+   "nhan_vat": [
+    "Tôi bé",
+    "Mẹ"
+   ],
+   "mo_ta_hinh": "Qua vai cậu bé đứng ở khung cửa nhìn vào, phía xa mẹ vẫn đang đứng dò số trên tường; cậu bé nghiêng đầu suy nghĩ",
+   "chuyen_dong": "vao",
+   "loi": "Tôi mới nghĩ, tại sao phải dò như vậy nhỉ? Nếu chỉ cần nhớ tên là tìm được số thì mẹ đâu phải mất công nữa. Thế là tôi bắt đầu tìm cách làm.",
+   "loi_doc": "[curious] Tôi mới nghĩ, tại sao phải dò như vậy nhỉ? Nếu chỉ cần nhớ tên là tìm được số thì mẹ đâu phải mất công nữa. Thế là tôi bắt đầu tìm cách làm.",
+   "boi_canh": "gian-ngoai",
+   "noi_tiep": true
+  },
+  {
+   "id": "06",
+   "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/06.png",
+   "loai_khung": "CẬN CẢNH bàn tay trên bàn phím và màn hình, trường ảnh nông",
+   "anh_sang": "đêm, ánh xanh lạnh của màn hình CRT pha ánh vàng đèn bàn",
+   "nhan_vat": [
+    "Tôi bé"
+   ],
+   "mo_ta_hinh": "Cận cảnh đôi bàn tay nhỏ của cậu bé đặt trên bàn phím cũ ngả vàng, màn hình CRT nền đen hiện những dòng code chữ trắng mờ không đọc được, bên cạnh là tờ giấy nháp đầy vết tẩy xoá",
+   "chuyen_dong": "phai",
+   "loi": "Không có ai dạy. Tôi tự mày mò, thử hết cách này đến cách khác. Trên màn hình máy tính, những dòng code đầu tiên cứ hiện ra. Nền đen, chữ trắng.",
+   "loi_doc": "[serious] Không có ai dạy. Tôi tự mày mò, thử hết cách này đến cách khác. Trên màn hình máy tính, những dòng code đầu tiên cứ hiện ra. Nền đen, chữ trắng.",
+   "boi_canh": "goc-may-tinh",
+   "chuyen": "den"
+  },
+  {
+   "id": "07",
+   "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/07.png",
+   "loai_khung": "CẬN MẶT, ánh sáng hắt lên một bên mặt",
+   "anh_sang": "ánh xanh trắng của màn hình hắt lên mặt, nền phòng tối",
+   "nhan_vat": [
+    "Tôi bé"
+   ],
+   "mo_ta_hinh": "Cận mặt cậu bé, mắt sáng lên, miệng hé cười không tin nổi, phản chiếu màn hình trong mắt; biểu cảm vui tiết chế, không há miệng quá lố",
+   "chuyen_dong": "vao",
+   "loi": "Rồi cũng đến lúc tôi gõ một cái tên vào, số điện thoại hiện ra ngay bên dưới. Tôi thử thêm vài tên khác. Đúng hết. Tôi chạy ra gọi mẹ vào xem.",
+   "loi_doc": "[excited] Rồi cũng đến lúc tôi gõ một cái tên vào, số điện thoại hiện ra ngay bên dưới. Tôi thử thêm vài tên khác. Đúng hết. Tôi chạy ra gọi mẹ vào xem.",
+   "boi_canh": "goc-may-tinh"
+  },
+  {
+   "id": "08",
+   "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/08.png",
+   "loai_khung": "trung cảnh ngang hông, hai nhân vật",
+   "anh_sang": "chiều muộn, ánh vàng ấm hắt từ cửa sổ, màn hình sáng nhẹ",
+   "nhan_vat": [
+    "Tôi bé",
+    "Mẹ"
+   ],
+   "mo_ta_hinh": "Cậu bé ngồi trước máy tính quay sang nhìn mẹ, mẹ đứng cạnh hơi cúi người nhìn vào màn hình rồi mỉm cười dịu dàng",
+   "chuyen_dong": "trai",
+   "loi": "Tôi hỏi mẹ muốn tìm ai. Mẹ nói tên bà ngoại. Tôi gõ vào máy. Số điện thoại hiện ra. Mẹ ngồi nhìn rồi cười. Chỉ vậy thôi, nhưng tôi vui lắm.",
+   "loi_doc": "[happy] [warm] Tôi hỏi mẹ muốn tìm ai. Mẹ nói tên bà ngoại. Tôi gõ vào máy. Số điện thoại hiện ra. Mẹ ngồi nhìn rồi cười. Chỉ vậy thôi, nhưng tôi vui lắm.",
+   "boi_canh": "goc-may-tinh"
+  },
+  {
+   "id": "09",
+   "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/09.png",
+   "loai_khung": "CẬN CẢNH chi tiết đôi bàn tay, trường ảnh nông",
+   "anh_sang": "ánh đèn bàn vàng ấm, nền mờ",
+   "nhan_vat": [
+    "Tôi bé",
+    "Mẹ"
+   ],
+   "mo_ta_hinh": "Cận cảnh: bàn tay nhỏ của cậu bé đang gõ phím, bàn tay chai sạn của mẹ đặt nhẹ lên vai con",
+   "chuyen_dong": "ra",
+   "loi": "Mẹ không biết gõ máy tính, nên mỗi lần thử, tôi vẫn là người gõ. Nhưng từ chuyện nhỏ đó, tôi thích cái cảm giác tự tay làm ra một thứ mình nghĩ tới.",
+   "loi_doc": "[warm] [softly] Mẹ không biết gõ máy tính, nên mỗi lần thử, tôi vẫn là người gõ. Nhưng từ chuyện nhỏ đó, tôi thích cái cảm giác tự tay làm ra một thứ mình nghĩ tới.",
+   "boi_canh": "goc-may-tinh"
+  },
+  {
+   "id": "10",
+   "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/10.png",
+   "loai_khung": "trung cảnh nghiêng",
+   "anh_sang": "đêm khuya, đèn bàn vàng, ánh trăng xanh ngoài cửa sổ",
+   "nhan_vat": [
+    "Tôi thanh niên"
+   ],
+   "mo_ta_hinh": "Chàng thanh niên ngồi học bên bàn chất đầy sách ôn thi và giấy nháp, cạnh chiếc máy tính cũ, ánh mắt quyết tâm, chiếc đồng hồ báo thức chỉ khuya",
+   "chuyen_dong": "phai",
+   "loi": "Từ khi còn đi học, tôi đã mong sau này được làm những ứng dụng của riêng mình. Tôi cứ học, cứ mày mò, rồi đến ngày phải đi thi đại học.",
+   "loi_doc": "[sincerely] Từ khi còn đi học, tôi đã mong sau này được làm những ứng dụng của riêng mình. Tôi cứ học, cứ mày mò, rồi đến ngày phải đi thi đại học.",
+   "boi_canh": "goc-may-tinh",
+   "chuyen": "den"
+  },
+  {
+   "id": "11",
+   "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/11.png",
+   "loai_khung": "TOÀN CẢNH rộng, nhân vật nhỏ trong khung",
+   "anh_sang": "sáng sớm, nắng xuyên qua tán cây sao thành từng tia xiên",
+   "nhan_vat": [
+    "Tôi thanh niên"
+   ],
+   "mo_ta_hinh": "Chàng thanh niên đeo ba lô dừng lại bên ngoài cổng sắt, nhỏ xíu trong khung, nhìn vào ngôi trường",
+   "chuyen_dong": "trai",
+   "loi": "Hôm ấy, tôi đi ngang một ngôi trường. Cổng sắt, mấy bậc thềm, cái hiên cao. Một bên là hàng cây, bên kia là tòa nhà. Tôi dừng lại nhìn vào.",
+   "loi_doc": "[warm] Hôm ấy, tôi đi ngang một ngôi trường. Cổng sắt, mấy bậc thềm, cái hiên cao. Một bên là hàng cây, bên kia là tòa nhà. Tôi dừng lại nhìn vào.",
+   "boi_canh": "cong-truong",
+   "chuyen": "den"
+  },
+  {
+   "id": "12",
+   "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/12.png",
+   "loai_khung": "QUA VAI: chàng thanh niên quay lưng ở tiền cảnh",
+   "anh_sang": "nắng sớm loang trên hiên, bóng lá lay động",
+   "nhan_vat": [
+    "Tôi thanh niên"
+   ],
+   "mo_ta_hinh": "Qua vai chàng thanh niên đứng dưới sân nhìn lên cái hiên cao, nơi các anh chị sinh viên đang ngồi đọc sách, ghi chép",
+   "chuyen_dong": "vao",
+   "loi": "Trên hiên, các anh chị sinh viên đang ngồi học. Tôi đứng ngoài nhìn một lúc rồi đi tiếp, chẳng để ý đó chính là ngôi trường mình đã ghi nguyện vọng.",
+   "loi_doc": "[warm] [hesitantly] Trên hiên, các anh chị sinh viên đang ngồi học. Tôi đứng ngoài nhìn một lúc rồi đi tiếp, chẳng để ý đó chính là ngôi trường mình đã ghi nguyện vọng.",
+   "boi_canh": "cong-truong"
+  },
+  {
+   "id": "13",
+   "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/13.png",
+   "loai_khung": "GÓC THẤP từ dưới bậc thềm nhìn lên",
+   "anh_sang": "nắng vàng rực ngược sáng sau lưng, viền sáng quanh người",
+   "nhan_vat": [
+    "Tôi thanh niên"
+   ],
+   "mo_ta_hinh": "Chàng thanh niên bước lên bậc thềm cuối của cái hiên cao trong ngày nhập học, ba lô trên vai, mỉm cười nhẹ",
+   "chuyen_dong": "len",
+   "loi": "Rồi tôi đậu. Ngày nhập học, tôi bước lên đúng cái hiên từng đứng dưới nhìn lên. Những năm sau đó, chuyện học và chuyện viết phần mềm cứ thế đi cùng nhau.",
+   "loi_doc": "[delighted] Rồi tôi đậu. Ngày nhập học, tôi bước lên đúng cái hiên từng đứng dưới nhìn lên. Những năm sau đó, chuyện học và chuyện viết phần mềm cứ thế đi cùng nhau.",
+   "boi_canh": "cong-truong"
+  },
+  {
+   "id": "14",
+   "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/14.png",
+   "loai_khung": "trung cảnh",
+   "anh_sang": "đèn trần trắng lạnh trong văn phòng, chiều muộn xám ngoài vách kính",
+   "nhan_vat": [
+    "Tôi lớn"
+   ],
+   "mo_ta_hinh": "Người đàn ông ngồi ở bàn làm việc giữa dãy bàn giống hệt nhau, tay rời bàn phím, nhìn ra vách kính trầm ngâm",
+   "chuyen_dong": "phai",
+   "loi": "Ra trường, tôi làm ở vài công ty. Tôi học thêm được nhiều thứ. Nhưng càng làm, tôi càng muốn có thời gian tự chọn những việc mình sẽ dành công sức cho nó.",
+   "loi_doc": "[serious] Ra trường, tôi làm ở vài công ty. Tôi học thêm được nhiều thứ. Nhưng càng làm, tôi càng muốn có thời gian tự chọn những việc mình sẽ dành công sức cho nó.",
+   "boi_canh": "van-phong",
+   "chuyen": "den"
+  },
+  {
+   "id": "15",
+   "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/15.png",
+   "loai_khung": "TOÀN CẢNH căn phòng, nhiều chiều sâu",
+   "anh_sang": "nắng sớm vàng ấm tràn qua cửa sổ lớn",
+   "nhan_vat": [
+    "Tôi lớn"
+   ],
+   "mo_ta_hinh": "Người đàn ông cùng ba người anh em làm việc quanh những chiếc bàn gỗ ghép, một người đứng vẽ lên bảng trắng, cốc cà phê bốc khói, không khí hăng say",
+   "chuyen_dong": "ra",
+   "loi": "Vậy là tôi ra làm tự do. Ban đầu một mình, rồi làm cùng anh em. Nhiều phần mềm ra đời. Có cái được dùng, có cái không. Nhưng tôi vẫn tiếp tục làm.",
+   "loi_doc": "[warm] Vậy là tôi ra làm tự do. Ban đầu một mình, rồi làm cùng anh em. Nhiều phần mềm ra đời. Có cái được dùng, có cái không. Nhưng tôi vẫn tiếp tục làm.",
+   "boi_canh": "phong-tu-do"
+  },
+  {
+   "id": "16",
+   "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/16.png",
+   "loai_khung": "QUA VAI: người trẻ ở tiền cảnh quay lưng",
+   "anh_sang": "đèn bàn vàng ấm, chiều muộn, giống hệt ánh đèn của căn phòng thời thơ ấu",
+   "nhan_vat": [
+    "Tôi lớn"
+   ],
+   "mo_ta_hinh": "Qua vai một người trẻ ngồi trước laptop, người đàn ông ngồi bên cạnh kiên nhẫn chỉ tay vào màn hình giải thích",
+   "chuyen_dong": "trai",
+   "loi": "Rồi có người hỏi tôi làm thế nào. Tôi ngồi chỉ lại, như cách ngày xưa đã ngồi gõ từng cái tên cho mẹ. Người hỏi nhiều dần, người làm được cũng nhiều hơn.",
+   "loi_doc": "[warm] [happy] Rồi có người hỏi tôi làm thế nào. Tôi ngồi chỉ lại, như cách ngày xưa đã ngồi gõ từng cái tên cho mẹ. Người hỏi nhiều dần, người làm được cũng nhiều hơn.",
+   "boi_canh": "phong-tu-do"
+  },
+  {
+   "id": "17",
+   "hinh": "~/Downloads/tao-video-kho/con-so-tren-tuong-v1/canh/17.png",
+   "loai_khung": "TOÀN CẢNH rộng kết phim, nhân vật nhỏ, lặng",
+   "anh_sang": "hoàng hôn vàng hổ phách, bụi lấp lánh trong luồng sáng xiên",
+   "nhan_vat": [
+    "Tôi lớn"
+   ],
+   "mo_ta_hinh": "Gian ngoài nhà quê ngày xưa: bức tường nay đã sơn lại trắng phẳng tinh, KHÔNG còn chữ số nào, KHÔNG còn điện thoại bàn; người đàn ông đứng nhỏ giữa khung, quay lưng, một tay chạm nhẹ lên vách tường",
+   "chuyen_dong": "vao",
+   "loi": "Bức tường ngày xưa giờ đã sơn lại. Chương trình đầu tiên ấy chưa từng kiếm được đồng nào, nhưng nó là những dòng code đầu tiên của cả cuộc đời tôi. Từ một người, rồi đến nhiều người. Tôi vẫn thích công việc ấy. Ai cũng có một điều mình thích làm. Khó nhất là dám đi theo nó đủ lâu.",
+   "loi_doc": "[calm] [sincerely] [slowly] Bức tường ngày xưa giờ đã sơn lại. Chương trình đầu tiên ấy chưa từng kiếm được đồng nào, nhưng nó là những dòng code đầu tiên của cả cuộc đời tôi. Từ một người, rồi đến nhiều người. Tôi vẫn thích công việc ấy. Ai cũng có một điều mình thích làm. Khó nhất là dám đi theo nó đủ lâu.",
+   "chuyen": "den"
+  }
+ ]
+}

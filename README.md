@@ -1,6 +1,11 @@
-# Motion Studio — skill làm video đồ hoạ chuyển động cho Claude Code
+# Motion Studio + tao-video — skill làm video cho Claude Code
 
-Bản skill **motion-studio** đã được chỉnh cho công việc của anh. So với bản gốc, bản này có thêm:
+Repo có hai skill, cài cùng lúc bằng `install.ps1`:
+
+- **motion-studio**: video đồ hoạ chuyển động dựng bằng code, thư viện 20 hiệu ứng, video tự dựng từ giọng đọc.
+- **tao-video**: video ngắn từ ảnh/clip AI có kịch bản, và kiểu **video quay sẵn** (người nói trước máy → cắt vấp, cắt lặng, thêm hiệu ứng + phụ đề). tao-video dùng thư viện hiệu ứng của motion-studio.
+
+So với bản gốc, **motion-studio** có thêm:
 
 - **Ngắt dòng theo nghĩa tiếng Việt và canh đều chữ (Justify)** có kiểm soát khoảng trắng (`typeset.js`, `references/typography.md`).
 - **Font Be Vietnam Pro** có đủ dấu tiếng Việt, chạy offline.
@@ -27,8 +32,8 @@ Skill sẽ dùng được ở mọi thư mục, trong app Claude desktop lẫn C
    ```powershell
    powershell -ExecutionPolicy Bypass -File install.ps1 -WithASR
    ```
-   Lệnh này chép skill vào `%USERPROFILE%\.claude\skills\motion-studio`, cài Playwright và Chromium (khoảng 150 MB), rồi tạo môi trường nhận dạng giọng. Bỏ `-WithASR` nếu không cần voiceover. Nếu máy đã có bản cũ, bản cũ được cất vào `%USERPROFILE%\.claude\skill-backups\`.
-3. Khởi động lại Claude Code, rồi gõ `/motion-studio` hoặc yêu cầu "làm video motion…".
+   Lệnh này chép hai skill vào `%USERPROFILE%\.claude\skills\motion-studio` và `…	ao-video`, cài Playwright và Chromium (khoảng 150 MB), rồi tạo môi trường nhận dạng giọng + dò mặt (faster-whisper, opencv). Bỏ `-WithASR` nếu không làm video có voiceover hay video quay sẵn. Nếu máy đã có bản cũ, bản cũ được cất vào `%USERPROFILE%\.claude\skill-backups\`.
+3. Khởi động lại Claude Code, rồi gõ `/motion-studio` hoặc yêu cầu "làm video motion…". Với tao-video, gõ `/tao-video setup` một lần để kiểm máy (giọng đọc, công cụ tạo ảnh).
 
 Lần đầu dùng voiceover, mô hình Whisper "medium" sẽ tự tải về (khoảng 1,5 GB). Máy công ty cần mở được kết nối tới huggingface.co.
 
@@ -58,6 +63,16 @@ Khi skill có thay đổi: kéo bản mới về (`git pull`) rồi chạy lại
 - Xuất lớp hiệu ứng nền trong suốt (WebM) để chồng lên video quay: xem `references/fx-library.md`
 - Trình dựng có thêm `--alpha` (WebM trong suốt) và `--query` (tham số cho trang).
 
+## Video quay sẵn (tao-video)
+
+Đưa một video người nói (tự quay, MC, clip AI có thoại) rồi nhờ Claude "dựng video quay này":
+
+1. `dung-video-quay.py chuan-bi <video> <du-an>`: nghe lời trên máy, cắt từ đệm/lời lặp/khoảng lặng, đưa về 9:16 canh theo mặt, gợi ý hiệu ứng. Có thẻ kết thì thêm `--den <giây> --giu-sau`; có kịch bản thì `--loi loi.txt` để phụ đề đúng chính tả.
+2. Claude điền nội dung hiệu ứng theo đúng lời nói (`fx-plan.json`).
+3. `dung-video-quay.py anh <du-an> 3,8,15`: ảnh kiểm tra; `dung-video-quay.py dung <du-an>`: ra `video.mp4` (hiệu ứng, phụ đề kiểu TikTok, -14 LUFS).
+
+Chi tiết: mục "Kiểu video quay sẵn" trong `.claude/skills/tao-video/SKILL.md`.
+
 ## Nguồn
 
-Dựa trên skill Motion Studio của flaviorg (bản đã rà soát ở commit 7e9e70f), có chỉnh sửa. Font Be Vietnam Pro dùng giấy phép SIL OFL 1.1. Repo này để dùng nội bộ, nên giữ ở chế độ riêng tư (private).
+motion-studio dựa trên skill Motion Studio của flaviorg (bản đã rà soát ở commit 7e9e70f), có chỉnh sửa. Font Be Vietnam Pro dùng giấy phép SIL OFL 1.1. Repo này để dùng nội bộ, nên giữ ở chế độ riêng tư (private).

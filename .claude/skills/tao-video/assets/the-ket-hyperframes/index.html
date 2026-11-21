@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    @font-face { font-family: "VNBold"; src: local("Tahoma Bold"), local("Tahoma-Bold"); font-weight: 400 900; }
+    html, body { margin: 0; background: #fff6ea; }
+    #root { position: relative; width: 720px; height: 1280px; overflow: hidden;
+      background: radial-gradient(120% 70% at 50% 28%, #fffaf2 0%, #ffe9cf 55%, #ffd7a8 100%);
+      font-family: "VNBold", Arial, sans-serif; }
+    .bokeh { position: absolute; border-radius: 50%; background: radial-gradient(circle, rgba(255,170,60,.45), rgba(255,170,60,0) 70%); }
+    .logo-wrap { position: absolute; left: 50%; top: 250px; width: 440px; height: 440px; margin-left: -220px; }
+    .ring { position: absolute; inset: -26px; border-radius: 50%; border: 5px dashed rgba(235,120,30,.75); }
+    .glow { position: absolute; inset: -60px; border-radius: 50%; background: radial-gradient(circle, rgba(255,160,50,.55), rgba(255,160,50,0) 68%); }
+    .logo { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; background: #fff;
+      box-shadow: 0 24px 60px rgba(180,90,20,.35), 0 0 0 8px #fff; }
+    .logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .l1 { position: absolute; left: 0; right: 0; top: 770px; text-align: center; font-weight: 800; font-size: 46px; color: #3a2a1e; letter-spacing: .2px; }
+    .l2 { position: absolute; left: 0; right: 0; top: 842px; text-align: center; font-weight: 700; font-size: 38px; color: #b85f12; }
+    .l2 b { color: #3a2a1e; }
+    .pill { position: absolute; left: 50%; top: 960px; transform: translateX(-50%); padding: 18px 54px; border-radius: 999px;
+      background: #e07a1f; color: #fff; font-weight: 800; font-size: 44px; letter-spacing: .5px;
+      box-shadow: 0 14px 34px rgba(224,122,31,.45); }
+    .spark { position: absolute; width: 26px; height: 26px; background: #ff9b2f; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); }
+  </style>
+</head>
+<body>
+  <main id="root" data-composition-id="the-ket" data-start="0" data-duration="5" data-width="720" data-height="1280">
+    <div class="bokeh" style="left:-120px;top:120px;width:360px;height:360px"></div>
+    <div class="bokeh" style="right:-140px;top:640px;width:420px;height:420px"></div>
+    <div class="bokeh" style="left:80px;top:1040px;width:300px;height:300px"></div>
+
+    <div id="logoWrap" class="logo-wrap">
+      <div id="glow" class="glow"></div>
+      <div id="ring" class="ring"></div>
+      <div id="logo" class="logo"><img src="assets/logo.png" alt="MeCode" /></div>
+    </div>
+    <div class="spark" id="s1" style="left:96px;top:300px"></div>
+    <div class="spark" id="s2" style="right:104px;top:240px;width:34px;height:34px"></div>
+    <div class="spark" id="s3" style="right:150px;top:690px;width:20px;height:20px"></div>
+    <div class="spark" id="s4" style="left:130px;top:650px;width:22px;height:22px"></div>
+
+    <div id="l1" class="l1">__DONG1__</div>
+    <div id="l2" class="l2">__DONG2__</div>
+    <div id="pill" class="pill">__URL__</div>
+  </main>
+  <script>
+    window.__timelines = window.__timelines || {};
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#root", { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power1.out" }, 0);
+    tl.fromTo("#logoWrap", { scale: 0.35, opacity: 0, rotate: -14 }, { scale: 1, opacity: 1, rotate: 0, duration: 0.9, ease: "back.out(1.9)" }, 0.15);
+    tl.fromTo("#glow", { opacity: 0 }, { opacity: 1, duration: 0.8, ease: "power2.out" }, 0.5);
+    tl.to("#ring", { rotate: 360, duration: 5, ease: "none" }, 0);
+    tl.to("#logoWrap", { y: -10, duration: 1.2, ease: "sine.inOut", yoyo: true, repeat: 3 }, 1.0);
+    tl.fromTo("#l1", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "power3.out" }, 1.0);
+    tl.fromTo("#l2", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "power3.out" }, 1.35);
+    tl.fromTo("#pill", { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.55, ease: "back.out(2.2)" }, 1.8);
+    tl.to("#pill", { scale: 1.06, duration: 0.55, ease: "sine.inOut", yoyo: true, repeat: 3 }, 2.5);
+    ["#s1", "#s2", "#s3", "#s4"].forEach((s, i) => {
+      tl.fromTo(s, { scale: 0, opacity: 0, rotate: 0 }, { scale: 1, opacity: 1, rotate: 90, duration: 0.5, ease: "back.out(2)" }, 0.9 + i * 0.25);
+      tl.to(s, { scale: 0.4, opacity: 0.5, duration: 0.7, ease: "sine.inOut", yoyo: true, repeat: 3 }, 1.5 + i * 0.25);
+    });
+    window.__timelines["the-ket"] = tl;
+  </script>
+</body>
+</html>

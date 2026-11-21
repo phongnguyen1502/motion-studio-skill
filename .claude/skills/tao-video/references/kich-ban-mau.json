@@ -1,0 +1,30 @@
+{
+  "che_do": "tung-buoc",
+  "kieu": "anh",
+  "khung": [1080, 1920],
+  "bo": "be-na-va-anh-hai",
+  "tieu_de": "Món quà bất ngờ",
+  "tieu_de_giay": 3,
+  "giong": {"nguon": "gemini", "ten": "Kore", "phong_cach": "Đọc tự nhiên, ấm áp như người Việt kể chuyện"},
+  "nhac": "nhac.mp3",
+  "nhac_lufs": -30,
+  "sfx_mo_dau": "impact-bass-1",
+  "sfx_chuyen_canh": "whoosh-short",
+  "chuyen_mac_dinh": "hoa",
+  "phu_de": {"so_chu": 4, "co": 84, "cao": 0.27},
+  "canh": [
+    {"id": "01", "hinh": "canh/01.png", "nhan_vat": ["Na"], "boi_canh": "phong-khach",
+     "mo_ta_hinh": "Na ngồi trên sofa, nhìn ra cửa sổ, tay ôm gối, vẻ buồn",
+     "loi": "Chiều nay, Na ngồi một mình, cứ chốc chốc lại nhìn ra cửa."},
+    {"id": "02", "hinh": "canh/02.png", "nhan_vat": ["Na"], "boi_canh": "phong-khach", "noi_tiep": true,
+     "mo_ta_hinh": "Na quay đầu về phía cửa, mắt sáng lên vì nghe tiếng mở cửa",
+     "loi": "Bỗng có tiếng cửa mở."},
+    {"id": "03", "hinh": "canh/03.png", "nhan_vat": ["Na", "Anh Hai"], "boi_canh": "phong-khach", "noi_tiep": true,
+     "chuyen": "cat",
+     "mo_ta_hinh": "Anh Hai bước vào từ cửa bên trái, giấu hộp quà đỏ sau lưng, Na chạy lại",
+     "loi": "Anh Hai về, tay giấu sau lưng một hộp quà màu đỏ."},
+    {"id": "04", "hinh": "canh/04.png", "nhan_vat": ["Na"], "boi_canh": "san-vuon", "chuyen": "trang",
+     "mo_ta_hinh": "Na ngoài sân, cầm con diều đỏ vừa mở từ hộp quà, cười rạng rỡ",
+     "loi": "Và thế là cả buổi chiều, Na được thả con diều đầu tiên của mình."}
+  ]
+}

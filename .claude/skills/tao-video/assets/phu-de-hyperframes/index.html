@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    @font-face { font-family: "VNBold"; src: local("Tahoma Bold"), local("Tahoma-Bold"); font-weight: 400 900; }
+    html, body { margin: 0; background: transparent; }
+    #root { position: relative; width: __W__px; height: __H__px; overflow: hidden; background: transparent; font-family: "VNBold", Arial, sans-serif; }
+    .logo { position: absolute; left: 22px; top: 22px; width: 92px; height: 92px; border-radius: 50%; overflow: hidden; background: #fff;
+      box-shadow: 0 6px 18px rgba(0,0,0,.35), 0 0 0 3px #fff; opacity: 0; }
+    .logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .cue { position: absolute; left: 0; right: 0; top: 66%; display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline;
+      gap: 0 14px; padding: 0 44px; text-align: center; opacity: 0; line-height: 1.22; }
+    .w { display: inline-block; opacity: 0; color: #fff; font-weight: 800; font-size: 50px;
+      -webkit-text-stroke: 8px #000; paint-order: stroke fill; text-shadow: 0 5px 0 rgba(0,0,0,.35); }
+    .w.y { color: #ffd60a; }
+    .w.big { font-size: 72px; -webkit-text-stroke: 10px #000; }
+  </style>
+</head>
+<body>
+  <main id="root" data-composition-id="phu-de" data-start="0" data-duration="__DURATION__" data-width="__W__" data-height="__H__">
+    <div id="logo" class="logo"><img src="assets/logo.png" alt="logo" /></div>
+    <div id="caps"></div>
+  </main>
+  <script>
+    // Dữ liệu do dung-clip-co-giong.py điền: CUES = [{t0, t1, text}] (giây trên dòng thời gian video cuối), LOGO_END
+    const CUES = __CUES__;
+    const LOGO_END = __LOGO_END__;
+    // Markup: {y:chữ} vàng · {Y:CHỮ} vàng và TO (nhấn chốt hài); dấu câu liền chữ trước thì dính liền
+    function parse(text) {
+      const out = [];
+      text.split(/(\{[yY]:.*?\})/).forEach((part) => {
+        if (/^\{[yY]:/.test(part)) {
+          const big = part[1] === "Y";
+          part.slice(3, -1).split(/\s+/).filter(Boolean).forEach((w) => out.push({ w, y: true, big }));
+        } else {
+          const toks = part.split(/\s+/).filter(Boolean);
+          if (toks.length && out.length && !/^\s/.test(part)) out[out.length - 1].w += toks.shift();
+          toks.forEach((w) => out.push({ w, y: false, big: false }));
+        }
+      });
+      return out;
+    }
+    const caps = document.getElementById("caps");
+    CUES.forEach((c, i) => {
+      const el = document.createElement("div");
+      el.className = "cue"; el.id = "cue" + i;
+      parse(c.text).forEach((p) => {
+        const s = document.createElement("span");
+        s.className = "w" + (p.y ? " y" : "") + (p.big ? " big" : "");
+        s.textContent = p.w; el.appendChild(s);
+      });
+      caps.appendChild(el);
+    });
+    window.__timelines = window.__timelines || {};
+    const tl = gsap.timeline({ paused: true });
+    CUES.forEach((c, i) => {
+      const el = document.getElementById("cue" + i);
+      const ws = el.querySelectorAll(".w");
+      const dur = Math.max(0.3, c.t1 - c.t0);
+      const step = Math.min(0.14, (dur * 0.55) / Math.max(1, ws.length - 1));
+      tl.set(el, { opacity: 1 }, c.t0);
+      ws.forEach((w, k) => {
+        const at = c.t0 + k * step, big = w.classList.contains("big");
+        tl.fromTo(w, { opacity: 0, y: 30, scale: big ? 0.35 : 0.78 },
+          { opacity: 1, y: 0, scale: 1, duration: big ? 0.42 : 0.22, ease: big ? "back.out(3.2)" : "back.out(2)" }, at);
+        if (big) tl.fromTo(w, { rotate: -7 }, { rotate: 0, duration: 0.5, ease: "elastic.out(1,0.35)" }, at);
+      });
+      tl.to(el, { opacity: 0, y: -8, duration: 0.12, ease: "power1.in" }, Math.max(c.t0 + 0.2, c.t1 - 0.12));
+    });
+    tl.fromTo("#logo", { scale: 0.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "back.out(2.4)" }, 0.2);
+    tl.to("#logo", { scale: 1.07, duration: 0.9, ease: "sine.inOut", yoyo: true, repeat: Math.max(1, Math.floor(LOGO_END / 0.9)) }, 0.9);
+    tl.to("#logo", { opacity: 0, scale: 0.6, duration: 0.3, ease: "power2.in" }, Math.max(1, LOGO_END - 0.3));
+    window.__timelines["phu-de"] = tl;
+  </script>
+</body>
+</html>
