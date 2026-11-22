@@ -107,26 +107,50 @@ def sfx_path(name):
     return None
 
 
-SERIF = ["/System/Library/Fonts/Supplemental/Georgia.ttf", "/System/Library/Fonts/Supplemental/Times New Roman.ttf",
-         "C:/Windows/Fonts/georgia.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf"]
+# Font serif CÓ ĐỦ DẤU TIẾNG VIỆT. Georgia thiếu ử ệ ả ể… (ra ô vuông "Th□ trang duy□", phát hiện 22/11/2026) → bỏ.
+SERIF = ["C:/Windows/Fonts/times.ttf", "C:/Windows/Fonts/cambria.ttc",
+         "/System/Library/Fonts/Supplemental/Times New Roman.ttf",
+         "/usr/share/fonts/truetype/noto/NotoSerif-Regular.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf"]
 
 
 def the_chu(src, dst, dong, phu=None):
-    """Thẻ tiêu đề/kết: lấy ảnh cảnh làm nền, phủ tối, chữ serif trắng ấm ở giữa (bỏ nền đen trơn)."""
+    """Thẻ tiêu đề/kết: lấy ảnh cảnh làm nền, phủ tối, chữ serif trắng ấm ở giữa (bỏ nền đen trơn).
+    Chữ tự thu nhỏ (rồi tự xuống dòng) cho vừa 86% bề ngang — dòng dài từng tràn ra ngoài khung."""
     from PIL import Image, ImageDraw, ImageEnhance, ImageFont
     im = Image.open(src).convert("RGB").resize((W, H), Image.LANCZOS)
     im = ImageEnhance.Brightness(im).enhance(0.42)
     d = ImageDraw.Draw(im)
     fp = next((x for x in SERIF if os.path.exists(x)), None)
-    big = ImageFont.truetype(fp, int(H * 0.085)) if fp else ImageFont.load_default()
-    small = ImageFont.truetype(fp, int(H * 0.034)) if fp else ImageFont.load_default()
-    lines = dong if isinstance(dong, list) else [dong]
-    y = int(H * 0.5 - (len(lines) * H * 0.105) / 2 - (H * 0.03 if phu else 0))
+    if not fp:
+        print("⚠️ Không thấy font serif có dấu tiếng Việt cho thẻ tiêu đề — chữ có thể lỗi dấu")
+    font = lambda px: ImageFont.truetype(fp, int(px)) if fp else ImageFont.load_default()
+    lines = [x for x in (dong if isinstance(dong, list) else [dong]) if x]
+    maxw, size = W * 0.86, H * 0.085
+    big = font(size)
+    while size > H * 0.05 and max((d.textlength(x, font=big) for x in lines), default=0) > maxw:
+        size *= 0.93
+        big = font(size)
+    if max((d.textlength(x, font=big) for x in lines), default=0) > maxw:   # vẫn dài: xuống dòng theo chữ
+        wrapped = []
+        for ln in lines:
+            cur = ""
+            for word in ln.split():
+                test = (cur + " " + word).strip()
+                if cur and d.textlength(test, font=big) > maxw:
+                    wrapped.append(cur)
+                    cur = word
+                else:
+                    cur = test
+            wrapped.append(cur)
+        lines = wrapped
+    small = font(min(H * 0.034, size * 0.45))
+    lead = size * 1.24
+    y = int(H * 0.5 - (len(lines) * lead) / 2 - (H * 0.03 if phu else 0))
     for ln in lines:
         w = d.textlength(ln, font=big)
         d.text(((W - w) / 2 + 3, y + 3), ln, font=big, fill=(0, 0, 0))
         d.text(((W - w) / 2, y), ln, font=big, fill=(255, 241, 214))
-        y += int(H * 0.105)
+        y += int(lead)
     if phu:
         d.line([(W * 0.42, y + H * 0.01), (W * 0.58, y + H * 0.01)], fill=(255, 241, 214), width=2)
         w = d.textlength(phu, font=small)
