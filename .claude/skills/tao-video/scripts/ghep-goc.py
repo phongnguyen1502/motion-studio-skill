@@ -516,7 +516,8 @@ def main():
     p.add_argument("du_an")
     p.add_argument("--min", type=float, default=2.5, help="đoạn ngắn nhất (giây), mặc định 2,5")
     p.add_argument("--max", type=float, default=7.0, help="đoạn dài nhất (giây), mặc định 7")
-    p.add_argument("--model", default="small", help="faster-whisper: small (nhanh) / medium (chuẩn hơn)")
+    p.add_argument("--model", default="medium",
+                   help="faster-whisper: medium (mặc định — bộ cài tải sẵn, máy không mạng vẫn chạy) / small (nhanh hơn)")
     p.add_argument("--chinh-nhieu", type=float, default=0.5,
                    help="tỉ lệ máy chính mong muốn: 0.5 luân phiên đều, 0.7 máy chính nhiều hơn")
     p = sub.add_parser("dung", help="dựng video theo goc.json")

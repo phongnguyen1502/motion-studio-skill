@@ -268,7 +268,7 @@ def cmd_doan_hay(args):
         print("Chép lời từng đoạn (faster-whisper)…")
         venv = Path.home() / ".motion-studio/asr-venv" / ("Scripts/python.exe" if os.name == "nt" else "bin/python")
         code = ("import sys,json,subprocess,numpy as np\nfrom faster_whisper import WhisperModel\n"
-                "m=WhisperModel('small',device='cpu',compute_type='int8')\nout=[]\n"
+                "m=WhisperModel('medium',device='cpu',compute_type='int8')\nout=[]\n"
                 "for a,b in json.loads(sys.argv[2]):\n"
                 " p=subprocess.run(['ffmpeg','-v','error','-ss',str(a),'-t',str(b-a),'-i',sys.argv[1],'-ac','1','-ar','16000','-f','f32le','-'],capture_output=True).stdout\n"
                 " s,_=m.transcribe(np.frombuffer(p,np.float32),language='vi')\n out.append(' '.join(x.text.strip() for x in s))\n"
