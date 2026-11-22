@@ -1,6 +1,6 @@
 ---
 name: tao-video
-description: 'Dựng video ngắn hoàn chỉnh (ra file video.mp4, khổ dọc 9:16 hoặc ngang 16:9 cho TikTok/Reels/Shorts) từ ảnh hoặc clip AI: kịch bản theo cảnh, nhân vật và bối cảnh giữ giống nhau xuyên suốt (có kho nhân vật dùng lại), lời đọc, nhạc nền, tiếng động, tiêu đề, phụ đề kiểu TikTok. Hai chế độ: tự động hoàn toàn hoặc từng bước có điểm duyệt. Nguồn hình tuỳ ý (Muse, Gemini, ChatGPT, Google Flow/Veo, Dola, Meta AI qua GaBee, hoặc file có sẵn), kể cả clip đã có thoại và nhép miệng sẵn từ Flow/Veo. Dùng khi người dùng nói "làm video", "tạo video", "video TikTok/Reels/Shorts", "ghép ảnh thành video", "ghép clip AI", "video kể chuyện", "tiểu phẩm", "lồng tiếng", "thêm giọng đọc/phụ đề cho video", "giữ nhân vật giống nhau", "video tự quay", "video quay sẵn", "video người nói", "cắt chỗ vấp", "cắt khoảng lặng", "chèn hiệu ứng vào video quay", sửa clip quay trước khi dựng ("chống rung", "video bị rung/nghiêng", "chỉnh màu", "áp LUT", "video HDR iPhone bị nhạt/chói", "che mặt/biển số", "làm mờ một vùng", "khử nhiễu", "video tối/nhiễu hạt"), hoặc "/tao-video". KHÔNG dùng cho video đồ hoạ chuyển động/animation dựng bằng code, intro, quảng cáo motion (→ motion-studio), hay khi chỉ cần viết prompt/storyboard mà không dựng video (→ ai-video-prompt-writer). Lệnh con: "/tao-video setup" (cài đặt + chạy thử lần đầu) và "/tao-video huong-dan" (hướng dẫn nhanh); gõ gần đúng cũng nhận (cai dat, cài đặt, thiet lap, huong dan, hướng dẫn, help).'
+description: 'Dựng video ngắn hoàn chỉnh (ra file video.mp4, khổ dọc 9:16 hoặc ngang 16:9 cho TikTok/Reels/Shorts) từ ảnh hoặc clip AI: kịch bản theo cảnh, nhân vật và bối cảnh giữ giống nhau xuyên suốt (có kho nhân vật dùng lại), lời đọc, nhạc nền, tiếng động, tiêu đề, phụ đề kiểu TikTok. Hai chế độ: tự động hoàn toàn hoặc từng bước có điểm duyệt. Nguồn hình tuỳ ý (Muse, Gemini, ChatGPT, Google Flow/Veo, Dola, Meta AI qua GaBee, hoặc file có sẵn), kể cả clip đã có thoại và nhép miệng sẵn từ Flow/Veo. Dùng khi người dùng nói "làm video", "tạo video", "video TikTok/Reels/Shorts", "ghép ảnh thành video", "ghép clip AI", "video kể chuyện", "tiểu phẩm", "lồng tiếng", "thêm giọng đọc/phụ đề cho video", "giữ nhân vật giống nhau", "video tự quay", "video quay sẵn", "video người nói", "cắt chỗ vấp", "cắt khoảng lặng", "chèn hiệu ứng vào video quay", sửa clip quay trước khi dựng ("chống rung", "video bị rung/nghiêng", "chỉnh màu", "áp LUT", "video HDR iPhone bị nhạt/chói", "che mặt/biển số", "làm mờ một vùng", "khử nhiễu", "video tối/nhiễu hạt"), quay nhiều máy/mic rời ("2 góc máy", "nhiều góc máy", "ghép góc máy", "mic cài áo", "thu âm riêng", "khớp tiếng"), "chèn cảnh minh hoạ/B-roll", "tua nhanh/chậm", "cắt video dài thành short", "tìm đoạn hay", hoặc "/tao-video". KHÔNG dùng cho video đồ hoạ chuyển động/animation dựng bằng code, intro, quảng cáo motion (→ motion-studio), hay khi chỉ cần viết prompt/storyboard mà không dựng video (→ ai-video-prompt-writer). Lệnh con: "/tao-video setup" (cài đặt + chạy thử lần đầu) và "/tao-video huong-dan" (hướng dẫn nhanh); gõ gần đúng cũng nhận (cai dat, cài đặt, thiet lap, huong dan, hướng dẫn, help).'
 ---
 
 # /tao-video
@@ -58,6 +58,37 @@ Không viết kịch bản, không làm hình: video đã có. `scripts/dung-vid
 Cần skill **motion-studio** (thư viện hiệu ứng) và môi trường `~/.motion-studio/asr-venv` có faster-whisper + opencv
 (`pip install opencv-python-headless`); script tự chuyển sang Python đó. Đã chạy thử: clip MC AI 40 s
 + thẻ kết 6,5 s (21/11/2026). Thời gian: nghe lời ~1 phút, lớp hiệu ứng ~2,5 s xử lý cho 1 s video.
+
+## Nhiều góc máy / mic rời (trước bước chuan-bi)
+
+`scripts/ghep-goc.py` (numpy + opencv + faster-whisper trong `~/.motion-studio/asr-venv`, tự chuyển). Ra `mc.mp4` 1080×1920
+đã ghép góc + đúng tiếng → đưa vào `dung-video-quay.py chuan-bi du-an/mc.mp4 du-an` như video một máy.
+
+1. `python scripts/ghep-goc.py khop <máy-chính> <máy-2> [máy-3…] <du-an> [--mic mic.wav]` → `goc.json`: độ lệch giờ từng
+   máy (khớp theo TIẾNG, không theo giờ trong file — hai điện thoại lệch nhau 26 s, 22/11/2026), bù trôi giờ khi quay
+   > 2,5 phút, khung cắt theo mặt từng máy. Máy đầu = máy chính (mốc giờ + tiếng). **1 máy + `--mic`** = chỉ thay tiếng
+   bằng mic cài áo. Dòng nào báo "KÉM" → nghe/xem lại trước khi dựng. Báo máy quay < 1080p (hình sẽ mềm).
+2. `python scripts/ghep-goc.py de-xuat <du-an> [--min 2.5 --max 7]` → điền `"chuyen"` (đổi góc ở chỗ ngắt lời đo trên
+   tiếng). **Agent đọc bảng in ra và sửa `goc.json`**: không cắt giữa từ ghép ("chúng | ta", "thử | nghiệm" — máy
+   không biết từ ghép), câu mở/kết ở máy chính, câu nhấn mạnh ở máy cận; máy phụ tắt sớm thì đoạn cuối tự về máy chính.
+3. `python scripts/ghep-goc.py dung <du-an>` → `mc.mp4` + `goc-xem.jpg` (một khung mỗi đoạn — xem khung cắt có cụt đầu không;
+   sửa `may[i].khung` trong goc.json rồi dựng lại).
+
+Lưu ý: `chuan-bi` dò mặt trên cả video → vùng tránh của hiệu ứng là mặt "trung bình" các góc; **xem ảnh `anh` ở cả đoạn
+máy phụ** (22/11/2026: thẻ đếm số đè lên đầu ở góc nghiêng). Đo thật: 2 điện thoại quay 9 s lệch 0,02 s; mic giả lập lệch
+2 s + trôi 1,4 s/giờ → sau bù còn lệch 9 ms suốt 4 phút.
+
+## Chèn cảnh, tua nhanh/chậm, tìm đoạn hay
+
+`scripts/chen-canh.py` (chỉ cần ffmpeg; `--nghe` cần faster-whisper). Ra file mới, không đè video gốc, tự kiểm thời lượng.
+
+- `b-roll <video> --chen canh.mp4@12-16 [--chen anh.jpg@20-23] [--tieng tron]` — hình thay bằng cảnh chèn, lời vẫn liền,
+  video dài đúng như cũ. `canh.mp4@12-16+3` = lấy cảnh từ giây 3; giờ viết được `1:05`. Ảnh tĩnh tự đẩy chậm.
+  Dùng **trên video cuối** (sau `dung`) hoặc trên `cut.mp4` trước `dung` — đừng chèn trước `chuan-bi` (cắt vấp sẽ cắt lệch).
+- `tua <video> --doan 0-4:1,4-9:2.5,9-11:0.5` — mỗi đoạn một tốc độ, tiếng giữ cao độ. Đoạn có lời nói thì ≤ 1,3× cho nghe được.
+- `doan-hay <video> [--so 5] [--dai 30-60] [--nghe]` — gợi ý đoạn cắt thành short từ video dài (chuyển cảnh, khoảng ngắt
+  lời so với mức tiếng chung — có nhạc nền vẫn bắt được, độ sôi nổi). `--nghe` chép lời từng đoạn: **đọc lời rồi mới
+  chọn**, điểm chỉ là gợi ý. Cắt đoạn chọn: `dung-video-quay.py chuan-bi <video> <du-an> --tu <đầu> --den <cuối>`.
 
 ## Sửa hình trước khi dựng (tuỳ chọn — clip quay thật, clip có vấn đề)
 

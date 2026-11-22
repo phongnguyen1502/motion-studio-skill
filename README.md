@@ -75,8 +75,10 @@ Chi tiết: mục "Kiểu video quay sẵn" trong `.claude/skills/tao-video/SKIL
 
 Clip có vấn đề thì sửa trước khi dựng bằng `sua-hinh.py` (chống rung, cân màu/LUT, HDR→SDR, che mờ, khử nhiễu, chỉnh nghiêng). Mỗi lệnh ra file mới kèm ảnh so sánh trước | sau, clip gốc giữ nguyên. Chi tiết: mục "Sửa hình trước khi dựng" trong SKILL.md.
 
+Quay nhiều máy hoặc thu mic rời: `ghep-goc.py khop/de-xuat/dung` khớp giờ theo tiếng (bù trôi giờ), đề xuất chỗ chuyển góc theo câu nói, ra `mc.mp4` rồi đưa vào `chuan-bi`. `chen-canh.py` chèn cảnh minh hoạ (B-roll), tua nhanh/chậm từng đoạn, gợi ý đoạn hay trong video dài.
+
 Dựng xong thì `xuat.py kiem-dang video.mp4 --nen tiktok` kiểm theo yêu cầu nền tảng (✅/⚠️/❌ kèm lệnh sửa), `xuat.py xuat video.mp4 --nen tiktok,reels,vuong` xuất mỗi nền một bản, `xuat.py hang-loat <thư-mục> --cong-thuc x.json` xử lý cả thư mục và bỏ qua clip đã làm.
 
 ## Nguồn
 
-motion-studio dựa trên skill Motion Studio của flaviorg (bản đã rà soát ở commit 7e9e70f), có chỉnh sửa. `tao-video/scripts/sua-hinh.py` và `xuat.py` tham khảo cách làm của ffmpeg-skill (kajisho5, giấy phép MIT), viết lại. Font Be Vietnam Pro dùng giấy phép SIL OFL 1.1. Repo này để dùng nội bộ, nên giữ ở chế độ riêng tư (private).
+motion-studio dựa trên skill Motion Studio của flaviorg (bản đã rà soát ở commit 7e9e70f), có chỉnh sửa. `tao-video/scripts/sua-hinh.py`, `xuat.py`, `ghep-goc.py` và `chen-canh.py` tham khảo cách làm của ffmpeg-skill (kajisho5, giấy phép MIT), viết lại. Font Be Vietnam Pro dùng giấy phép SIL OFL 1.1. Repo này để dùng nội bộ, nên giữ ở chế độ riêng tư (private).

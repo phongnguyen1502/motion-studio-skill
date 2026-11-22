@@ -44,6 +44,16 @@ Nói thẳng với Claude: "clip này rung quá", "chỉnh sáng lên", "video i
 "khử nhiễu", "video bị nghiêng". Claude sửa ra **file mới** (clip gốc giữ nguyên) và gửi ảnh so sánh trước | sau để
 bạn duyệt, rồi mới dựng video từ file đã sửa.
 
+## Quay nhiều máy, mic rời, chèn cảnh
+
+- **2–3 điện thoại quay cùng lúc**: đưa cả các file cho Claude ("ghép 2 góc máy này"). Claude tự khớp giờ theo tiếng,
+  đề xuất chỗ chuyển góc theo câu nói, rồi dựng tiếp như video thường. Mẹo: quay **1080p trở lên**, máy chính đặt
+  chính diện, bấm quay cả hai máy trước khi nói, vỗ tay một cái ở đầu cho dễ khớp.
+- **Mic cài áo thu riêng**: "thay tiếng bằng file mic này" — tự khớp, kể cả khi quay dài bị trôi giờ.
+- **Chèn cảnh minh hoạ**: "từ giây 12 đến 16 chiếu cảnh sản phẩm" — lời vẫn liền, video không dài thêm.
+- **Tua nhanh/chậm**: "đoạn 4–9 giây tua nhanh gấp đôi".
+- **Video dài → short**: "tìm đoạn hay trong buổi live này" — Claude gợi ý vài đoạn kèm lời, bạn chọn.
+
 ## Trước khi đăng
 
 Claude tự kiểm video theo yêu cầu của TikTok/Reels/Shorts (khung, độ to tiếng, đỉnh âm, thời lượng…) và báo
