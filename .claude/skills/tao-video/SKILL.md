@@ -84,6 +84,27 @@ Giới hạn: `che-mo` là vùng **đứng yên** (người đi qua → nhiều 
 HDR (thiếu nhãn mà chắc là HDR: `--ep`). Đo thật 22/11/2026 trên clip 8 s 1080×1920: chống rung ~13 s (rung giảm 34→14),
 các lệnh khác 5–15 s; không dùng GPU. Cách làm tham khảo ffmpeg-skill (kajisho5, MIT), viết lại gọn cho tao-video.
 
+## Kiểm trước khi đăng + xuất theo nền tảng (sau khi có video.mp4)
+
+`scripts/xuat.py` — dùng chung phần đọc file với `sua-hinh.py` (để hai file cùng thư mục).
+
+- **Kiểm**: `python scripts/xuat.py kiem-dang video.mp4 --nen tiktok[,reels,…]` → bảng ✅/⚠️/❌ (khung, fps, mã hình,
+  điểm ảnh, nhãn màu/HDR, tiếng, độ to -14 LUFS, đỉnh -1 dBTP, thời lượng, dung lượng, faststart), dòng chưa đạt có lệnh
+  sửa; thoát mã 1 khi có ❌. **Chạy sau mỗi lần dựng xong, trước khi gửi video cho người dùng**, báo ngắn kết quả.
+- **Xuất**: `python scripts/xuat.py xuat video.mp4 --nen tiktok,reels,vuong` → `video.<nền>.mp4` + `video.cac-ban.jpg`
+  (các bản cạnh nhau — xem trước khi gửi). Khác tỉ lệ: `--khop mo` (mặc định: nền mờ, giữ trọn hình và phụ đề) ·
+  `cat --cat-y 0.4` · `vien`. Dài quá mức của nền: chỉ cảnh báo, `--cat-cho-vua` mới cắt (mờ dần 0,6 s) — **hỏi người
+  dùng trước khi cắt**, thường nên cắt nội dung thay vì cắt đuôi.
+- Nền: `tiktok` `reels` `shorts` `facebook` (9:16) · `doc45` (1080×1350) · `vuong` · `youtube` (16:9). Giới hạn thời
+  lượng/dung lượng là tham khảo, nền tảng đổi luôn.
+- **Hàng loạt**: `python scripts/xuat.py hang-loat <thư-mục> --cong-thuc cong-thuc.json` — mọi clip khớp `loc` chạy qua
+  `buoc` (các lệnh `sua-hinh`, bước cuối có thể là `xuat`), ra `<thư-mục>/<ra>/`. Clip đã làm cùng công thức thì bỏ
+  qua (`--chay-lai` để làm lại); `hdr-sdr` tự bỏ với clip không HDR; clip lỗi không chặn clip khác.
+  ```json
+  {"loc": "*.mp4;*.mov", "ra": "da-xu-ly",
+   "buoc": [["sua-hinh","hdr-sdr"], ["sua-hinh","can-mau","--tu-dong"], ["xuat","--nen","tiktok,vuong"]]}
+  ```
+
 ## Hai chế độ — hỏi ở đầu
 
 - **Tự động hoàn toàn** (`"che_do": "tu-dong"`): người dùng chỉ đưa ý tưởng hoặc kịch bản,

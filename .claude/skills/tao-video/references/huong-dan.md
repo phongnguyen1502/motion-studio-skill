@@ -44,6 +44,12 @@ Nói thẳng với Claude: "clip này rung quá", "chỉnh sáng lên", "video i
 "khử nhiễu", "video bị nghiêng". Claude sửa ra **file mới** (clip gốc giữ nguyên) và gửi ảnh so sánh trước | sau để
 bạn duyệt, rồi mới dựng video từ file đã sửa.
 
+## Trước khi đăng
+
+Claude tự kiểm video theo yêu cầu của TikTok/Reels/Shorts (khung, độ to tiếng, đỉnh âm, thời lượng…) và báo
+✅/⚠️/❌. Muốn đăng nhiều nơi: "xuất thêm bản Reels và bản vuông" → mỗi nền một file, kèm ảnh xem các bản cạnh nhau.
+Cả thư mục clip cần xử lý giống nhau: "chỉnh màu rồi xuất TikTok cho cả thư mục này" — clip đã làm sẽ được bỏ qua.
+
 ## Mẹo để mượt và nhanh
 
 - **Chốt kịch bản xong mới làm ảnh.** Sửa kịch bản sau khi có ảnh là làm lại ảnh.

@@ -31,6 +31,8 @@ for _s in (sys.stdout, sys.stderr):
 HDR_TRC = {"smpte2084": "PQ (HDR10/Dolby Vision)", "arib-std-b67": "HLG (iPhone/Android HDR)"}
 TONEMAPS = ("hable", "mobius", "reinhard", "clip", "linear", "gamma")
 LOI = "LỖI: "
+# Nguồn không gắn nhãn màu: cờ -color_* bị khung "unknown" từ bộ lọc ghi đè → ghi thẳng vào luồng H.264
+BT709_BSF = "h264_metadata=colour_primaries=1:transfer_characteristics=1:matrix_coefficients=1:video_full_range_flag=0"
 
 
 # ---------- tiện ích ----------
@@ -47,7 +49,7 @@ def need_ffmpeg():
 def probe(p):
     out = subprocess.run(["ffprobe", "-v", "error", "-show_entries",
                           "format=duration:stream=index,codec_type,codec_name,width,height,pix_fmt,r_frame_rate,"
-                          "avg_frame_rate,duration,color_transfer,color_primaries,color_space,color_range:"
+                          "avg_frame_rate,duration,sample_rate,channels,color_transfer,color_primaries,color_space,color_range:"
                           "stream_side_data=rotation",
                           "-of", "json", str(p)], capture_output=True, text=True, encoding="utf-8")
     if out.returncode != 0:
@@ -89,7 +91,7 @@ def out_path(args, cmd):
 def enc_args(crf, audio="copy", hdr_src=False):
     v = ["-c:v", "libx264", "-preset", "medium", "-crf", str(crf), "-pix_fmt", "yuv420p"]
     if not hdr_src:  # nguồn SDR: gắn nhãn BT.709 để TikTok/Reels không đoán sai màu
-        v += ["-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709"]
+        v += ["-color_primaries", "bt709", "-color_trc", "bt709", "-colorspace", "bt709", "-bsf:v", BT709_BSF]
     a = ["-c:a", "copy"] if audio == "copy" else ["-c:a", "aac", "-b:a", "192k", "-ar", "48000"]
     return v + a + ["-movflags", "+faststart"]
 
