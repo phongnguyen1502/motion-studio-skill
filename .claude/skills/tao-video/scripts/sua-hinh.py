@@ -419,6 +419,28 @@ def cmd_can_thang(args):
     finish(args, src, out, m)
 
 
+# ---------- lam-dep ----------
+# Mức người dùng chọn 22/11/2026: "vua". "manh" bị chê quá sáng mịn, không tự nhiên — chỉ dùng khi được yêu cầu.
+MUC_DEP = {"nhe": (0.4, 0.2, 0.45), "vua": (0.6, 0.35, 0.35), "manh": (0.9, 0.6, 0.25)}
+
+
+def cmd_lam_dep(args):
+    src, out = out_path(args, "dep")
+    m = probe(src)
+    if is_hdr(m):
+        die("clip là HDR — chạy hdr-sdr trước, rồi làm đẹp da trên file SDR đó.")
+    mn, sang, van = MUC_DEP[args.muc]
+    print(f"  làm mịn + sáng da mức {args.muc} (mịn {mn}, sáng {sang}, giữ vân {van}); răng, môi giữ nguyên · "
+          f"~12 giây xử lý cho 1 giây video")
+    r = subprocess.run([sys.executable, str(Path(__file__).with_name("lam-dep.py")), str(src), str(out),
+                        "--min", str(mn), "--sang", str(sang), "--giu-van", str(van)])
+    if r.returncode or not out.exists():
+        die("bộ lọc da dừng giữa chừng (xem dòng báo ở trên).")
+    finish(args, src, out, m)
+    print("  Xem cận miệng trong ảnh so sánh: răng phải rõ như gốc. Mặt không được dò thấy (quay ngang, che tay) thì "
+          "khung đó giữ nguyên.")
+
+
 # ---------- main ----------
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
@@ -464,6 +486,9 @@ def main():
     p.add_argument("--hinh", choices=("nhe", "vua", "manh", "tat"), default="vua")
     p.add_argument("--tieng", choices=("nhe", "vua", "manh", "tat"), default="tat",
                    help="mặc định tắt: chỉ bật khi nghe rõ tiếng ù/xì")
+    p = add("lam-dep", "làm mịn + sáng da kiểu TikTok/CapCut (giữ nguyên răng, môi)")
+    p.add_argument("--muc", choices=("nhe", "vua", "manh"), default="vua",
+                   help="vua (mặc định, người dùng chọn) · nhe · manh (dễ mất tự nhiên)")
     p = add("can-thang", "xoay chỉnh đường chân trời, tự cắt viền đen")
     p.add_argument("--do", type=float, required=True,
                    help="độ xoay: + theo chiều kim đồng hồ. Đường ngang chúi xuống bên PHẢI → số âm; chúi xuống bên TRÁI → số dương")
@@ -473,7 +498,7 @@ def main():
     if not Path(args.video).exists():
         die(f"không thấy {args.video}")
     {"kiem": cmd_kiem, "chong-rung": cmd_chong_rung, "can-mau": cmd_can_mau, "hdr-sdr": cmd_hdr_sdr,
-     "che-mo": cmd_che_mo, "khu-nhieu": cmd_khu_nhieu, "can-thang": cmd_can_thang}[args.cmd](args)
+     "che-mo": cmd_che_mo, "khu-nhieu": cmd_khu_nhieu, "can-thang": cmd_can_thang, "lam-dep": cmd_lam_dep}[args.cmd](args)
 
 
 if __name__ == "__main__":

@@ -322,7 +322,7 @@ def cmd_hang_loat(args):
     steps = recipe.get("buoc") or []
     if not steps or not all(isinstance(s, list) and s and s[0] in ("sua-hinh", "xuat") for s in steps):
         die('công thức cần "buoc": [["sua-hinh","<lệnh>",…], …, ["xuat","--nen","tiktok"]]')
-    known = ("chong-rung", "can-mau", "hdr-sdr", "che-mo", "khu-nhieu", "can-thang")
+    known = ("chong-rung", "can-mau", "hdr-sdr", "che-mo", "khu-nhieu", "can-thang", "lam-dep")
     for s in steps:
         if s[0] == "sua-hinh" and (len(s) < 2 or s[1] not in known):
             die(f"bước {s}: lệnh sua-hinh phải là một trong {', '.join(known)}")

@@ -73,7 +73,7 @@ Khi skill có thay đổi: kéo bản mới về (`git pull`) rồi chạy lại
 
 Chi tiết: mục "Kiểu video quay sẵn" trong `.claude/skills/tao-video/SKILL.md`.
 
-Clip có vấn đề thì sửa trước khi dựng bằng `sua-hinh.py` (chống rung, cân màu/LUT, HDR→SDR, che mờ, khử nhiễu, chỉnh nghiêng). Mỗi lệnh ra file mới kèm ảnh so sánh trước | sau, clip gốc giữ nguyên. Chi tiết: mục "Sửa hình trước khi dựng" trong SKILL.md.
+Clip có vấn đề thì sửa trước khi dựng bằng `sua-hinh.py` (chống rung, cân màu/LUT, HDR→SDR, che mờ, khử nhiễu, chỉnh nghiêng, làm mịn + sáng da giữ nguyên răng). Mỗi lệnh ra file mới kèm ảnh so sánh trước | sau, clip gốc giữ nguyên. Chi tiết: mục "Sửa hình trước khi dựng" trong SKILL.md.
 
 Quay nhiều máy hoặc thu mic rời: `ghep-goc.py khop/de-xuat/dung` khớp giờ theo tiếng (bù trôi giờ), đề xuất chỗ chuyển góc theo câu nói, ra `mc.mp4` rồi đưa vào `chuan-bi`. `chen-canh.py` chèn cảnh minh hoạ (B-roll), tua nhanh/chậm từng đoạn, gợi ý đoạn hay trong video dài.
 

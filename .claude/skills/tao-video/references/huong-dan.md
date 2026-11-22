@@ -41,7 +41,8 @@ Muốn tự động: nói "chạy tự động".
 ## Clip tự quay bị rung, tối, nghiêng, HDR?
 
 Nói thẳng với Claude: "clip này rung quá", "chỉnh sáng lên", "video iPhone bị nhạt", "che biển số từ giây 3 đến 8",
-"khử nhiễu", "video bị nghiêng". Claude sửa ra **file mới** (clip gốc giữ nguyên) và gửi ảnh so sánh trước | sau để
+"khử nhiễu", "video bị nghiêng", "làm mịn và sáng da" (giống filter TikTok/CapCut, mức vừa cho tự nhiên; răng và môi
+giữ nguyên). Claude sửa ra **file mới** (clip gốc giữ nguyên) và gửi ảnh so sánh trước | sau để
 bạn duyệt, rồi mới dựng video từ file đã sửa.
 
 ## Góp ý cho video
