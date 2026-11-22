@@ -44,6 +44,13 @@ Nói thẳng với Claude: "clip này rung quá", "chỉnh sáng lên", "video i
 "khử nhiễu", "video bị nghiêng". Claude sửa ra **file mới** (clip gốc giữ nguyên) và gửi ảnh so sánh trước | sau để
 bạn duyệt, rồi mới dựng video từ file đã sửa.
 
+## Góp ý cho video
+
+Mỗi lần có bản nháp/bản thật, Claude gửi một **trang duyệt** (`duyet/index.html`). Mở bằng Chrome hoặc Edge:
+bấm vào câu, cảnh, hiệu ứng hay góc máy cần sửa → video nhảy tới đúng chỗ → gõ góp ý (hoặc bấm nút ghi nhanh như
+"Sai chính tả phụ đề", "Hiệu ứng đè mặt"). Thấy gì ở giây đang xem thì bấm "Góp ý tại giây đang xem". Xong bấm
+**Sao chép lệnh** rồi dán vào chat. Bật "Vùng bị nút TikTok/Reels che" để xem chữ có bị nút che không.
+
 ## Quay nhiều máy, mic rời, chèn cảnh
 
 - **2–3 điện thoại quay cùng lúc**: đưa cả các file cho Claude ("ghép 2 góc máy này"). Claude tự khớp giờ theo tiếng,

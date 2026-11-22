@@ -282,6 +282,11 @@ if pd.get("srt", True):
             a0 = st + c["_lead"]
             srt.append(f"{n}\n{sts(a0)} --> {sts(a0 + c['_vdur'])}\n{c['loi']}\n")
     open(os.path.splitext(out)[0] + ".srt", "w", encoding="utf-8").write("\n".join(srt))
+# Mốc từng cảnh trong video ra — cho trang-duyet.py (chỉ ghi thêm file, không ảnh hưởng việc dựng)
+open(os.path.splitext(out)[0] + ".moc.json", "w", encoding="utf-8").write(json.dumps(
+    [{"id": c["id"], "tu": round(max(st, 0), 3), "den": round(st + sg[1], 3), "loi": c.get("loi", ""),
+      "loi_tu": round(st + c["_lead"], 3) if c.get("loi") else None, "hinh": c.get("hinh")}
+     for c, st, sg in zip(plan["canh"], starts, segs)], ensure_ascii=False, indent=1))
 ass_path = os.path.join(tmp, "sub.ass")
 open(ass_path, "w", encoding="utf-8").write("\n".join(ass) + "\n")
 

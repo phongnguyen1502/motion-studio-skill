@@ -115,6 +115,16 @@ Giới hạn: `che-mo` là vùng **đứng yên** (người đi qua → nhiều 
 HDR (thiếu nhãn mà chắc là HDR: `--ep`). Đo thật 22/11/2026 trên clip 8 s 1080×1920: chống rung ~13 s (rung giảm 34→14),
 các lệnh khác 5–15 s; không dùng GPU. Cách làm tham khảo ffmpeg-skill (kajisho5, MIT), viết lại gọn cho tao-video.
 
+## Trang duyệt video (mỗi ⛳ có video: nháp, bản thật)
+
+`python scripts/trang-duyet.py <du-an> [--video video-nhap.mp4]` → `du-an/duyet/index.html`. Gửi người dùng file này
+(mở bằng Chrome/Edge, không cần mạng) thay cho việc bắt họ tả bằng lời "giây thứ mấy, câu nào". Trang đọc thẳng file
+dự án: video quay sẵn → câu (timing.json), hiệu ứng (fx-plan.json), góc máy (goc.json), chỗ đã cắt (cat.txt); video
+kịch bản → cảnh (kich-ban.json + `video.moc.json` do dung-video.py ghi; video dựng trước 22/11/2026 thì ước từ .srt).
+Người dùng bấm mục → video nhảy tới → ghi góp ý (có nút ghi nhanh) → "Sao chép lệnh" dán vào chat, hoặc tải
+`gop-y.json` vào thư mục dự án. **Có `du-an/gop-y.json` thì đọc nó trước khi sửa** (mỗi góp ý có mục, giờ, nội dung
+gốc). Sửa xong dựng lại và chạy lại trang-duyet.py (góp ý cũ còn trong trình duyệt, trang báo video đã đổi).
+
 ## Kiểm trước khi đăng + xuất theo nền tảng (sau khi có video.mp4)
 
 `scripts/xuat.py` — dùng chung phần đọc file với `sua-hinh.py` (để hai file cùng thư mục).

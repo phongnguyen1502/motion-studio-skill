@@ -77,6 +77,8 @@ Clip có vấn đề thì sửa trước khi dựng bằng `sua-hinh.py` (chốn
 
 Quay nhiều máy hoặc thu mic rời: `ghep-goc.py khop/de-xuat/dung` khớp giờ theo tiếng (bù trôi giờ), đề xuất chỗ chuyển góc theo câu nói, ra `mc.mp4` rồi đưa vào `chuan-bi`. `chen-canh.py` chèn cảnh minh hoạ (B-roll), tua nhanh/chậm từng đoạn, gợi ý đoạn hay trong video dài.
 
+Duyệt: `trang-duyet.py <du-an>` tạo `duyet/index.html` — người dùng bấm vào cảnh/câu/hiệu ứng, ghi góp ý, sao chép thành lệnh dán lại cho Claude (chạy trên máy, không cần mạng).
+
 Dựng xong thì `xuat.py kiem-dang video.mp4 --nen tiktok` kiểm theo yêu cầu nền tảng (✅/⚠️/❌ kèm lệnh sửa), `xuat.py xuat video.mp4 --nen tiktok,reels,vuong` xuất mỗi nền một bản, `xuat.py hang-loat <thư-mục> --cong-thuc x.json` xử lý cả thư mục và bỏ qua clip đã làm.
 
 ## Nguồn
