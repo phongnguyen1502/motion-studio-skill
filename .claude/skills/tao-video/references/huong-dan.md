@@ -38,6 +38,12 @@ Claude hỏi bạn vài câu rồi làm theo thứ tự:
 Chọn chế độ **từng bước** (dừng hỏi ở mỗi bước) hoặc **tự động** (hỏi một lần ở đầu rồi chạy hết).
 Muốn tự động: nói "chạy tự động".
 
+## Clip tự quay bị rung, tối, nghiêng, HDR?
+
+Nói thẳng với Claude: "clip này rung quá", "chỉnh sáng lên", "video iPhone bị nhạt", "che biển số từ giây 3 đến 8",
+"khử nhiễu", "video bị nghiêng". Claude sửa ra **file mới** (clip gốc giữ nguyên) và gửi ảnh so sánh trước | sau để
+bạn duyệt, rồi mới dựng video từ file đã sửa.
+
 ## Mẹo để mượt và nhanh
 
 - **Chốt kịch bản xong mới làm ảnh.** Sửa kịch bản sau khi có ảnh là làm lại ảnh.

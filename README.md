@@ -73,6 +73,8 @@ Khi skill có thay đổi: kéo bản mới về (`git pull`) rồi chạy lại
 
 Chi tiết: mục "Kiểu video quay sẵn" trong `.claude/skills/tao-video/SKILL.md`.
 
+Clip có vấn đề thì sửa trước khi dựng bằng `sua-hinh.py` (chống rung, cân màu/LUT, HDR→SDR, che mờ, khử nhiễu, chỉnh nghiêng). Mỗi lệnh ra file mới kèm ảnh so sánh trước | sau, clip gốc giữ nguyên. Chi tiết: mục "Sửa hình trước khi dựng" trong SKILL.md.
+
 ## Nguồn
 
-motion-studio dựa trên skill Motion Studio của flaviorg (bản đã rà soát ở commit 7e9e70f), có chỉnh sửa. Font Be Vietnam Pro dùng giấy phép SIL OFL 1.1. Repo này để dùng nội bộ, nên giữ ở chế độ riêng tư (private).
+motion-studio dựa trên skill Motion Studio của flaviorg (bản đã rà soát ở commit 7e9e70f), có chỉnh sửa. `tao-video/scripts/sua-hinh.py` tham khảo cách làm của ffmpeg-skill (kajisho5, giấy phép MIT), viết lại. Font Be Vietnam Pro dùng giấy phép SIL OFL 1.1. Repo này để dùng nội bộ, nên giữ ở chế độ riêng tư (private).

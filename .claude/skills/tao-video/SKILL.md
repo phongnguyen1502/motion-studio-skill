@@ -1,6 +1,6 @@
 ---
 name: tao-video
-description: 'Dựng video ngắn hoàn chỉnh (ra file video.mp4, khổ dọc 9:16 hoặc ngang 16:9 cho TikTok/Reels/Shorts) từ ảnh hoặc clip AI: kịch bản theo cảnh, nhân vật và bối cảnh giữ giống nhau xuyên suốt (có kho nhân vật dùng lại), lời đọc, nhạc nền, tiếng động, tiêu đề, phụ đề kiểu TikTok. Hai chế độ: tự động hoàn toàn hoặc từng bước có điểm duyệt. Nguồn hình tuỳ ý (Muse, Gemini, ChatGPT, Google Flow/Veo, Dola, Meta AI qua GaBee, hoặc file có sẵn), kể cả clip đã có thoại và nhép miệng sẵn từ Flow/Veo. Dùng khi người dùng nói "làm video", "tạo video", "video TikTok/Reels/Shorts", "ghép ảnh thành video", "ghép clip AI", "video kể chuyện", "tiểu phẩm", "lồng tiếng", "thêm giọng đọc/phụ đề cho video", "giữ nhân vật giống nhau", "video tự quay", "video quay sẵn", "video người nói", "cắt chỗ vấp", "cắt khoảng lặng", "chèn hiệu ứng vào video quay", hoặc "/tao-video". KHÔNG dùng cho video đồ hoạ chuyển động/animation dựng bằng code, intro, quảng cáo motion (→ motion-studio), hay khi chỉ cần viết prompt/storyboard mà không dựng video (→ ai-video-prompt-writer). Lệnh con: "/tao-video setup" (cài đặt + chạy thử lần đầu) và "/tao-video huong-dan" (hướng dẫn nhanh); gõ gần đúng cũng nhận (cai dat, cài đặt, thiet lap, huong dan, hướng dẫn, help).'
+description: 'Dựng video ngắn hoàn chỉnh (ra file video.mp4, khổ dọc 9:16 hoặc ngang 16:9 cho TikTok/Reels/Shorts) từ ảnh hoặc clip AI: kịch bản theo cảnh, nhân vật và bối cảnh giữ giống nhau xuyên suốt (có kho nhân vật dùng lại), lời đọc, nhạc nền, tiếng động, tiêu đề, phụ đề kiểu TikTok. Hai chế độ: tự động hoàn toàn hoặc từng bước có điểm duyệt. Nguồn hình tuỳ ý (Muse, Gemini, ChatGPT, Google Flow/Veo, Dola, Meta AI qua GaBee, hoặc file có sẵn), kể cả clip đã có thoại và nhép miệng sẵn từ Flow/Veo. Dùng khi người dùng nói "làm video", "tạo video", "video TikTok/Reels/Shorts", "ghép ảnh thành video", "ghép clip AI", "video kể chuyện", "tiểu phẩm", "lồng tiếng", "thêm giọng đọc/phụ đề cho video", "giữ nhân vật giống nhau", "video tự quay", "video quay sẵn", "video người nói", "cắt chỗ vấp", "cắt khoảng lặng", "chèn hiệu ứng vào video quay", sửa clip quay trước khi dựng ("chống rung", "video bị rung/nghiêng", "chỉnh màu", "áp LUT", "video HDR iPhone bị nhạt/chói", "che mặt/biển số", "làm mờ một vùng", "khử nhiễu", "video tối/nhiễu hạt"), hoặc "/tao-video". KHÔNG dùng cho video đồ hoạ chuyển động/animation dựng bằng code, intro, quảng cáo motion (→ motion-studio), hay khi chỉ cần viết prompt/storyboard mà không dựng video (→ ai-video-prompt-writer). Lệnh con: "/tao-video setup" (cài đặt + chạy thử lần đầu) và "/tao-video huong-dan" (hướng dẫn nhanh); gõ gần đúng cũng nhận (cai dat, cài đặt, thiet lap, huong dan, hướng dẫn, help).'
 ---
 
 # /tao-video
@@ -58,6 +58,31 @@ Không viết kịch bản, không làm hình: video đã có. `scripts/dung-vid
 Cần skill **motion-studio** (thư viện hiệu ứng) và môi trường `~/.motion-studio/asr-venv` có faster-whisper + opencv
 (`pip install opencv-python-headless`); script tự chuyển sang Python đó. Đã chạy thử: clip MC AI 40 s
 + thẻ kết 6,5 s (21/11/2026). Thời gian: nghe lời ~1 phút, lớp hiệu ứng ~2,5 s xử lý cho 1 s video.
+
+## Sửa hình trước khi dựng (tuỳ chọn — clip quay thật, clip có vấn đề)
+
+`scripts/sua-hinh.py` — chỉ cần ffmpeg. Mỗi lệnh ra **file mới** `<tên>.<việc>.mp4` cạnh clip gốc (không bao giờ đè
+clip gốc), tự kiểm thời lượng tiếng/hình, và làm `<ra>.so-sanh.jpg` (trái gốc | phải đã sửa, 3 mốc) — **xem ảnh đó trước
+khi dùng file**. Không có vấn đề thì bỏ qua cả bước này.
+
+1. `python scripts/sua-hinh.py kiem <video>` — báo HDR, độ sáng, gợi ý lệnh. Rung/nghiêng/cần che: máy không đo,
+   agent xem khung hình rồi **hỏi người dùng trước** khi sửa (đừng tự ý đổi màu/che clip của họ).
+2. Lệnh, theo thứ tự nên chạy (bước sau lấy file ra của bước trước):
+
+| Lệnh | Khi nào | Tham số hay dùng |
+|---|---|---|
+| `hdr-sdr <v>` | `kiem` báo HDR (iPhone HLG, HDR10) — lên TikTok bị nhạt/chói | `--tonemap hable` (mặc định) |
+| `can-thang <v> --do <độ>` | đường chân trời nghiêng | **+ = xoay theo kim đồng hồ**: đường ngang chúi xuống bên phải → số âm |
+| `chong-rung <v>` | quay tay rung | `--muc 15` (10 nhẹ…30 rất mượt) · `--chan-ba` clip vốn định đứng yên |
+| `khu-nhieu <v>` | quay tối, nhiễu hạt; tiếng ù/xì | `--hinh nhe/vua/manh/tat` · `--tieng tat` (mặc định; bật khi nghe rõ ù) |
+| `can-mau <v>` | tối, nhạt, lệch tông giữa các clip | `--tu-dong` · `--sang --tuong-phan --bao-hoa --gamma --am` · `--lut x.cube --lut-manh 0.7` |
+| `che-mo <v> --vung x,y,w,h` | che mặt người lạ, biển số, số điện thoại | tỉ lệ 0–1 hoặc điểm ảnh · `--tu/--den` giây · `--kieu vo` vỡ hạt · lặp `--vung` |
+
+3. File cuối → `dung-video-quay.py chuan-bi` (hoặc thả vào `canh/`) như clip thường.
+
+Giới hạn: `che-mo` là vùng **đứng yên** (người đi qua → nhiều đoạn `--tu/--den`); `hdr-sdr` chỉ chạy khi file có nhãn
+HDR (thiếu nhãn mà chắc là HDR: `--ep`). Đo thật 22/11/2026 trên clip 8 s 1080×1920: chống rung ~13 s (rung giảm 34→14),
+các lệnh khác 5–15 s; không dùng GPU. Cách làm tham khảo ffmpeg-skill (kajisho5, MIT), viết lại gọn cho tao-video.
 
 ## Hai chế độ — hỏi ở đầu
 
