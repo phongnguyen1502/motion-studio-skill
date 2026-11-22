@@ -46,6 +46,17 @@ def need_ffmpeg():
             die(f"không thấy {exe} trên PATH. Windows: winget install Gyan.FFmpeg rồi mở terminal mới.")
 
 
+def need_filters(*names):
+    """Báo rõ bằng tiếng Việt khi ffmpeg thiếu bộ lọc, thay vì lỗi 'No such filter' giữa chừng."""
+    out = subprocess.run(["ffmpeg", "-hide_banner", "-filters"], capture_output=True, text=True,
+                         encoding="utf-8", errors="replace").stdout
+    co = {ln.split()[1] for ln in out.splitlines() if len(ln.split()) >= 2}
+    thieu = [n for n in names if n not in co]
+    if thieu:
+        die(f"ffmpeg trên máy thiếu bộ lọc {', '.join(thieu)}. Cài bản đủ: Windows `winget install --id Gyan.FFmpeg -e`"
+            " · Mac `brew install ffmpeg-full` · Ubuntu `sudo apt install ffmpeg`. Kiểm lại: python kiem-moi-truong.py")
+
+
 def probe(p):
     out = subprocess.run(["ffprobe", "-v", "error", "-show_entries",
                           "format=duration:stream=index,codec_type,codec_name,width,height,pix_fmt,r_frame_rate,"
@@ -212,6 +223,7 @@ def cmd_kiem(args):
 # ---------- chong-rung ----------
 def cmd_chong_rung(args):
     src, out = out_path(args, "on-dinh")
+    need_filters("vidstabdetect", "vidstabtransform")
     m = probe(src)
     pre = "" if not (m["w"] % 2 or m["h"] % 2) else "scale=trunc(iw/2)*2:trunc(ih/2)*2,"
     pre = ("format=yuv420p," if (m["v"].get("pix_fmt") or "").startswith(("rgb", "bgr", "gbr")) else "") + pre
@@ -267,6 +279,7 @@ def cmd_can_mau(args):
         chain.append(f"colorbalance=rm={a:g}:bm={-a:g}:rh={a/2:g}:bh={-a/2:g}")
     with tempfile.TemporaryDirectory(prefix="sua-hinh-") as tmp:
         if args.lut:
+            need_filters("lut3d")
             lut = Path(args.lut).resolve()
             if not lut.exists() or lut.suffix.lower() not in (".cube", ".3dl", ".dat", ".m3d", ".csp"):
                 die(f"không dùng được LUT {lut} (cần file .cube/.3dl có thật).")
@@ -293,6 +306,7 @@ def cmd_can_mau(args):
 # ---------- hdr-sdr ----------
 def cmd_hdr_sdr(args):
     src, out = out_path(args, "sdr")
+    need_filters("zscale", "tonemap")
     m = probe(src)
     v = m["v"]
     if not is_hdr(m) and not args.ep:

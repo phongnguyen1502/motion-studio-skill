@@ -26,6 +26,10 @@ cũ bị Microsoft trả 403), thư mục kho `<KHO>`. **Không cài whisper** (
   rồi nạp lại PATH trong cùng cửa sổ: `$env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User')`.
   `winget install ffmpeg` (không `--id`) có thể hỏi chọn gói → treo.
 - pip `--user` để lệnh `edge-tts` ngoài PATH: không sao, `giong.py` tự gọi `python -m edge_tts`.
+- Hai dòng tuỳ chọn mới: **"ffmpeg đủ bộ lọc sửa hình"** (chống rung, HDR→SDR, LUT — ➖ thì sửa hình báo lỗi rõ, phần
+  khác vẫn chạy; Mac hay thiếu → `brew install ffmpeg-full`) và **"môi trường nghe lời trên máy"** (ghép nhiều góc máy,
+  mic rời, video quay sẵn — ➖ thì chạy `setup-asr` của motion-studio). Người dùng cần các việc đó thì cài, không thì bỏ qua.
+
 Rồi dựng thử không cần mạng AI:
 
 ```bash

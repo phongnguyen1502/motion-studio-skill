@@ -53,7 +53,7 @@ def kiem_pillow():
 def kiem_ffmpeg():
     if not shutil.which("ffmpeg") or not shutil.which("ffprobe"):
         return False, "ffmpeg + ffprobe", cach_cai("brew install ffmpeg", "sudo apt install ffmpeg",
-                                                    "winget install ffmpeg")
+                                                    "winget install --id Gyan.FFmpeg -e")
     return True, "ffmpeg + ffprobe", ""
 
 
@@ -110,6 +110,36 @@ def kiem_numpy():  # tuỳ chọn — đo cao độ giọng clip (do-cao-do-gion
     return ok, "numpy (đo cao độ giọng clip — tuỳ chọn)", "pip install numpy"
 
 
+def kiem_loc_sua_hinh():  # tuỳ chọn — sua-hinh.py: chống rung (vid.stab), HDR→SDR (zimg), LUT
+    can = {"vidstabdetect": "chống rung", "vidstabtransform": "chống rung", "zscale": "HDR→SDR",
+           "tonemap": "HDR→SDR", "lut3d": "LUT màu"}
+    ten = "ffmpeg đủ bộ lọc sửa hình (chống rung, HDR→SDR, LUT — sua-hinh.py)"
+    if not shutil.which("ffmpeg"):
+        return False, ten, "cài ffmpeg trước"
+    _, out = chay(["ffmpeg", "-hide_banner", "-filters"])
+    co = {ln.split()[1] for ln in out.splitlines() if len(ln.split()) >= 2}
+    thieu = sorted({v for k, v in can.items() if k not in co})
+    if not thieu:
+        return True, ten, ""
+    return False, f"{ten} — thiếu: {', '.join(thieu)}", cach_cai(
+        "brew install ffmpeg-full  (bản ffmpeg thường của Homebrew có thể thiếu vid.stab/zimg)",
+        "sudo apt install ffmpeg  (bản Ubuntu/Debian có sẵn libvidstab + libzimg)",
+        "winget install --id Gyan.FFmpeg -e  (bản full build), rồi mở terminal mới")
+
+
+def kiem_ghep_goc():  # tuỳ chọn — ghep-goc.py, chen-canh.py --nghe, dung-video-quay.py: cần numpy + opencv + faster-whisper
+    ten = "môi trường nghe lời trên máy (ghép nhiều góc máy, mic rời, video quay sẵn)"
+    py = os.path.expanduser("~/.motion-studio/asr-venv/" + ("Scripts/python.exe" if HE == "Windows" else "bin/python"))
+    cai = cach_cai("bash ~/.claude/skills/motion-studio/scripts/setup-asr.sh",
+                   "bash ~/.claude/skills/motion-studio/scripts/setup-asr.sh",
+                   "powershell -ExecutionPolicy Bypass -File %USERPROFILE%\\.claude\\skills\\motion-studio\\scripts\\setup-asr.ps1"
+                   "  (hoặc cài lại bằng install.ps1 -WithASR)")
+    if not os.path.exists(py):
+        return False, ten, cai
+    rc, out = chay([py, "-c", "import numpy, cv2, faster_whisper"])
+    return rc == 0, ten + ("" if rc == 0 else f" — thiếu thư viện ({out.strip().splitlines()[-1][:80] if out.strip() else '?'})"), cai
+
+
 def kiem_kho():
     try:
         os.makedirs(KHO, exist_ok=True)
@@ -119,7 +149,7 @@ def kiem_kho():
 
 
 BAT_BUOC = [kiem_python, kiem_pillow, kiem_ffmpeg, kiem_phu_de, kiem_edge, kiem_kho]
-TUY_CHON = [kiem_whisper, kiem_gemini, kiem_node, kiem_numpy]
+TUY_CHON = [kiem_whisper, kiem_gemini, kiem_node, kiem_numpy, kiem_loc_sua_hinh, kiem_ghep_goc]
 
 
 def in_bang():
