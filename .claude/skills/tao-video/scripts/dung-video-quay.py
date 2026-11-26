@@ -469,8 +469,19 @@ def plan_layers(du):
     return back, bool(types & nguoi) or back
 
 
+def extract_stills(du):
+    """'khung:12.5' anywhere in fx-plan.json (polaroid, storyboard images) → work/khung_12.50.jpg from cut.mp4."""
+    txt = (du / "fx-plan.json").read_text(encoding="utf-8")
+    for t in sorted({float(x) for x in re.findall(r'"khung:(\d+(?:\.\d+)?)"', txt)}):
+        o = du / f"work/khung_{t:.2f}.jpg"
+        if not o.exists() or o.stat().st_mtime < (du / "cut.mp4").stat().st_mtime:
+            o.parent.mkdir(exist_ok=True)
+            run(["ffmpeg", "-v", "error", "-y", "-ss", t, "-i", du / "cut.mp4", "-frames:v", "1", "-q:v", "3", o])
+
+
 def prepare_person(du):
     """Matte + track when the plan needs them; points the plan at mat.json. Returns True when there is a back layer."""
+    extract_stills(du)
     back, need = plan_layers(du)
     if need:
         tach(du)

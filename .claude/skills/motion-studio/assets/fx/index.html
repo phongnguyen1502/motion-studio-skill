@@ -65,6 +65,8 @@ const DEMO = {
   'luu-y': {},
   'bieu-do-tron': { center: 'Thu\nnhập' },
   'nhan-dan': { text: 'Bảo vệ\n*cả gia đình*' },
+  // wave 2 effects use their defaults; the polaroid needs a picture (here a drawn placeholder, in a project 'khung:12.5')
+  'polaroid': { img: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x2="0" y2="1"><stop offset="0" stop-color="#ffd59e"/><stop offset="1" stop-color="#ff8a65"/></linearGradient></defs><rect width="100" height="100" fill="url(#g)"/><circle cx="70" cy="30" r="12" fill="#fff6d5"/><path d="M0 80 30 55 55 75 75 60 100 78V100H0Z" fill="#5d4037" opacity=".8"/></svg>'), caption: 'Ngày đầu tiên' },
 };
 
 const only = Q.get('only')?.split(',');

@@ -101,6 +101,7 @@ window.MOTION = { width: F.w, height: F.h, fps: 30, duration: 1, ready: (async (
   warnings.forEach(w => console.error('[fx] ' + w));
   items.forEach((it, n) => { if (it._dien && !Object.keys(it.params || {}).length) console.error(`[fx] #${n + 1} ${it.type}: chưa điền params (còn _dien)`); });
   fxs = items.map(it => createFx(stage, { ...it, theme: it.theme || plan.theme || 'sach', format: F, avoid: it.avoid || plan.avoid || [] }));
+  await Promise.all([...stage.querySelectorAll('.fx img')].map(i => i.decode().catch(() => console.error('[fx] không tải được ảnh ' + i.getAttribute('src')))));
 
   // illustrations: "scenes" = [{ img, start, end }], full-bleed pictures with a slow push-in, dimmed while an effect plays
   if (plan.scenes?.length) {

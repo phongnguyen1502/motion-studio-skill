@@ -255,6 +255,98 @@ const CSS = `
 .fx-lock{position:absolute;left:0;top:0;text-align:center;white-space:nowrap}
 .fx-lock .nm{display:inline-block;font-weight:900;font-size:1.35em;background:var(--fx-accent);color:#fff;padding:.14em .55em .18em;border-radius:.2em}
 .fx-lock .sb{display:block;margin-top:.25em;font-weight:700;font-size:.8em;color:#fff;text-shadow:0 .05em .25em rgba(0,0,0,.6);letter-spacing:.04em}
+/* wave 2: app-like UI (generic, no real app names or logos) */
+.fx-av{flex:none;width:2.1em;height:2.1em;border-radius:50%;display:grid;place-items:center;font-weight:900;color:#fff;font-size:.9em}
+.fx-dts{display:flex;gap:.28em}.fx-dts i{width:.55em;height:.55em;border-radius:50%;background:#ff5f57}.fx-dts i+i{background:#febc2e}.fx-dts i+i+i{background:#28c840}
+.fx-cur{display:inline-block;width:.08em;height:1.1em;background:var(--fx-accent);vertical-align:-.2em;margin-left:.05em}
+.fx-chat .hd{display:flex;align-items:center;gap:.55em;padding-bottom:.55em;margin-bottom:.45em;border-bottom:1px solid var(--fx-track)}
+.fx-chat .nm{font-weight:800;font-size:.85em}.fx-chat .st{font-size:.58em;color:var(--fx-good);font-weight:700}
+.fx-chat .row{display:flex;margin:.32em 0;position:relative}.fx-chat .row.minh{justify-content:flex-end}
+.fx-chat .bb{max-width:78%;padding:.42em .75em .48em;border-radius:1.1em;font-weight:600;font-size:.8em;line-height:1.3;transform-origin:0 100%}
+.fx-chat .ho .bb{background:var(--fx-track);color:var(--fx-ink);border-bottom-left-radius:.3em}
+.fx-chat .minh .bb{background:var(--fx-accent);border-bottom-right-radius:.3em;transform-origin:100% 100%}
+.fx-chat .dots{position:absolute;left:0;top:0;padding:.6em .75em;border-radius:1.1em;background:var(--fx-track);display:flex;gap:.25em;font-size:.8em}
+.fx-chat .dots i{width:.45em;height:.45em;border-radius:50%;background:var(--fx-muted)}
+.fx-cm .top{display:flex;gap:.6em}.fx-cm .nm{font-weight:800;font-size:.75em}.fx-cm .nm span{font-weight:600;color:var(--fx-muted);font-size:.85em;margin-left:.3em}
+.fx-cm .tx{font-weight:600;font-size:.85em;margin-top:.15em;line-height:1.3}
+.fx-cm .ft{display:flex;align-items:center;gap:.45em;margin:.5em 0 0 2.6em;font-size:.72em;color:var(--fx-muted);font-weight:700}
+.fx-cm .ht{color:#ff3b5c;font-size:1.3em;display:inline-block}.fx-cm .ft b{color:var(--fx-ink);min-width:2.6em;font-variant-numeric:tabular-nums}
+.fx-fly{position:absolute;left:0;top:0;color:#ff3b5c;pointer-events:none;text-shadow:0 .05em .2em rgba(0,0,0,.25)}
+.fx-call{background:#16181d;color:#fff;border-radius:1.4em;padding:1em 1.1em 1.1em;box-shadow:0 .8em 2em rgba(0,0,0,.4)}
+.fx-call .tp{display:flex;align-items:center;gap:.9em}.fx-call .aw{position:relative;flex:none}
+.fx-call .aw i{position:absolute;inset:0;border-radius:50%;border:.1em solid #30d158}
+.fx-call .lb{font-size:.6em;letter-spacing:.12em;text-transform:uppercase;color:#9aa0aa;font-weight:700}
+.fx-call .nm{font-weight:900;font-size:1.35em;line-height:1.15}.fx-call .sb{font-size:.7em;color:#c9ced6;font-weight:600;font-variant-numeric:tabular-nums}
+.fx-call .bt{display:flex;justify-content:space-between;margin-top:.9em;padding:0 .8em}
+.fx-call .bt span{width:2.6em;height:2.6em;border-radius:50%;display:grid;place-items:center}
+.fx-call .no{background:#ff3b5c}.fx-call .no svg{transform:rotate(135deg)}.fx-call .yes{background:#30d158}.fx-call svg{width:1.3em;height:1.3em;fill:#fff}
+.fx-br{overflow:hidden}.fx-br .bar{display:flex;align-items:center;gap:.6em;padding:.55em .7em;background:var(--fx-track)}
+.fx-br .ad{flex:1;background:var(--fx-card);border-radius:99em;padding:.3em .8em;font-size:.68em;font-weight:600;white-space:nowrap;overflow:hidden;color:var(--fx-ink)}
+.fx-br .ad b{font-weight:600;color:var(--fx-muted)}.fx-br .ld{height:.18em;background:var(--fx-accent);transform-origin:0 50%}
+.fx-br .pg{padding:.8em 1em 1em}.fx-br .ti{font-weight:900;font-size:1.1em;line-height:1.2}
+.fx-br .tx{font-weight:500;font-size:.75em;color:var(--fx-muted);margin-top:.4em;line-height:1.4}
+.fx-br .sk{height:.55em;border-radius:.3em;background:var(--fx-track);margin-top:.5em}.fx-br .sk+.sk{width:70%}
+.fx-tm{background:#0d1117;border-radius:.7em;overflow:hidden;box-shadow:0 .8em 2em rgba(0,0,0,.4);color:#e6edf3}
+.fx-tm .bar{display:flex;align-items:center;gap:.6em;padding:.45em .7em;background:#161b22}
+.fx-tm .bar span{font-size:.58em;color:#8b949e;font-weight:600;flex:1;text-align:center;margin-right:3em}
+.fx-tm .bd{padding:.7em .9em .9em;font-family:'Cascadia Mono',Consolas,'Courier New',monospace;font-size:.72em;line-height:1.55}
+.fx-tm .ln{white-space:pre-wrap;word-break:break-word}.fx-tm .pr{color:#3fb950;font-weight:700}.fx-tm .o{color:#9da7b3}.fx-tm em{color:#ffd23f}
+.fx-rc{display:flex;flex-direction:column;align-items:center}
+.fx-rc .sl{width:100%;height:.75em;border-radius:.38em;background:#26272b;box-shadow:inset 0 -.15em .2em rgba(255,255,255,.12);position:relative;z-index:2}
+.fx-rc .wr{width:84%;overflow:hidden;margin-top:-.38em;padding-bottom:.8em;filter:drop-shadow(0 .35em .5em rgba(0,0,0,.28))}
+.fx-rc .pp{background:#fffdf7;color:#1d1d1f;padding:1.2em 1em 1.5em;font-family:'Cascadia Mono',Consolas,'Courier New',monospace;font-size:.72em}
+.fx-rc .t{text-align:center;font-weight:800;font-size:1.25em;letter-spacing:.08em}.fx-rc .hr{border-top:.12em dashed #9a9a9a;margin:.6em 0}
+.fx-rc .r{display:flex;gap:.4em;margin:.28em 0;align-items:baseline}.fx-rc .r i{flex:1;border-bottom:.12em dotted #b0b0b0}
+.fx-rc .r b{font-weight:700;white-space:nowrap}.fx-rc .tot{font-size:1.25em;font-weight:900}.fx-rc .tot b{font-weight:900}
+.fx-rc .nt{text-align:center;color:#666;margin-top:.55em}.fx-rc em{color:#d62d20}
+.fx-pf{position:relative}.fx-pf .rw{display:flex;align-items:center;gap:.7em}.fx-pf .nm{font-weight:900;font-size:1.05em;line-height:1.15}
+.fx-pf .hd{font-size:.7em;color:var(--fx-muted);font-weight:600}.fx-pf .stt{display:flex;justify-content:space-around;margin:.75em 0 .8em;text-align:center}
+.fx-pf .stt b{display:block;font-weight:900;font-size:1em;font-variant-numeric:tabular-nums}.fx-pf .stt span{font-size:.58em;color:var(--fx-muted);font-weight:700}
+.fx-pf .btn{text-align:center;font-weight:800;font-size:.8em;padding:.55em;border-radius:.6em;background:var(--fx-accent)}
+.fx-pf .cur{position:absolute;left:0;top:0;width:1.7em;height:1.7em;filter:drop-shadow(0 .1em .2em rgba(0,0,0,.45))}
+.fx-sr .bar{display:flex;align-items:center;gap:.55em;padding:.6em 1em;border-radius:99em}
+.fx-sr svg{width:1.1em;height:1.1em;flex:none;stroke:var(--fx-muted);fill:none;stroke-width:2.6;stroke-linecap:round}
+.fx-sr .q{font-weight:700;font-size:.9em;white-space:nowrap;overflow:hidden}
+.fx-sr .dd{margin-top:.4em;padding:.35em 0;border-radius:.9em}.fx-sr .it{display:flex;align-items:center;gap:.6em;padding:.45em 1em;font-size:.78em;font-weight:500}
+.fx-sr .it b{font-weight:800}.fx-sr .it.on{background:var(--fx-track)}
+.fx-rv .sts{display:flex;gap:.12em;font-size:1.6em;line-height:1}.fx-rv .st{position:relative;color:var(--fx-track);display:inline-block}
+.fx-rv .st i{position:absolute;left:0;top:0;overflow:hidden;color:#ffc531;font-style:normal;white-space:nowrap}
+.fx-rv .tx{font-weight:700;font-size:.92em;line-height:1.35;margin:.5em 0 .6em;text-wrap:pretty}
+.fx-rv .au{display:flex;align-items:center;gap:.5em;font-size:.7em}.fx-rv .au b{font-weight:800;display:block}.fx-rv .au span{color:var(--fx-muted);font-weight:600}
+.fx-cta{text-align:left}.fx-cta .lb{display:inline-block;font-weight:900;font-size:.85em;padding:.3em .7em;border-radius:.4em;background:var(--fx-accent);margin-bottom:.45em;box-shadow:var(--fx-shadow)}
+.fx-cta .bar{display:flex;align-items:center;gap:.55em;padding:.5em .6em;border-radius:99em}
+.fx-cta .f{flex:1;font-weight:800;font-size:.95em;padding:.32em .8em;border-radius:99em;background:var(--fx-track);white-space:nowrap;overflow:hidden;min-height:1.7em}
+.fx-cta .ph{color:var(--fx-muted);font-weight:600}.fx-cta .snd{flex:none;width:2.1em;height:2.1em;border-radius:50%;background:var(--fx-accent);display:grid;place-items:center}
+.fx-cta .snd svg{width:1.05em;height:1.05em}.fx-cta .ok{display:inline-block;margin-top:.45em;font-weight:800;font-size:.7em;padding:.25em .7em;border-radius:99em;background:var(--fx-good);color:#fff}
+/* wave 2: paper and magazine */
+.fx-mag{position:absolute;left:0;width:100%;text-align:center;font-family:Cambria,'Times New Roman',serif;font-weight:700;line-height:.9;letter-spacing:-.02em;white-space:nowrap;text-shadow:0 .03em .12em rgba(0,0,0,.3)}
+.fx-mag-i{position:absolute;left:0;width:100%;display:flex;align-items:center;gap:.8em;justify-content:center;font-weight:800;letter-spacing:.25em;text-shadow:0 .05em .2em rgba(0,0,0,.5)}
+.fx-mag-i i{flex:none;width:3em;height:.1em;background:currentColor}
+.fx-mag-l{position:absolute;font-weight:900;text-transform:uppercase;line-height:1.05;text-shadow:0 .05em .25em rgba(0,0,0,.55)}
+.fx-mag-l em{display:block;font-family:Cambria,'Times New Roman',serif;font-size:2.1em;line-height:.95;color:var(--fx-accent)}
+.fx-pl{width:54%;margin:0 auto;background:#fdfdf8;padding:.55em .55em 0;box-shadow:0 .6em 1.6em rgba(0,0,0,.35);position:relative;transform-origin:50% 0}
+.fx-pl .im{width:100%;overflow:hidden;background:#ddd}.fx-pl img{width:100%;height:100%;object-fit:cover;object-position:50% 28%;display:block}
+.fx-pl .cp{color:#2b2b2b;text-align:center;font-weight:700;font-style:italic;font-size:.95em;padding:.5em .2em .7em;line-height:1.2}
+.fx-tape{position:absolute;left:50%;top:-.6em;width:4.2em;height:1.2em;margin-left:-2.1em;background:rgba(255,246,214,.75);box-shadow:0 .05em .15em rgba(0,0,0,.15);transform:rotate(-4deg)}
+.fx-cal{width:8.5em;margin:0 auto;position:relative}
+.fx-cal .hd{background:var(--fx-accent);border-radius:.5em .5em 0 0;padding:.5em 0 .45em;text-align:center;font-weight:900;font-size:.8em;letter-spacing:.12em;position:relative}
+.fx-cal .hd::before,.fx-cal .hd::after{content:'';position:absolute;top:-.35em;width:.45em;height:1em;border-radius:.3em;background:#333;left:25%}.fx-cal .hd::after{left:auto;right:25%}
+.fx-cal .pg{background:#fff;color:#1d1d1f;height:6.2em;display:grid;place-items:center;box-shadow:0 .6em 1.4em rgba(0,0,0,.3)}
+.fx-cal .pg b{font-size:4.6em;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+.fx-cal .bot{border-radius:0 0 .5em .5em}.fx-cal .fl{position:absolute;left:0;right:0;transform-origin:50% 0;box-shadow:0 .2em .6em rgba(0,0,0,.25)}
+.fx-cal-l{text-align:center;margin-top:.45em;font-size:1.25em}
+.fx-sb .g{display:grid;gap:.55em}.fx-sb .pn{display:flex;flex-direction:column;gap:.3em}
+.fx-sb .fr{aspect-ratio:3/4;border:.12em solid var(--fx-ink);border-radius:.35em;display:grid;place-items:center;overflow:hidden;background:var(--fx-track);position:relative}
+.fx-sb .fr b{font-weight:900;font-size:1.6em;color:var(--fx-muted)}.fx-sb .fr img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 28%}
+.fx-sb .cp{font-weight:800;font-size:.7em;text-align:center;line-height:1.2}.fx-sb .pn.on .fr{border-color:var(--fx-accent);box-shadow:0 0 0 .12em var(--fx-accent)}
+.fx-tp{filter:drop-shadow(0 .3em .5em rgba(0,0,0,.3))}.fx-tp .s{padding:.75em 1.3em;color:#1d2a44;text-align:center}
+.fx-tp .tx{font-weight:900;font-size:1.5em;line-height:1.15;white-space:nowrap}.fx-tp .tx em{color:#e4572e}
+.fx-tp .sb{font-weight:700;font-size:.72em;margin-top:.25em;color:#4a5568}
+.fx-nt2{width:74%;margin:0 auto;padding:1.4em 1.1em 1.2em;color:#2b2b2b;position:relative;box-shadow:0 .9em 1.2em -.6em rgba(0,0,0,.45),0 .1em .3em rgba(0,0,0,.15)}
+.fx-nt2 .t{font-weight:900;font-size:1.15em;display:inline-block;position:relative}
+.fx-nt2 .t svg{position:absolute;left:-.1em;bottom:-.35em;width:110%;height:.5em;overflow:visible}
+.fx-nt2 .it{font-weight:700;font-size:.85em;margin-top:.5em;display:flex;gap:.45em;line-height:1.25}.fx-nt2 .it::before{content:'–';flex:none}
+.fx-nt2 em{color:#d62d20}
 `;
 function injectCSS() {
   if (document.getElementById('fx-css')) return;
@@ -361,6 +453,47 @@ const DOODLES = {
   tim: [{ at: f => [f.cx + f.w * 0.78, f.cy - f.h * 0.62], d: 'M0 14 C-26 -4 -16 -24 0 -12 C16 -24 26 -4 0 14 Z' }],
   'dau-hoi': [{ at: f => [f.cx + f.w * 0.72, f.top - f.h * 0.02], d: 'M-10 -14 C-10 -30 14 -30 14 -14 C14 -4 2 -2 2 8 M2 20 L2 21' }],
 };
+
+// ---------- wave 2 helpers ----------
+const AV_COLORS = ['#ff7a59', '#7c5cff', '#00b894', '#0984e3', '#e84393', '#e17055'];
+// Round avatar with the first letter of a name (no photos of real people).
+function avatar(parent, name, size) {
+  const s = String(name ?? '?').replace(/\*/g, '').trim(), a = h('div', 'fx-av', parent, esc((Array.from(s)[0] || '?').toUpperCase()));
+  let n = 0; for (const ch of s) n = (n * 31 + ch.charCodeAt(0)) | 0;
+  a.style.background = AV_COLORS[Math.abs(n) % AV_COLORS.length];
+  if (size) a.style.fontSize = 0.9 * size + 'em';
+  return a;
+}
+// Readable text colour on top of the theme accent (yellow accent → dark text).
+function onAccent(node, v = '--fx-accent') {
+  const c = getComputedStyle(node).getPropertyValue(v).trim(), m = c.match(/^#([0-9a-f]{6})$/i);
+  if (!m) return '#fff';
+  const n = parseInt(m[1], 16), L = (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255;
+  return L > 0.62 ? '#111' : '#fff';
+}
+// Image paths in params are relative to the PROJECT (the page lives in PROJ/fx/). "khung:12.5" = a still of the footage
+// at 12.5 s, which dung-video-quay.py extracts to PROJ/work/khung_12.50.jpg before rendering.
+export function imgSrc(s) {
+  const m = String(s ?? '').match(/^khung:(\d+(?:\.\d+)?)$/);
+  if (m) return `../work/khung_${(+m[1]).toFixed(2)}.jpg`;
+  return /^(https?:|data:|\/|\.\.\/)/.test(s) ? s : '../' + s;
+}
+// 12500 → "12,5K" (the short form social apps use).
+const fmtShort = v => (v >= 1e4 ? (v >= 1e6 ? (v / 1e6).toFixed(1) + 'M' : (v / 1e3).toFixed(1) + 'K').replace(/\.0(?=[KM])/, '').replace('.', ',') : fmtNum(Math.round(v)));
+// Characters typed from `at` at `cps` per second into node (plain text), with an optional cursor element after it.
+const typed = (node, text, t, at, cps) => { const ch = Array.from(String(text)), n = clamp(Math.floor((t - at) * cps), 0, ch.length); node.textContent = ch.slice(0, n).join(''); return n >= ch.length; };
+const typeTicks = (text, at, cps, gain = 0.05) => Array.from(String(text)).filter((_, i) => i % 2 === 0).map((_, i) => ({ t: at + (i * 2) / cps, s: 'tick', gain, opts: { f: 3000 } }));
+const PHONE_SVG = '<svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z"/></svg>';
+const SEARCH_SVG = '<svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>';
+const SEND_SVG = '<svg viewBox="0 0 24 24"><path d="M3 11.5 20.5 4l-7.5 17.5-2.2-7.8z" fill="currentColor"/></svg>';
+const CURSOR_SVG = '<svg viewBox="0 0 24 24"><path d="M4 2.5v17l4.6-4.3 3 6.6 2.9-1.3-3-6.5 6.3-.3z" fill="#fff" stroke="#111" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+// Jagged polygon (torn paper) for clip-path, in px of a w×h box.
+function tornPath(w, h, amp, seed, sides = 'tb') {
+  const r = rng(seed), n = Math.max(8, Math.round(w / (amp * 2.2))), pts = [];
+  for (let i = 0; i <= n; i++) pts.push(`${(w * i) / n}px ${sides.includes('t') ? r() * amp : 0}px`);
+  for (let i = n; i >= 0; i--) pts.push(`${(w * i) / n}px ${sides.includes('b') ? h - r() * amp : h}px`);
+  return `polygon(${pts.join(',')})`;
+}
 
 // ---------- the effects ----------
 // Each: dur (default length), enter, zones (preference), cues {name: default offset from start}, defaults, build().
@@ -1083,6 +1216,417 @@ export const FX = {
                  ...(close ? [{ t: c.end, s: 'whoosh', gain: 0.22, opts: { dur: D, from: 3000, to: 300 } }] : [])],
       };
     },
+  },
+
+  // ===== wave 2: app-like UI. Generic look: never a real app's name, logo or layout as "proof". =====
+  'khung-chat': {
+    dur: 4.5, enter: 'rise', zones: ['giua', 'tren', 'duoi'], cues: {},
+    defaults: { title: 'Lan', status: 'Đang hoạt động', messages: [{ from: 'ho', text: 'Mai anh rảnh không?' }, { from: 'minh', text: 'Rảnh nè, có gì vậy em?' }] },
+    build(el, p, c) {
+      el.classList.add('fx-card', 'fx-chat');
+      const hd = h('div', 'hd', el); avatar(hd, p.title);
+      const tt = h('div', null, hd); h('div', 'nm', tt, rich(p.title)); if (p.status) h('div', 'st', tt, '● ' + esc(p.status));
+      const on = onAccent(el);
+      let at = c.start + 0.3;
+      const ms = p.messages.slice(0, 5).map((m, i) => {
+        const mine = m.from === 'minh', row = h('div', 'row ' + (mine ? 'minh' : 'ho'), el), bb = h('div', 'bb', row, rich(m.text));
+        if (mine) bb.style.color = on;
+        const dots = mine ? null : h('div', 'dots', row, '<i></i><i></i><i></i>');
+        const show = c.cues['m' + (i + 1)] ?? at + (mine ? 0.1 : 0.55);
+        at = show + 0.75;
+        return { bb, dots, show, mine };
+      });
+      return {
+        seek(t) {
+          for (const k of ms) {
+            const s = spring(t - k.show, { stiffness: 320, damping: 20 });
+            k.bb.style.opacity = t < k.show ? 0 : clamp(s * 3); k.bb.style.transform = `scale(${t < k.show ? 0.6 : 0.6 + 0.4 * s})`;
+            if (k.dots) {
+              k.dots.style.opacity = t >= k.show - 0.55 && t < k.show ? 1 : 0;
+              [...k.dots.children].forEach((d, j) => { d.style.transform = `translateY(${-Math.max(0, Math.sin(t * 9 - j * 0.9)) * 0.28}em)`; });
+            }
+          }
+        },
+        sounds: ms.map(k => (k.mine ? { t: k.show, s: 'whoosh', gain: 0.1, opts: { dur: 0.15, from: 2000, to: 7000 } } : { t: k.show, s: 'pop', gain: 0.22 })),
+      };
+    },
+  },
+
+  'binh-luan': {
+    dur: 4, enter: 'rise', zones: ['duoi', 'giua', 'tren'], cues: { like: 1.1 },
+    defaults: { name: 'Minh Anh', text: 'Video hữu ích quá, cảm ơn chị!', likes: 128, time: '2 giờ' },
+    build(el, p, c) {
+      el.classList.add('fx-card', 'fx-cm');
+      const top = h('div', 'top', el); avatar(top, p.name);
+      const bd = h('div', null, top);
+      h('div', 'nm', bd, rich(p.name) + (p.time ? `<span>${esc(p.time)}</span>` : '')); h('div', 'tx', bd, rich(p.text));
+      const ft = h('div', 'ft', el), ht = h('span', 'ht', ft, '♥'), cnt = h('b', null, ft); h('span', null, ft, 'Trả lời');
+      const L = c.cues.like, from = Math.max(0, p.likes - Math.min(24, p.likes));
+      const x0 = ht.offsetLeft, y0 = ht.offsetTop, fs = parseFloat(getComputedStyle(ht).fontSize);   // offsetParent = el
+      const fly = Array.from({ length: 7 }, (_, i) => ({ n: h('span', 'fx-fly', el, '♥'), at: L + i * 0.13, dx: (rng(i + 3)() - 0.5) * 2.4, s: 0.8 + rng(i + 9)() * 0.9 }));
+      return {
+        seek(t) {
+          cnt.textContent = fmtShort(lerp(from, p.likes, prog(t, L, 1.1, E.outCubic)));
+          ht.style.transform = `scale(${1 + 0.45 * Math.sin(Math.PI * clamp((t - L) / 0.3))})`;
+          for (const k of fly) {
+            const a = (t - k.at) / 1.3;
+            k.n.style.opacity = a < 0 || a > 1 ? 0 : 1 - a * a;
+            k.n.style.fontSize = fs * k.s + 'px';
+            k.n.style.transform = `translate(${x0 + (Math.sin(a * 7 + k.dx) * 0.5 + k.dx * a) * fs}px,${y0 - a * 5 * fs}px) scale(${0.6 + 0.6 * Math.min(1, a * 4)})`;
+          }
+        },
+        sounds: [{ t: c.start, s: 'pop', gain: 0.2 }, { t: L, s: 'pop', gain: 0.3 }, ...[0.15, 0.4, 0.65].map(d => ({ t: L + d, s: 'tick', gain: 0.06, opts: { f: 2600 } }))],
+      };
+    },
+  },
+
+  'cuoc-goi': {
+    dur: 4, enter: 'drop', zones: ['tren', 'giua'], cues: {},
+    defaults: { name: 'Mẹ', sub: 'Di động', label: 'Cuộc gọi đến' },
+    build(el, p, c) {
+      el.classList.add('fx-call');
+      const tp = h('div', 'tp', el), aw = h('div', 'aw', tp), rings = [0, 1].map(() => h('i', null, aw)); avatar(aw, p.name, 1.7);
+      const tx = h('div', null, tp); h('div', 'lb', tx, esc(p.label)); h('div', 'nm', tx, rich(p.name)); const sb = h('div', 'sb', tx, esc(p.sub));
+      const bt = h('div', 'bt', el), no = h('span', 'no', bt, PHONE_SVG), yes = h('span', 'yes', bt, PHONE_SVG);
+      const N = c.cues.nhan, stop = N ?? c.end;
+      const sounds = [];
+      for (let r = c.start + 0.2; r < stop - 0.2; r += 1.2) for (const d of [0, 0.09, 0.18, 0.4, 0.49, 0.58]) sounds.push({ t: r + d, s: 'tick', gain: 0.07, opts: { f: 1450 } });
+      if (N != null) sounds.push({ t: N, s: 'pop', gain: 0.3 });
+      return {
+        seek(t) {
+          const ringing = N == null || t < N, ph = (t - c.start - 0.2) % 1.2;
+          c.root.style.transform = ringing && ph >= 0 && ph < 0.65 ? `rotate(${Math.sin(t * 95) * 1.3}deg)` : '';
+          rings.forEach((r, i) => { const f = (t * 0.9 + i * 0.5) % 1; r.style.transform = `scale(${1 + f * 0.7})`; r.style.opacity = ringing ? 1 - f : 0; });
+          if (!ringing) { sb.textContent = '00:' + String(Math.floor(t - N)).padStart(2, '0'); yes.style.transform = `scale(${1 + 0.18 * Math.sin(Math.PI * clamp((t - N) / 0.3))})`; no.style.opacity = 0.3; }
+          else { sb.textContent = p.sub; no.style.opacity = 1; yes.style.transform = `scale(${1 + 0.06 * Math.sin(t * 8)})`; }
+        },
+        sounds,
+      };
+    },
+  },
+
+  'trinh-duyet': {
+    dur: 4.6, enter: 'rise', zones: ['giua', 'tren', 'duoi'], cues: { go: 0.3 },
+    defaults: { url: 'tenmien.vn/bai-viet', title: 'Tiêu đề trang', text: 'Đoạn mô tả ngắn hiện ra khi trang tải xong.', cps: 22 },
+    build(el, p, c) {
+      el.classList.add('fx-card', 'fx-br'); el.style.padding = '0';
+      const bar = h('div', 'bar', el); h('div', 'fx-dts', bar, '<i></i><i></i><i></i>');
+      const ad = h('div', 'ad', bar); h('b', null, ad, 'https://'); const u = h('span', null, ad), cur = h('span', 'fx-cur', ad);
+      const ld = h('div', 'ld', el), pg = h('div', 'pg', el);
+      const parts = [h('div', 'ti', pg, rich(p.title)), h('div', 'tx', pg, rich(p.text)), h('div', 'sk', pg), h('div', 'sk', pg)];
+      const T = c.cues.go, L = T + Array.from(p.url).length / p.cps + 0.15, D = 0.6;
+      return {
+        seek(t) {
+          const done = typed(u, p.url, t, T, p.cps);
+          cur.style.opacity = !done || Math.floor(t * 2.2) % 2 === 0 ? (t < L ? 1 : 0) : 0;
+          ld.style.transform = `scaleX(${prog(t, L, D, E.inOutCubic)})`; ld.style.opacity = 1 - prog(t, L + D, 0.2);
+          parts.forEach((n, i) => { const q = prog(t, L + D * 0.6 + i * 0.12, 0.35); n.style.opacity = q; n.style.transform = `translateY(${(1 - q) * 0.5}em)`; });
+        },
+        sounds: [...typeTicks(p.url, T, p.cps), { t: L + D, s: 'pop', gain: 0.2 }],
+      };
+    },
+  },
+
+  'terminal': {
+    dur: 4.6, enter: 'rise', zones: ['giua', 'tren', 'duoi'], cues: { go: 0.3 },
+    defaults: { title: 'terminal', lines: [{ cmd: 'dựng video clip-1.mp4' }, { out: '✔ Đã cắt 12 chỗ vấp' }, { out: '✔ Xuất *video.mp4*' }], cps: 20 },
+    build(el, p, c) {
+      el.classList.add('fx-tm');
+      const bar = h('div', 'bar', el); h('div', 'fx-dts', bar, '<i></i><i></i><i></i>'); h('span', null, bar, esc(p.title));
+      const bd = h('div', 'bd', el);
+      let at = c.cues.go;
+      const ls = p.lines.slice(0, 6).map((l, i) => {
+        const n = h('div', 'ln', bd), cue = c.cues['l' + (i + 1)];
+        if (cue != null) at = cue;
+        if (l.cmd != null) {
+          n.innerHTML = '<span class="pr">❯</span> '; const tx = h('span', null, n), cur = h('span', 'fx-cur', n);
+          const k = { n, tx, cur, cmd: l.cmd, at, end: at + Array.from(l.cmd).length / p.cps }; at = k.end + 0.3; return k;
+        }
+        n.className = 'ln o'; n.innerHTML = rich(l.out); const k = { n, at }; at += 0.3; return k;
+      });
+      return {
+        seek(t) {
+          const last = ls.filter(k => k.cmd != null && k.at <= t).at(-1);   // the cursor sits on the latest command
+          for (const k of ls) {
+            k.n.style.visibility = t >= k.at ? 'visible' : 'hidden';
+            if (k.cmd == null) continue;
+            typed(k.tx, k.cmd, t, k.at, p.cps);
+            k.cur.style.display = k === last ? '' : 'none';
+            k.cur.style.opacity = t < k.end || Math.floor(t * 2.2) % 2 === 0 ? 1 : 0;
+          }
+        },
+        sounds: ls.flatMap(k => (k.cmd != null ? typeTicks(k.cmd, k.at, p.cps, 0.05) : [{ t: k.at, s: 'tick', gain: 0.08, opts: { f: 1200 } }])),
+      };
+    },
+  },
+
+  'hoa-don': {
+    dur: 4.6, enter: 'none', zones: ['giua', 'tren'], cues: { print: 0.3 },
+    defaults: { title: 'HOÁ ĐƠN', items: [{ name: 'Gói cơ bản', price: '199.000đ' }, { name: 'Phí giao hàng', price: '0đ' }], total: '199.000đ', note: 'Cảm ơn quý khách!' },
+    build(el, p, c) {
+      el.classList.add('fx-rc');
+      h('div', 'sl', el); const wr = h('div', 'wr', el), pp = h('div', 'pp', wr);
+      h('div', 't', pp, rich(p.title)); h('div', 'hr', pp);
+      for (const it of p.items.slice(0, 6)) { const r = h('div', 'r', pp); h('span', null, r, rich(it.name)); h('i', null, r); h('b', null, r, esc(it.price)); }
+      h('div', 'hr', pp);
+      const tr = h('div', 'r tot', pp); h('span', null, tr, 'TỔNG'); h('i', null, tr); h('b', null, tr, esc(p.total));
+      if (p.note) h('div', 'nt', pp, rich(p.note));
+      const W0 = pp.offsetWidth, H0 = pp.offsetHeight, n = 22, tw = W0 / n, pts = ['0 0', `${W0}px 0`];
+      for (let i = n; i >= 0; i--) pts.push(`${i * tw}px ${H0 - (i % 2 ? tw * 0.5 : 0)}px`);
+      pp.style.clipPath = `polygon(${pts.join(',')})`;
+      const T = c.cues.print, D = 0.4 + 0.18 * (p.items.length + 4);
+      return {
+        seek(t) {
+          const q = prog(t, T, D, E.linear), qs = Math.floor(q * 24) / 24;   // stepped, like a printer
+          pp.style.transform = `translateY(${-(1 - qs) * 100}%)`;
+          el.style.opacity = 1 - prog(t, c.end - 0.3, 0.3);
+        },
+        sounds: Array.from({ length: Math.floor(D / 0.06) }, (_, i) => ({ t: T + i * 0.06, s: 'tick', gain: 0.045, opts: { f: 900 + (i % 3) * 120 } })),
+      };
+    },
+    noExit: true,
+  },
+
+  'theo-doi': {
+    dur: 4, enter: 'rise', zones: ['giua', 'tren', 'duoi'], cues: { bam: 1.7 },
+    defaults: { name: 'Gabee Studio', handle: '@gabee', followers: 12500, posts: 86, following: 120, button: 'Theo dõi', done: 'Đang theo dõi' },
+    build(el, p, c) {
+      el.classList.add('fx-card', 'fx-pf');
+      const rw = h('div', 'rw', el); avatar(rw, p.name, 1.5);
+      const nm = h('div', null, rw); h('div', 'nm', nm, rich(p.name)); h('div', 'hd', nm, esc(p.handle));
+      const st = h('div', 'stt', el), stat = (v, l) => { const d = h('div', null, st), b = h('b', null, d, fmtShort(v)); h('span', null, d, esc(l)); return b; };
+      stat(p.posts, 'bài viết'); const fb = stat(p.followers, 'người theo dõi'); stat(p.following, 'đang theo dõi');
+      const btn = h('div', 'btn', el, esc(p.button)), on = onAccent(el); btn.style.color = on;
+      const cur = h('div', 'cur', el, CURSOR_SVG);
+      const B = c.cues.bam, bx = btn.offsetLeft + btn.offsetWidth * 0.62, by = btn.offsetTop + btn.offsetHeight * 0.45, em1 = parseFloat(getComputedStyle(el).fontSize);
+      return {
+        seek(t) {
+          fb.textContent = fmtShort(lerp(p.followers * 0.9, p.followers, prog(t, c.start + 0.2, 1, E.outCubic)) + (t >= B ? 1 : 0));
+          const m = prog(t, B - 0.65, 0.55, E.inOutCubic), click = Math.sin(Math.PI * clamp((t - B) / 0.18));
+          cur.style.opacity = clamp((t - (B - 0.7)) / 0.15) * (1 - prog(t, B + 0.6, 0.3));
+          cur.style.transform = `translate(${bx + (1 - m) * 4 * em1}px,${by + (1 - m) * 2.5 * em1}px) scale(${1 - 0.18 * click})`;
+          const done = t >= B;
+          btn.textContent = done ? '✓ ' + p.done : p.button;
+          btn.style.background = done ? 'var(--fx-track)' : ''; btn.style.color = done ? 'var(--fx-ink)' : on;
+          btn.style.transform = `scale(${1 - 0.05 * click})`;
+        },
+        sounds: [{ t: B, s: 'tick', gain: 0.2, opts: { f: 1800 } }, { t: B + 0.05, s: 'pop', gain: 0.28 }],
+      };
+    },
+  },
+
+  'tim-kiem': {
+    dur: 4, enter: 'drop', zones: ['tren', 'giua'], cues: { go: 0.3 },
+    defaults: { query: 'cách tiết kiệm mỗi tháng', suggestions: ['cách tiết kiệm mỗi tháng 5 triệu', 'cách tiết kiệm cho người mới đi làm'], cps: 18 },
+    build(el, p, c) {
+      el.classList.add('fx-sr');
+      const bar = h('div', 'fx-card bar', el); bar.insertAdjacentHTML('beforeend', SEARCH_SVG);
+      const q = h('div', 'q', bar), qt = h('span', null, q), cur = h('span', 'fx-cur', q);
+      const dd = h('div', 'fx-card dd', el);
+      const its = p.suggestions.slice(0, 4).map((s, i) => {
+        const it = h('div', 'it' + (i ? '' : ' on'), dd); it.insertAdjacentHTML('beforeend', SEARCH_SVG);
+        const k = fold(p.query), str = String(s);
+        it.insertAdjacentHTML('beforeend', fold(str).startsWith(k) ? `<span>${esc(str.slice(0, p.query.length))}<b>${esc(str.slice(p.query.length))}</b></span>` : `<span>${rich(str)}</span>`);
+        return it;
+      });
+      const T = c.cues.go, L = T + Array.from(p.query).length / p.cps;
+      return {
+        seek(t) {
+          const done = typed(qt, p.query, t, T, p.cps);
+          cur.style.opacity = !done || Math.floor(t * 2.2) % 2 === 0 ? 1 : 0;
+          const o = prog(t, L - 0.2, 0.25); dd.style.opacity = o; dd.style.transform = `translateY(${(1 - o) * -0.4}em)`;
+          its.forEach((it, i) => { it.style.opacity = prog(t, L - 0.1 + i * 0.1, 0.25); });
+        },
+        sounds: typeTicks(p.query, T, p.cps),
+      };
+    },
+  },
+
+  'danh-gia': {
+    dur: 4, enter: 'rise', zones: ['giua', 'tren', 'duoi'], cues: { run: 0.35 },
+    defaults: { stars: 5, text: 'Dùng 3 tháng rồi, rất đáng tiền!', name: 'Thu Hà', sub: 'Khách hàng' },
+    build(el, p, c) {
+      el.classList.add('fx-card', 'fx-rv');
+      const row = h('div', 'sts', el), v = clamp(Math.round(p.stars * 2) / 2, 0, 5);
+      const st = Array.from({ length: 5 }, (_, i) => { const s = h('span', 'st', row, '★'), f = h('i', null, s, '★'); f.style.width = clamp(v - i) * 100 + '%'; return { s, on: v - i > 0 }; });
+      h('div', 'tx', el, '“' + rich(p.text) + '”');
+      const au = h('div', 'au', el); avatar(au, p.name, 0.9); const nm = h('div', null, au); h('b', null, nm, rich(p.name)); if (p.sub) h('span', null, nm, esc(p.sub));
+      const T = c.cues.run;
+      return {
+        seek(t) { st.forEach((k, i) => { const s = spring(t - T - i * 0.13, { stiffness: 380, damping: 13 }); k.s.style.transform = `scale(${t < T + i * 0.13 ? 0.5 : 0.5 + 0.5 * s})`; k.s.style.opacity = t < T + i * 0.13 ? 0.35 : 1; }); },
+        sounds: st.filter(k => k.on).map((_, i) => ({ t: T + i * 0.13, s: 'tick', gain: 0.12, opts: { f: 2200 + i * 260 } })),
+      };
+    },
+  },
+
+  'cta-binh-luan': {
+    dur: 4, enter: 'rise', zones: ['duoi', 'giua'], cues: { go: 0.5 },
+    defaults: { label: 'Bình luận để nhận tài liệu', text: 'MUỐN', placeholder: 'Viết bình luận…', you: 'Bạn', cps: 8 },
+    build(el, p, c) {
+      el.classList.add('fx-cta');
+      const on = onAccent(el);
+      const lb = h('div', 'lb', el, rich(p.label)); lb.style.color = on;
+      const bar = h('div', 'fx-card bar', el); avatar(bar, p.you);
+      const f = h('div', 'f', bar), ph = h('span', 'ph', f, esc(p.placeholder)), tx = h('span', null, f), cur = h('span', 'fx-cur', f);
+      const snd = h('div', 'snd', bar, SEND_SVG); snd.style.color = on;
+      const ok = h('div', 'ok', el, '✓ Đã gửi');
+      const T = c.cues.go, S = T + Array.from(p.text).length / p.cps + 0.3;
+      return {
+        seek(t) {
+          typed(tx, p.text, t, T, p.cps);
+          ph.style.display = t < T ? '' : 'none'; cur.style.display = t >= T && t < S ? '' : 'none';
+          snd.style.transform = `scale(${1 + 0.3 * Math.sin(Math.PI * clamp((t - S) / 0.25))})`;
+          if (t >= S + 0.1) { tx.textContent = ''; ph.style.display = ''; }
+          const s = spring(t - S - 0.15, { stiffness: 300, damping: 15 }); ok.style.opacity = t < S + 0.15 ? 0 : clamp(s * 3); ok.style.transform = `scale(${t < S + 0.15 ? 0.6 : 0.6 + 0.4 * s})`;
+        },
+        sounds: [...typeTicks(p.text, T, p.cps, 0.07), { t: S, s: 'whoosh', gain: 0.15, opts: { dur: 0.2, from: 1500, to: 6000 } }, { t: S + 0.15, s: 'pop', gain: 0.25 }],
+      };
+    },
+  },
+
+  // ===== wave 2: paper and magazine =====
+  'bia-tap-chi': {
+    dur: 4, enter: 'none', full: true, noExit: true, cues: {},
+    defaults: { title: 'TÂM AN', issue: 'SỐ 12 · THÁNG 11/2026', lines: ['*5* thói quen giữ tiền', 'Sống chậm giữa phố đông'], color: '#ffffff' },
+    build(el, p, c) {
+      const { w: W, h: H } = c.F;
+      const ms = h('div', 'fx-mag', el, rich(p.title)); ms.style.color = p.color; ms.style.fontSize = W * 0.3 + 'px';
+      ms.style.width = 'max-content'; fit(ms, W * 0.92, 0.3); ms.style.width = '100%'; ms.style.top = H * 0.035 + 'px';
+      const is = h('div', 'fx-mag-i', el, `<i></i><span>${esc(p.issue)}</span><i></i>`); is.style.color = p.color; is.style.fontSize = W * 0.022 + 'px';
+      is.style.top = H * 0.035 + ms.offsetHeight + W * 0.01 + 'px';
+      const ls = p.lines.slice(0, 3).map((s, i) => {
+        const l = h('div', 'fx-mag-l', el), parts = String(s).match(/^\*([^*]+)\*\s*(.*)$/);
+        l.innerHTML = parts ? `<em>${esc(parts[1])}</em>${esc(parts[2])}` : rich(s);
+        Object.assign(l.style, { left: W * 0.06 + 'px', width: W * 0.4 + 'px', fontSize: W * 0.042 + 'px', color: p.color });
+        return l;
+      });
+      let y = H * 0.5;
+      for (const l of ls) { l.style.top = y + 'px'; y += l.offsetHeight + W * 0.035; }
+      const bc = svg('svg', { width: W * 0.13, height: W * 0.07, viewBox: '0 0 60 32', style: `position:absolute;right:${W * 0.06}px;top:${H * 0.85}px;background:#fff;padding:3px` }, el);
+      const r = rng(7); for (let x = 2; x < 58; x += 1 + Math.floor(r() * 2)) if (r() > 0.35) svg('rect', { x, y: 2, width: r() > 0.6 ? 1.6 : 0.8, height: 28, fill: '#111' }, bc);
+      return {
+        seek(t) {
+          const o = fadeOut(t, c.end), a = prog(t, c.start, 0.6, E.outExpo);
+          ms.style.opacity = a * o; ms.style.transform = `translateY(${(1 - a) * -0.25}em)`; ms.style.clipPath = `inset(0 0 ${(1 - a) * 100}% 0)`;
+          is.style.opacity = prog(t, c.start + 0.35, 0.3) * o;
+          ls.forEach((l, i) => { const q = prog(t, c.start + 0.5 + i * 0.2, 0.45, E.outExpo); l.style.opacity = q * o; l.style.transform = `translateX(${(1 - q) * -1.5}em)`; });
+          bc.style.opacity = prog(t, c.start + 0.9, 0.3) * o;
+        },
+        sounds: [{ t: c.start + 0.1, s: 'impact', gain: 0.35 }, ...ls.map((_, i) => ({ t: c.start + 0.5 + i * 0.2, s: 'whoosh', gain: 0.1, opts: { dur: 0.2 } }))],
+      };
+    },
+  },
+
+  'polaroid': {
+    dur: 3.6, enter: 'none', zones: ['duoi', 'giua', 'tren'], cues: {},
+    defaults: { img: 'khung:1', caption: 'Ngày đầu tiên', rotate: -5, ratio: 1 },
+    build(el, p, c) {
+      const pl = h('div', 'fx-pl', el); h('div', 'fx-tape', pl);
+      const im = h('div', 'im', pl); im.style.aspectRatio = String(p.ratio || 1);
+      const img = h('img', null, im); img.src = imgSrc(p.img);
+      if (p.caption) h('div', 'cp', pl, rich(p.caption));
+      return {
+        seek(t) {
+          const s = spring(t - c.start, { stiffness: 140, damping: 11 }), o = fadeOut(t, c.end);
+          pl.style.opacity = clamp((t - c.start) / 0.12) * o;
+          pl.style.transform = `translateY(${(1 - s) * -6}em) rotate(${p.rotate + (1 - s) * 14 + Math.sin(t * 1.7) * 0.6}deg)`;
+        },
+        sounds: [{ t: c.start + 0.05, s: 'whoosh', gain: 0.15, opts: { dur: 0.25 } }, { t: c.start + 0.3, s: 'snare', gain: 0.12 }],
+      };
+    },
+    noExit: true,
+  },
+
+  'lich-xe': {
+    dur: 3.8, enter: 'pop', zones: ['duoi', 'giua', 'tren'], cues: { run: 0.5 },
+    defaults: { month: 'THÁNG 12', from: 1, to: 25, label: '', run: 1.6 },
+    build(el, p, c) {
+      const cal = h('div', 'fx-cal', el), hd = h('div', 'hd', cal, esc(p.month)); hd.style.color = onAccent(el);
+      const pg = h('div', 'pg bot', cal), num = h('b', null, pg);
+      const fl = h('div', 'pg fl', cal), fnum = h('b', null, fl); fl.style.top = hd.offsetHeight + 'px';
+      const lab = p.label ? h('div', 'fx-free fx-cal-l', el, rich(p.label)) : null;
+      const N = Math.abs(p.to - p.from), dir = Math.sign(p.to - p.from) || 1, T = c.cues.run, D = p.run;
+      const tk = Array.from({ length: N }, (_, k) => T + D * (1 - Math.cbrt(1 - (k + 1) / N)));   // outCubic: fast, then slow
+      return {
+        seek(t) {
+          let k = 0; while (k < N && tk[k] <= t) k++;
+          num.textContent = p.from + dir * k;
+          const a = k ? (t - tk[k - 1]) / 0.4 : 1;
+          fl.style.display = a < 1 ? '' : 'none';
+          if (a < 1) { fnum.textContent = p.from + dir * (k - 1); fl.style.transform = `translateY(${a * a * 6}em) rotate(${a * 25}deg)`; fl.style.opacity = 1 - a; }
+          if (lab) { const s = spring(t - (T + D), { stiffness: 260, damping: 14 }); lab.style.opacity = t < T + D ? 0 : clamp(s * 3); lab.style.transform = `scale(${0.6 + 0.4 * Math.max(0, s)})`; }
+        },
+        sounds: [...tk.filter((_, i) => i % Math.ceil(N / 14) === 0).map(t => ({ t, s: 'tick', gain: 0.07, opts: { f: 1600 } })), ...(lab ? [{ t: T + D, s: 'pop', gain: 0.28 }] : [])],
+      };
+    },
+  },
+
+  'storyboard': {
+    dur: 4.6, enter: 'rise', zones: ['giua', 'tren', 'duoi'], cues: {},
+    defaults: { title: '', panels: [{ text: 'Quay' }, { text: 'Cắt' }, { text: 'Đăng' }] },
+    build(el, p, c) {
+      el.classList.add('fx-card', 'fx-sb');
+      if (p.title) h('div', 'fx-title', el, rich(p.title));
+      const ps = p.panels.slice(0, 4), g = h('div', 'g', el);
+      g.style.gridTemplateColumns = `repeat(${ps.length === 4 ? 2 : ps.length},1fr)`;
+      const pn = ps.map((d, i) => {
+        const n = h('div', 'pn', g), fr = h('div', 'fr', n);
+        if (d.img) { const im = h('img', null, fr); im.src = imgSrc(d.img); } else h('b', null, fr, String(i + 1).padStart(2, '0'));
+        h('div', 'cp', n, rich(d.text));
+        return { n, at: c.cues['p' + (i + 1)] ?? c.start + 0.3 + i * 0.6 };
+      });
+      return {
+        seek(t) {
+          pn.forEach((k, i) => {
+            const q = prog(t, k.at, 0.35, E.outCubic); k.n.style.opacity = 0.15 + 0.85 * q; k.n.style.transform = `translateY(${(1 - q) * 0.6}em)`;
+            k.n.classList.toggle('on', t >= k.at && t < (pn[i + 1]?.at ?? c.end));
+          });
+        },
+        sounds: pn.map(k => ({ t: k.at, s: 'tick', gain: 0.14, opts: { f: 1500 } })),
+      };
+    },
+  },
+
+  'giay-xe': {
+    dur: 3.6, enter: 'none', zones: ['duoi', 'tren', 'giua'], cues: {},
+    defaults: { text: 'Bắt đầu từ *hôm nay*', sub: '', color: '#fff7e6', rotate: -2 },
+    build(el, p, c) {
+      el.style.textAlign = 'center';
+      const wr = h('div', 'fx-tp', el); wr.style.display = 'inline-block';
+      const s = h('div', 's', wr); s.style.background = p.color;
+      const tx = h('div', 'tx', s, rich(p.text)); if (p.sub) h('div', 'sb', s, rich(p.sub));
+      fit(tx, c.box.w * 0.84);
+      s.style.clipPath = tornPath(s.offsetWidth, s.offsetHeight, s.offsetHeight * 0.09, 11);
+      return {
+        seek(t) {
+          const q = prog(t, c.start, 0.55, E.outExpo), o = fadeOut(t, c.end);
+          wr.style.opacity = clamp(q * 3) * o; wr.style.transform = `translateX(${(1 - q) * -110}%) rotate(${p.rotate}deg)`;
+        },
+        sounds: [{ t: c.start + 0.05, s: 'whoosh', gain: 0.2, opts: { dur: 0.3, from: 400, to: 2500 } }],
+      };
+    },
+    noExit: true,
+  },
+
+  'ghi-chu-dan': {
+    dur: 4.2, enter: 'none', zones: ['giua', 'tren', 'duoi'], cues: {},
+    defaults: { title: 'Ghi nhớ', items: ['Chi tiêu ít hơn thu nhập', 'Trích *10%* mỗi tháng'], color: '#ffe066', rotate: 3 },
+    build(el, p, c) {
+      const n = h('div', 'fx-nt2', el); n.style.background = p.color; h('div', 'fx-tape', n);
+      const tt = h('div', 't', n, rich(p.title)), sv = svg('svg', { viewBox: '0 0 100 10', preserveAspectRatio: 'none' }, tt);
+      const ul = svg('path', { d: 'M1 6 C 25 2, 50 9, 99 4', fill: 'none', stroke: '#d62d20', 'stroke-width': 3, 'stroke-linecap': 'round', pathLength: 1, 'stroke-dasharray': 1, 'vector-effect': 'non-scaling-stroke' }, sv);
+      const its = p.items.slice(0, 5).map((s, i) => ({ n: h('div', 'it', n, rich(s)), at: c.cues['i' + (i + 1)] ?? c.start + 0.7 + i * 0.4 }));
+      return {
+        seek(t) {
+          const s = spring(t - c.start, { stiffness: 220, damping: 14 }), o = fadeOut(t, c.end);
+          n.style.opacity = clamp((t - c.start) / 0.1) * o; n.style.transform = `rotate(${p.rotate + (1 - s) * -8}deg) scale(${0.7 + 0.3 * s})`;
+          ul.setAttribute('stroke-dashoffset', 1 - prog(t, c.start + 0.35, 0.35, E.outCubic));
+          for (const k of its) { const q = prog(t, k.at, 0.3); k.n.style.opacity = q; k.n.style.transform = `translateX(${(1 - q) * 0.6}em)`; }
+        },
+        sounds: [{ t: c.start, s: 'pop', gain: 0.25 }, ...its.map(k => ({ t: k.at, s: 'tick', gain: 0.08, opts: { f: 2000 } }))],
+      };
+    },
+    noExit: true,
   },
 };
 

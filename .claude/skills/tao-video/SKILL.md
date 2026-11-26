@@ -55,6 +55,10 @@ Không viết kịch bản, không làm hình: video đã có. `scripts/dung-vid
    (mở đầu/kết: mở tròn từ mặt). Tối đa 1 hiệu ứng "sau lưng" mỗi 10–15 s, chữ sau lưng ≤ 12 ký tự. Script tự tách
    người khỏi nền + bám mặt (`tach`, ~0,15 s xử lý/khung hình, chạy 1 lần, dùng lại) và ghép 3 lớp:
    nền → hiệu ứng sau lưng → người → hiệu ứng trước + phụ đề. Người chiếm ít khung / quay xa: tránh các hiệu ứng này.
+   **Giả giao diện + giấy/tạp chí** (dùng cho mọi video): khung chat, bình luận tim bay, cuộc gọi đến, trình duyệt,
+   terminal, hoá đơn in, hồ sơ + bấm theo dõi, ô tìm kiếm, thẻ đánh giá, CTA bình luận, bìa tạp chí, polaroid, lịch xé,
+   storyboard, băng giấy xé, giấy note. Ảnh trong polaroid/storyboard: `"img": "khung:12.5"` = ảnh chụp từ video lúc
+   12,5 s (script tự cắt). Không làm giả tin nhắn/đánh giá/hoá đơn/giao diện của người hay hãng có thật như bằng chứng.
 3. `python scripts/dung-video-quay.py anh <du-an> 3,8,15,…` → `render/stills/9x16/luoi.png` (hiệu ứng + phụ đề đè lên
    khung hình thật). XEM: chữ đè mặt, đè nhau, sai chính tả. Sửa rồi xem lại.
 4. `python scripts/dung-video-quay.py dung <du-an> [--nhac nhac.mp3]` → `video.mp4` (lớp hiệu ứng + phụ đề kiểu TikTok,

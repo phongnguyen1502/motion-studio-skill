@@ -1,10 +1,13 @@
 # Effect library (`assets/fx/`)
 
-Twenty-eight ready-made on-screen effects for talking-head and voiceover videos: counters, charts,
+Forty-four ready-made on-screen effects for talking-head and voiceover videos: counters, charts,
 checklists, comparisons, timelines, quotes, stamps, typewriter, word slams, name bars, hand-drawn
-arrows and circles, phone notifications, polls, disclaimers, donut charts and stickers — plus 8 that need a
+arrows and circles, phone notifications, polls, disclaimers, donut charts and stickers; 8 that need a
 speaker on screen (see "Speaker effects" below): text behind the person, neon behind the person, scrolling rows
-behind the person, halo, stickers and doodles around the head, face lock, iris open/close from the face.
+behind the person, halo, stickers and doodles around the head, face lock, iris open/close from the face; and 16 more
+("App-like UI, paper and magazine" below): chat, comment with flying hearts, incoming call, browser, terminal,
+printed receipt, profile + follow click, search box, review card, comment CTA, magazine cover, polaroid, tear-off
+calendar, storyboard, torn paper strip, sticky note.
 Written for this studio (not copied from any other package). Everything is a pure function of `t`.
 
 | File | What |
@@ -101,6 +104,22 @@ when it finds a face). They read the face from `c.face(t)` → `{x, y, w, h, top
 footage → back layer → person (footage keyed by the matte) → front layer + subtitles. Without `layer` in the URL
 everything draws in one layer (previews, voiceover videos — there the "behind" effects simply sit on top).
 Big text behind the person counts as free text: the subtitle steps aside while it is up (`loud`).
+
+## App-like UI, paper and magazine
+
+Groups `giao-dien` and `giay` in the catalogue. They work in any video (no speaker needed).
+
+- **UI** (`khung-chat`, `binh-luan`, `cuoc-goi`, `trinh-duyet`, `terminal`, `hoa-don`, `theo-doi`, `tim-kiem`, `danh-gia`,
+  `cta-binh-luan`): generic look on purpose. Never a real app's name, logo or layout, never fake messages, reviews,
+  receipts or comments presented as real proof. Text colour on the accent is picked automatically (dark on yellow).
+  Typing effects take `cps`; `theo-doi` and `cta-binh-luan` are CTA versions (fx-suggest proposes them on the last line
+  when it says "theo dõi" / "bình luận").
+- **Paper** (`bia-tap-chi`, `polaroid`, `lich-xe`, `storyboard`, `giay-xe`, `ghi-chu-dan`): `bia-tap-chi` is full frame
+  (masthead in Cambria/Times, cover lines with a big accent number when a line starts with `*5*`); add `"layer": "sau"`
+  in a talking-head plan to put the whole cover behind the speaker when the cover lines do not cross the body.
+- **Pictures** (`polaroid.img`, `storyboard.panels[].img`): a path relative to the PROJECT folder, or `"khung:12.5"` =
+  a still of the footage at 12.5 s (tao-video's `dung-video-quay.py` extracts it to `work/khung_12.50.jpg`).
+  `overlay.html` and `video.html` wait for every picture to decode before the first frame.
 
 ## Subtitles (shared)
 

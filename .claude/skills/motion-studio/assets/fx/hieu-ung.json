@@ -1,5 +1,5 @@
 {
-  "_ve": "Danh mục 28 hiệu ứng của fx.js. Mỗi mục: ten (tên đọc), nhom, lop (\"sau\" = vẽ SAU LƯNG người nói, cần lớp tách người), can_nguoi (cần người nói trong khung — chỉ dùng cho video quay người), hop_voi (loại câu nói hợp), tu_khoa (từ trong lời nói gợi ý hiệu ứng này), cues (mốc thời gian + mặc định tính từ lúc bắt đầu), params (nội dung cần điền + giới hạn), nang (hiệu ứng mạnh, không đặt liền nhau), khong_dung_khi (tránh), am_thanh. Thời lượng mặc định: dur (giây). Không bịa số liệu: chỉ điền số có trong lời nói hoặc tài liệu gốc.",
+  "_ve": "Danh mục 44 hiệu ứng của fx.js. Mỗi mục: ten (tên đọc), nhom, lop (\"sau\" = vẽ SAU LƯNG người nói, cần lớp tách người), can_nguoi (cần người nói trong khung — chỉ dùng cho video quay người), hop_voi (loại câu nói hợp), tu_khoa (từ trong lời nói gợi ý hiệu ứng này), cues (mốc thời gian + mặc định tính từ lúc bắt đầu), params (nội dung cần điền + giới hạn), nang (hiệu ứng mạnh, không đặt liền nhau), khong_dung_khi (tránh), am_thanh. Thời lượng mặc định: dur (giây). Không bịa số liệu: chỉ điền số có trong lời nói hoặc tài liệu gốc.",
   "dem-so": {
     "ten": "Đếm số", "nhom": "so-lieu", "dur": 3.6,
     "hop_voi": "Câu có MỘT con số nổi bật: doanh thu, số khách hàng, số tiền, số năm.",
@@ -228,5 +228,133 @@
     "cues": {},
     "params": { "mode": "'mo' (mở ra, đặt start = 0) | 'dong' (thu lại, đặt end = cuối video) | 'ca-hai'", "color": "màu nền che, mặc định #000000", "time": "giây mở/thu, mặc định 0.75", "ring": "true = viền màu accent" },
     "nang": false, "khong_dung_khi": "giữa video (đây là chuyển cảnh đầu/cuối)", "am_thanh": "whoosh"
+  },
+  "khung-chat": {
+    "ten": "Khung chat", "nhom": "giao-dien", "dur": 4.5,
+    "hop_voi": "Kể lại một đoạn hội thoại, tin nhắn của khách/người thân, câu hỏi hay gặp — 2–5 tin nhắn hiện lần lượt, có dấu 'đang gõ'.",
+    "tu_khoa": ["nhắn", "tin nhắn", "hỏi", "nói với", "bảo"],
+    "cues": { "m1…m5": "lúc mỗi tin hiện (mặc định cách ~0.75 s)" },
+    "params": { "title": "tên người chat ≤ 16 ký tự", "status": "dòng phụ, mặc định 'Đang hoạt động'", "messages": "2–5 mục {from: 'ho'|'minh', text ≤ 40 ký tự}" },
+    "nang": false, "khong_dung_khi": "làm giả tin nhắn của người/công ty có thật như bằng chứng", "am_thanh": "pop tin đến, vút tin gửi"
+  },
+  "binh-luan": {
+    "ten": "Bình luận có tim bay", "nhom": "giao-dien", "dur": 4,
+    "hop_voi": "Trích một bình luận/phản hồi của người xem, rồi tim bay lên và số lượt thích tăng.",
+    "tu_khoa": ["bình luận", "comment", "phản hồi", "khen", "góp ý"],
+    "cues": { "like": "lúc thả tim (+1.1)" },
+    "params": { "name": "≤ 18 ký tự", "text": "≤ 70 ký tự", "likes": "số lượt thích", "time": "vd '2 giờ'" },
+    "nang": false, "khong_dung_khi": "bịa bình luận như lời khách thật", "am_thanh": "pop + lách tách"
+  },
+  "cuoc-goi": {
+    "ten": "Cuộc gọi đến", "nhom": "giao-dien", "dur": 4,
+    "hop_voi": "Tình huống 'điện thoại reo': mẹ gọi, sếp gọi, khách gọi — rung chuông; cue nhan = bắt máy, đồng hồ chạy.",
+    "tu_khoa": ["gọi điện", "điện thoại", "cuộc gọi", "gọi cho"],
+    "cues": { "nhan": "tuỳ chọn: lúc bắt máy" },
+    "params": { "name": "≤ 14 ký tự", "sub": "vd 'Di động'", "label": "mặc định 'Cuộc gọi đến'" },
+    "nang": false, "am_thanh": "chuông bíp bíp, pop khi bắt máy"
+  },
+  "trinh-duyet": {
+    "ten": "Cửa sổ trình duyệt", "nhom": "giao-dien", "dur": 4.6,
+    "hop_voi": "Giới thiệu trang web/bài viết/công cụ: gõ địa chỉ, thanh tải chạy, trang hiện tiêu đề + mô tả.",
+    "tu_khoa": ["trang web", "website", "vào trang", "truy cập", "đường link"],
+    "cues": { "go": "lúc bắt đầu gõ địa chỉ (+0.3)" },
+    "params": { "url": "≤ 30 ký tự, không có https://", "title": "≤ 40 ký tự", "text": "≤ 90 ký tự", "cps": "tốc độ gõ, mặc định 22" },
+    "nang": false, "khong_dung_khi": "giả trang của tổ chức có thật", "am_thanh": "tiếng gõ + pop"
+  },
+  "terminal": {
+    "ten": "Lệnh terminal", "nhom": "giao-dien", "dur": 4.6,
+    "hop_voi": "Nội dung công nghệ/AI: gõ lệnh rồi kết quả hiện ra (✔ …).",
+    "tu_khoa": ["lệnh", "code", "chạy", "cài đặt", "tự động"],
+    "cues": { "go": "lúc gõ lệnh đầu (+0.3)", "l1…l6": "tuỳ chọn: lúc mỗi dòng bắt đầu" },
+    "params": { "title": "tên cửa sổ", "lines": "2–6 mục {cmd: '…'} (gõ ra) hoặc {out: '…'} (hiện ngay), mỗi dòng ≤ 36 ký tự, *từ* tô vàng", "cps": "tốc độ gõ, mặc định 20" },
+    "nang": false, "am_thanh": "tiếng gõ phím"
+  },
+  "hoa-don": {
+    "ten": "Hoá đơn in ra", "nhom": "giao-dien", "dur": 4.6,
+    "hop_voi": "Liệt kê chi phí/giá trị: tờ hoá đơn in dần ra từ khe máy, có các dòng và TỔNG.",
+    "tu_khoa": ["chi phí", "giá", "tổng cộng", "hoá đơn", "thanh toán", "mất bao nhiêu"],
+    "cues": { "print": "lúc bắt đầu in (+0.3)" },
+    "params": { "title": "≤ 16 ký tự", "items": "1–6 mục {name ≤ 18 ký tự, price ≤ 12 ký tự}", "total": "≤ 12 ký tự", "note": "dòng cuối (tuỳ chọn)" },
+    "nang": false, "khong_dung_khi": "giả hoá đơn/chứng từ của cửa hàng có thật", "am_thanh": "rè rè máy in"
+  },
+  "theo-doi": {
+    "ten": "Hồ sơ + bấm theo dõi", "nhom": "giao-dien", "dur": 4,
+    "hop_voi": "Kêu gọi theo dõi kênh: thẻ hồ sơ, con trỏ bấm nút, nút đổi thành 'Đang theo dõi'.",
+    "tu_khoa": ["theo dõi", "follow", "đăng ký kênh", "kênh"],
+    "cues": { "bam": "lúc bấm (+1.7) — gắn vào chữ 'theo dõi'" },
+    "params": { "name": "tên kênh ≤ 18 ký tự", "handle": "vd '@gabee'", "followers": "số người theo dõi (số thật của kênh)", "posts": "số bài", "following": "đang theo dõi", "button": "chữ nút", "done": "chữ sau khi bấm" },
+    "nang": false, "am_thanh": "click + pop"
+  },
+  "tim-kiem": {
+    "ten": "Ô tìm kiếm", "nhom": "giao-dien", "dur": 4,
+    "hop_voi": "Câu 'nhiều người tìm …', 'bạn đã từng gõ …': gõ vào ô tìm kiếm, gợi ý thả xuống.",
+    "tu_khoa": ["tìm kiếm", "search", "gõ", "tra"],
+    "cues": { "go": "lúc bắt đầu gõ (+0.3)" },
+    "params": { "query": "≤ 30 ký tự", "suggestions": "1–4 gợi ý ≤ 40 ký tự (bắt đầu bằng query thì phần thêm được in đậm)", "cps": "mặc định 18" },
+    "nang": false, "khong_dung_khi": "giả giao diện của công cụ tìm kiếm có thật", "am_thanh": "tiếng gõ"
+  },
+  "danh-gia": {
+    "ten": "Thẻ đánh giá", "nhom": "giao-dien", "dur": 4,
+    "hop_voi": "Lời nhận xét của khách/học viên kèm số sao (chỉ dùng nhận xét có thật, đã được phép).",
+    "tu_khoa": ["đánh giá", "nhận xét", "review", "hài lòng", "sao"],
+    "cues": { "run": "lúc sao bắt đầu sáng (+0.35)" },
+    "params": { "stars": "0–5, được .5", "text": "≤ 80 ký tự", "name": "≤ 18 ký tự", "sub": "vd 'Học viên K12'" },
+    "nang": false, "khong_dung_khi": "bịa đánh giá", "am_thanh": "ting ting mỗi sao"
+  },
+  "cta-binh-luan": {
+    "ten": "CTA bình luận", "nhom": "giao-dien", "dur": 4,
+    "hop_voi": "Cuối video: 'bình luận MUỐN để nhận…' — ô bình luận tự gõ chữ, bấm gửi, hiện 'Đã gửi'.",
+    "tu_khoa": ["bình luận", "comment", "để lại", "nhận tài liệu", "inbox"],
+    "cues": { "go": "lúc bắt đầu gõ (+0.5)" },
+    "params": { "label": "≤ 30 ký tự", "text": "chữ được gõ ≤ 12 ký tự", "placeholder": "chữ mờ trong ô", "you": "tên/chữ cái avatar", "cps": "mặc định 8" },
+    "nang": false, "am_thanh": "tiếng gõ + vút + pop"
+  },
+  "bia-tap-chi": {
+    "ten": "Bìa tạp chí", "nhom": "giay", "dur": 4,
+    "hop_voi": "Mở đầu kiểu 'người trên bìa tạp chí': tên tạp chí to phía trên, số phát hành, 2–3 dòng tít bên trái, mã vạch.",
+    "tu_khoa": ["câu chuyện", "hành trình", "chân dung", "giới thiệu"],
+    "cues": {},
+    "params": { "title": "tên tạp chí 1 từ ≤ 10 ký tự (tự co)", "issue": "≤ 26 ký tự", "lines": "1–3 tít ≤ 28 ký tự; mở bằng *số* để số to màu nhấn", "color": "màu chữ, mặc định trắng" },
+    "nang": true, "khong_dung_khi": "nền quá sáng (chữ trắng chìm) — đổi color; không mượn tên tạp chí có thật", "am_thanh": "impact + whoosh"
+  },
+  "polaroid": {
+    "ten": "Ảnh polaroid", "nhom": "giay", "dur": 3.6,
+    "hop_voi": "Kỷ niệm, 'ngày đầu tiên', trước/sau: tấm ảnh polaroid có băng dính rơi xuống, chú thích bên dưới.",
+    "tu_khoa": ["kỷ niệm", "ngày đầu", "hồi đó", "ngày xưa", "bức ảnh"],
+    "cues": {},
+    "params": { "img": "đường dẫn ảnh trong dự án, hoặc 'khung:12.5' = ảnh chụp từ video lúc 12,5 s (dung-video-quay.py tự cắt)", "caption": "≤ 24 ký tự", "rotate": "độ, mặc định -5", "ratio": "tỉ lệ khung ảnh, mặc định 1 (vuông)" },
+    "nang": false, "am_thanh": "vút + đặt xuống"
+  },
+  "lich-xe": {
+    "ten": "Lịch xé", "nhom": "giay", "dur": 3.8,
+    "hop_voi": "Đếm ngày: 'còn 25 ngày', '30 ngày thử thách', thời gian trôi — tờ lịch xé liên tục, nhanh rồi chậm lại.",
+    "tu_khoa": ["ngày", "còn", "thử thách", "mỗi ngày", "hạn chót"],
+    "cues": { "run": "lúc bắt đầu xé (+0.5)" },
+    "params": { "month": "≤ 12 ký tự", "from": "số bắt đầu", "to": "số kết thúc (có thể nhỏ hơn from: đếm ngược)", "label": "dòng dưới ≤ 20 ký tự", "run": "giây xé, mặc định 1.6" },
+    "nang": false, "am_thanh": "tick mỗi tờ"
+  },
+  "storyboard": {
+    "ten": "Storyboard", "nhom": "giay", "dur": 4.6,
+    "hop_voi": "Quy trình 2–4 bước có hình: các khung tranh hiện lần lượt, khung đang nói được tô viền.",
+    "tu_khoa": ["bước", "quy trình", "đầu tiên", "sau đó", "cuối cùng"],
+    "cues": { "p1…p4": "lúc mỗi khung hiện (mặc định cách 0.6 s)" },
+    "params": { "title": "≤ 30 ký tự (tuỳ chọn)", "panels": "2–4 mục {text ≤ 14 ký tự, img?: ảnh dự án hoặc 'khung:t'}" },
+    "nang": false, "am_thanh": "tick mỗi khung"
+  },
+  "giay-xe": {
+    "ten": "Băng giấy xé", "nhom": "giay", "dur": 3.6,
+    "hop_voi": "Một câu chốt/tiêu đề phụ mộc mạc: dải giấy xé mép trượt vào.",
+    "tu_khoa": ["bắt đầu", "hãy", "nhớ", "điều quan trọng"],
+    "cues": {},
+    "params": { "text": "≤ 22 ký tự, *từ* để tô đỏ", "sub": "dòng phụ ≤ 36 ký tự", "color": "màu giấy, mặc định #fff7e6", "rotate": "độ, mặc định -2" },
+    "nang": false, "am_thanh": "whoosh"
+  },
+  "ghi-chu-dan": {
+    "ten": "Giấy note", "nhom": "giay", "dur": 4.2,
+    "hop_voi": "Ghi nhớ 2–5 ý ngắn: tờ giấy note vàng dán băng keo, gạch chân tiêu đề, từng ý hiện ra.",
+    "tu_khoa": ["ghi nhớ", "lưu ý", "nhớ là", "mẹo"],
+    "cues": { "i1…i5": "lúc mỗi ý hiện (mặc định cách 0.4 s)" },
+    "params": { "title": "≤ 16 ký tự", "items": "2–5 ý ≤ 28 ký tự, *từ* tô đỏ", "color": "màu giấy: #ffe066 vàng, #ffc6d9 hồng, #c9f2d8 xanh", "rotate": "độ, mặc định 3" },
+    "nang": false, "am_thanh": "pop + tick"
   }
 }

@@ -154,7 +154,7 @@ Follow "Build" in the engine file. With any engine: everything is a function of 
   seconds.
 - **Effect library:** for counters, charts, checklists, comparisons, timelines, quotes, stamps,
   word slams, name bars, arrows/circles, notifications, polls, disclaimers and stickers, use
-  `assets/fx/` (28 effects — 8 of them follow the speaker or sit behind them — 4 themes, face-avoiding zones, cues on spoken words) instead of
+  `assets/fx/` (44 effects: 8 follow the speaker or sit behind them, 16 app-like UI and paper/magazine; 4 themes, face-avoiding zones, cues on spoken words) instead of
   redrawing them. It also renders a transparent WebM layer over talking-head footage, and a
   whole video straight from a voiceover (`scripts/fx-suggest.mjs` drafts the effect per sentence,
   you fill the content from the spoken words, `fx/video.html` renders it).

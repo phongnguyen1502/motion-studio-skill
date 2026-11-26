@@ -74,6 +74,8 @@ window.MOTION = { width: F.w, height: F.h, fps: 30, duration: 1, ready: (async (
     };
   }
   for (const it of items) fxs.push(createFx(stage, { ...it, theme: it.theme || plan.theme || 'kinh', format: F, avoid: it.avoid || plan.avoid || [], track }));
+  // pictures inside effects (polaroid, storyboard): wait until decoded, or the first frames capture an empty box
+  await Promise.all([...stage.querySelectorAll('img')].map(i => i.decode().catch(() => console.error('[fx] không tải được ảnh ' + i.getAttribute('src')))));
   if (plan.subtitles && layer !== 'sau' && Array.isArray(words) && words[0]?.words)
     subs = createSubtitles(stage, words, { F, theme: plan.theme || 'kinh', style: plan.subStyle || 'tiktok', highlight: plan.highlight || [],
                                            y: plan.subY ? F.h * plan.subY : undefined, glue: [...(ts?.KEEP_VI || []), ...keep].map(fold) });

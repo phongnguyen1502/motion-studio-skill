@@ -61,7 +61,12 @@ const scored = lines.map((line, i) => {
   if (i === 0) { sc['go-chu'] += 2; sc['chu-dap'] += 2; sc['nhan-dan'] += 1; }
   if (i === N - 1) sc['nhan-dan'] += ['theo dõi', 'đăng ký', 'bình luận', 'comment', 'chia sẻ', 'nhắn'].some(k => has(f, k)) ? 6 : 2;
   // need a picture or a speaker: only on clear request
-  for (const t of ['mui-ten', 'khoanh-tron', 'mo-tron']) sc[t] = 0;
+  for (const t of ['mui-ten', 'khoanh-tron', 'mo-tron', 'polaroid']) sc[t] = 0;
+  if (i === N - 1) {   // CTA line: the UI version of the ask beats a plain sticker
+    if (has(f, 'theo dõi') || has(f, 'follow')) sc['theo-doi'] += 7;
+    if (has(f, 'bình luận') || has(f, 'comment')) sc['cta-binh-luan'] += 7;
+  } else { sc['theo-doi'] = Math.min(sc['theo-doi'], 1); sc['cta-binh-luan'] = Math.min(sc['cta-binh-luan'], 1); }
+  if (i === 0 && nguoi) sc['bia-tap-chi'] += 1;
   if (!has(f, 'tôi là') && !has(f, 'mình là')) sc['the-ten'] = 0;
   // effects around / behind the speaker: only for footage of a person (--nguoi, set by tao-video's dung-video-quay.py)
   if (nguoi) {
@@ -93,6 +98,8 @@ for (const s of scored) {
   if (pick === 'bieu-do-cot') cues.run = spoken(T, 'tăng') || spoken(T, 'gấp') || s.nums[0]?.raw || '+0.4';
   if (pick === 'danh-sach') ['thứ nhất', 'thứ hai', 'thứ ba', 'thứ tư'].forEach((k, n) => { const w = spoken(T, k); if (w) cues['t' + (n + 1)] = w; });
   if (pick === 'gach-thay') { cues.strike = spoken(T, 'không phải') || '+0.5'; cues.swap = spoken(T, 'mà là') || spoken(T, 'mà') || '+1.2'; }
+  if (pick === 'theo-doi') { const w = spoken(T, 'theo dõi') || spoken(T, 'follow'); if (w) cues.bam = w; }
+  if (pick === 'cuoc-goi') { const w = spoken(T, 'nghe máy') || spoken(T, 'bắt máy'); if (w) cues.nhan = w; }
   if (pick === 'con-dau') { const k = (CAT['con-dau'].tu_khoa || []).map(k => spoken(T, k)).find(Boolean); if (k) cues.hit = k; }
   const item = {
     _loi: s.line.text, _goi_y: alt,
