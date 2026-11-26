@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // fx-suggest.mjs — voiceover sentences -> a DRAFT effect plan the agent then finishes by hand.
 //
-//   node fx-suggest.mjs <timing.json> [--out fx-plan.json] [--theme sach] [--per-min 10] [--voice voice.mp3]
+//   node fx-suggest.mjs <timing.json> [--out fx-plan.json] [--theme sach] [--per-min 10] [--voice voice.mp3] [--nguoi]
 //
+// --nguoi: the video shows the speaker (talking head) — also suggest the effects behind the person / around the face.
 // timing.json = scripts/voice-timing.py output. For every line it scores the 20 effects of assets/fx/hieu-ung.json
 // (trigger words, numbers, lists, "không phải … mà là", questions, hook/CTA position), keeps the best lines up to
 // --per-min effects per minute, never repeats an effect back to back nor puts two heavy ones together, and guesses cues
@@ -21,7 +22,7 @@ const argv = process.argv.slice(2), arg = (k, d) => { const i = argv.indexOf('--
 const src = argv.find((a, i) => !a.startsWith('--') && !(argv[i - 1] || '').startsWith('--'));
 if (!src) { console.error('Dùng: node fx-suggest.mjs <timing.json> [--out fx-plan.json] [--theme sach] [--per-min 10] [--voice voice.mp3]'); process.exit(1); }
 const out = arg('out', path.join(path.dirname(src), 'fx-plan.json'));
-const perMin = +arg('per-min', 10), theme = arg('theme', 'sach'), voice = arg('voice', null);
+const perMin = +arg('per-min', 10), theme = arg('theme', 'sach'), voice = arg('voice', null), nguoi = argv.includes('--nguoi');
 const lines = JSON.parse(fs.readFileSync(src, 'utf8'));
 
 const NUMW = 'mot hai ba bon tu nam sau bay tam chin muoi muoi lam tram nghin ngan trieu ty linh le phan tram'.split(' ');
@@ -60,8 +61,14 @@ const scored = lines.map((line, i) => {
   if (i === 0) { sc['go-chu'] += 2; sc['chu-dap'] += 2; sc['nhan-dan'] += 1; }
   if (i === N - 1) sc['nhan-dan'] += ['theo dõi', 'đăng ký', 'bình luận', 'comment', 'chia sẻ', 'nhắn'].some(k => has(f, k)) ? 6 : 2;
   // need a picture or a speaker: only on clear request
-  for (const t of ['mui-ten', 'khoanh-tron']) sc[t] = 0;
+  for (const t of ['mui-ten', 'khoanh-tron', 'mo-tron']) sc[t] = 0;
   if (!has(f, 'tôi là') && !has(f, 'mình là')) sc['the-ten'] = 0;
+  // effects around / behind the speaker: only for footage of a person (--nguoi, set by tao-video's dung-video-quay.py)
+  if (nguoi) {
+    if (i === 0) sc['chu-sau-lung'] += 4;                               // the signature hook of talking-head videos
+    if (has(f, 'tôi là') || has(f, 'mình là')) sc['khoa-mat'] += 3;
+    if (/[!]\s*$/.test(line.text)) sc['sticker-quanh-dau'] += 1;
+  } else for (const t of TYPES) if (CAT[t].can_nguoi || CAT[t].lop === 'sau') sc[t] = 0;
   const rank = TYPES.map(t => [t, sc[t]]).filter(([, s]) => s > 0).sort((a, b) => b[1] - a[1]);
   return { i, line, toks, nums, rank, best: rank[0]?.[1] || 0 };
 });

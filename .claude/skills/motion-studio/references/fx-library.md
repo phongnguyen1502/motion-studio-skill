@@ -1,15 +1,17 @@
 # Effect library (`assets/fx/`)
 
-Twenty ready-made on-screen effects for talking-head and voiceover videos: counters, charts,
+Twenty-eight ready-made on-screen effects for talking-head and voiceover videos: counters, charts,
 checklists, comparisons, timelines, quotes, stamps, typewriter, word slams, name bars, hand-drawn
-arrows and circles, phone notifications, polls, disclaimers, donut charts and stickers.
+arrows and circles, phone notifications, polls, disclaimers, donut charts and stickers — plus 8 that need a
+speaker on screen (see "Speaker effects" below): text behind the person, neon behind the person, scrolling rows
+behind the person, halo, stickers and doodles around the head, face lock, iris open/close from the face.
 Written for this studio (not copied from any other package). Everything is a pure function of `t`.
 
 | File | What |
 |---|---|
 | `fx.js` | the library: `createFx`, `resolvePlan`, `fxSounds`, `playFxSounds`, `THEMES`, `zones` |
 | `hieu-ung.json` | the catalogue — per effect: what sentence it fits, trigger words, cues, params + character limits, `nang` (heavy), when NOT to use it, sound |
-| `index.html` | gallery of all 20 effects (preview / stills / theme check) |
+| `index.html` | gallery of all effects (preview / stills / theme check; speaker effects use the stand-in silhouette and draw in front of it) |
 | `overlay.html` | renders an `fx-plan.json` as a layer — transparent WebM for laying over footage |
 
 ## Choosing effects
@@ -76,6 +78,30 @@ const fx = [
      -map "[v]" -map "[a]" -c:v libx264 -crf 18 -c:a aac out.mp4
    ```
 
+## Speaker effects (talking head only)
+
+Catalogue entries with `can_nguoi: true`; `fx-suggest.mjs` proposes them only with `--nguoi` (dung-video-quay.py adds it
+when it finds a face). They read the face from `c.face(t)` → `{x, y, w, h, top, cx, cy}`: the per-frame track
+`"track": "mat.json"` in the plan (face box + top of the head from the person matte), else the `avoid` box.
+
+| type | layer | what |
+|---|---|---|
+| `chu-sau-lung` | sau | 1 huge word behind the head (head covers only its lower ~35 %; shrinks when the head is high); `texts` swaps 2–4 words on cues `d2…` |
+| `neon-sau-lung` | sau | neon word flickers on behind the person, background dims (`toi`) |
+| `chu-truot-sau` | sau | 2–4 rows of text scrolling in opposite directions behind the head |
+| `hao-quang` | truoc | glowing halo floating above the head, follows it |
+| `sticker-quanh-dau` | truoc | emoji / short text stickers pop around the head, follow it |
+| `ve-tay-quanh-dau` | truoc | boiling hand-drawn doodles: `tia`, `sao`, `xoan`, `vuong-mien`, `tim`, `dau-hoi` |
+| `khoa-mat` | truoc | viewfinder brackets close in and lock on the face (cue `lock`), name tag after the lock |
+| `mo-tron` | truoc | iris: black frame opens in a circle from the face (`mode: 'mo'`, start 0) or closes on it (`'dong'`, end = last second) |
+
+**Layer `sau`** = drawn behind the person. It needs the person matte, so it only works through tao-video's
+`dung-video-quay.py` (`tach` makes `work/nguoi.mkv` with MODNet + `mat.json` with YuNet, ONNX on the CPU,
+~0.15 s per frame), which renders `overlay.html?layer=sau` and `?layer=truoc` as two transparent WebMs and composites
+footage → back layer → person (footage keyed by the matte) → front layer + subtitles. Without `layer` in the URL
+everything draws in one layer (previews, voiceover videos — there the "behind" effects simply sit on top).
+Big text behind the person counts as free text: the subtitle steps aside while it is up (`loud`).
+
 ## Subtitles (shared)
 
 `createSubtitles(stage, lines, { F, theme, style: 'tiktok' | 'pill', highlight, glue })` — lines = `voice-timing.py`
@@ -131,7 +157,9 @@ node SKILL_DIR/scripts/render.mjs SKILL_DIR/assets --entry fx/index.html --query
 
 ## Adding an effect
 
-Add an entry to `FX` in `fx.js`: `{ dur, enter: 'pop'|'rise'|'drop'|'none', zones, cues: {name: offset}, defaults, build(el, p, c) }`.
+Add an entry to `FX` in `fx.js`: `{ dur, enter: 'pop'|'rise'|'drop'|'none', zones, cues: {name: offset}, defaults, build(el, p, c) }`
+(+ `full: true` for whole-frame drawing, `layer: 'sau'` for behind the speaker, `loud: true` to hide subtitles, `noExit: true`
+when `seek` fades out itself). Note kit.js `whoosh`/`riser` PEAK at `t` and start `dur` earlier.
 `build` creates DOM inside `el` (sizes in `em`: 1 em = 1/17 of the box width in 9:16, 1/20 in 16:9), and returns
 `{ seek(t), sounds: [{ t, s: 'pop'|'tick'|'whoosh'|'impact'|'kick'|'snare', gain, opts }] }`. Use `fit()` for one-line text,
 `prog`/`spring`/`shake` for motion, `rich()` for `*highlight*`. Then add its catalogue entry to `hieu-ung.json` and a demo

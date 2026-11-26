@@ -12,7 +12,9 @@
                      "sfx"?: true, "subtitles"?: true, "subStyle"?: "tiktok"|"pill", "highlight"?: ["…"],
                      "fx": [{ "type", "start", "end"?, "cues"?, "params"?, "zone"? }] }
      start/end/cues accept seconds (12.4), "+0.8" (after start) or a spoken word/phrase found in `words`.
-     Subtitles need `words` in voice-timing.py format (lines with text + words). -->
+     Subtitles need `words` in voice-timing.py format (lines with text + words).
+     Talking-head extras: "track": "mat.json" (face track, makes face effects follow the speaker) and &layer=sau|truoc
+     to render the effects behind the speaker and the ones in front as two layers (dung-video-quay.py does both). -->
 <style>
   html, body { margin: 0; overflow: hidden; background: transparent; }
   #stage { position: relative; overflow: hidden; }
@@ -21,7 +23,7 @@
 <body>
 <div id="stage"></div>
 <script type="module">
-import { createFx, resolvePlan, fxSounds, playFxSounds, createSubtitles, fold } from './fx.js';
+import { createFx, resolvePlan, fxSounds, playFxSounds, createSubtitles, fold, clamp } from './fx.js';
 
 // kit.js sits next to fx/ in a project (PROJ/kit.js); in the skill it is ../template/kit.js.
 const imp = async (paths) => { for (const p of paths) { try { return await import(p); } catch {} } return null; };
@@ -33,7 +35,7 @@ const { format, preview, renderMix, sfx } = kit;
 const Q = new URLSearchParams(location.search), F = format();
 const stage = document.getElementById('stage');
 stage.style.width = F.w + 'px'; stage.style.height = F.h + 'px';
-const alpha = Q.has('alpha');
+const alpha = Q.has('alpha'), layer = Q.get('layer');
 
 async function loadFonts() {
   for (const href of [Q.get('fonts'), '../fonts-vi/gf.css', '../template/fonts-vi/gf.css', 'fonts-vi/gf.css'].filter(Boolean)) {
@@ -61,20 +63,33 @@ window.MOTION = { width: F.w, height: F.h, fps: 30, duration: 1, ready: (async (
   warnings.forEach(w => console.error('[fx] ' + w));
   items.forEach((it, n) => { if (it._dien) console.error(`[fx] #${n + 1} ${it.type}: chưa điền xong params (còn _dien)`); });
   if (!alpha && plan.bg) stage.style.background = plan.bg;
-  for (const it of items) fxs.push(createFx(stage, { ...it, theme: it.theme || plan.theme || 'kinh', format: F, avoid: it.avoid || plan.avoid || [] }));
-  if (plan.subtitles && Array.isArray(words) && words[0]?.words)
+  // face track (dung-video-quay.py → mat.json): { fps, w, h, f: [[x, y, w, h, top], …] } in frame px, one row per frame
+  let track = null;
+  if (plan.track) {
+    const tj = await (await fetch(new URL(plan.track, base))).json(), sx = F.w / tj.w, sy = F.h / tj.h;
+    const rows = tj.f.map(r => r && { x: r[0] * sx, y: r[1] * sy, w: r[2] * sx, h: r[3] * sy, top: r[4] * sy });
+    track = t => {
+      const u = clamp(t * tj.fps, 0, rows.length - 1), i = Math.floor(u), a = rows[i], b = rows[Math.min(i + 1, rows.length - 1)] || a, k = u - i;
+      return a && { x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k, w: a.w + (b.w - a.w) * k, h: a.h + (b.h - a.h) * k, top: a.top + (b.top - a.top) * k };
+    };
+  }
+  for (const it of items) fxs.push(createFx(stage, { ...it, theme: it.theme || plan.theme || 'kinh', format: F, avoid: it.avoid || plan.avoid || [], track }));
+  if (plan.subtitles && layer !== 'sau' && Array.isArray(words) && words[0]?.words)
     subs = createSubtitles(stage, words, { F, theme: plan.theme || 'kinh', style: plan.subStyle || 'tiktok', highlight: plan.highlight || [],
                                            y: plan.subY ? F.h * plan.subY : undefined, glue: [...(ts?.KEEP_VI || []), ...keep].map(fold) });
   window.MOTION.duration = plan.duration || Math.max(1, ...items.map(i => i.end), ...(Array.isArray(words) ? words.map(l => l.end || 0) : [])) + 0.5;
 })() };
 
+// ?layer=sau → only the effects drawn behind the speaker (no subtitles, no sound); ?layer=truoc → only the others
+// (+ subtitles + the sound of ALL effects); no layer → everything in one layer (voiceover videos, previews).
+const shown = f => !layer || f.layer === layer;
 window.seek = t => {
-  for (const f of fxs) f.seek(t);
-  // while a full-width free-text effect (slam, strike, sticker) is up, the subtitle would repeat it: hide it
-  const loud = fxs.some(f => ['chu-dap', 'gach-thay', 'go-chu'].includes(f.type) && t >= f.start && t <= f.end);
+  for (const f of fxs) if (shown(f)) f.seek(t);
+  // while a full-width free-text effect (slam, strike, sticker, text behind the speaker) is up, the subtitle would repeat it: hide it
+  const loud = fxs.some(f => (f.loud || ['chu-dap', 'gach-thay', 'go-chu'].includes(f.type)) && t >= f.start && t <= f.end);
   subs?.seek(t, !loud);
 };
-window.renderAudio = sr => renderMix(window.MOTION.duration, sr, (ctx, out) => { if (plan.sfx !== false) playFxSounds(ctx, out, sfx, fxSounds(fxs)); });
+window.renderAudio = sr => renderMix(window.MOTION.duration, sr, (ctx, out) => { if (plan.sfx !== false && layer !== 'sau') playFxSounds(ctx, out, sfx, fxSounds(fxs)); });
 window.MOTION.ready.then(() => { preview(stage); window.seek(0); });
 </script>
 </body>

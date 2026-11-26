@@ -50,14 +50,22 @@ Không viết kịch bản, không làm hình: video đã có. `scripts/dung-vid
    bộ gợi ý chấm theo từ khoá nên hay chọn hiệu ứng số liệu — **đổi theo tinh thần nội dung** (video tâm tình/kể chuyện:
    gạch-thay, chữ đập, trích dẫn, danh sách, nhãn dán; ít số). 5–8 hiệu ứng/phút, câu không hiệu ứng để phụ đề tự chạy.
    Điền đúng lời nói, xoá `_dien`, thêm `"highlight"` (cụm tô màu trong phụ đề). Theme: `kinh` hợp hầu hết video quay.
+   **Hiệu ứng bám người** (chỉ video có người nói): `chu-sau-lung` (chữ to SAU đầu — hook mở đầu rất hợp), `neon-sau-lung`,
+   `chu-truot-sau`, `hao-quang`, `sticker-quanh-dau`, `ve-tay-quanh-dau`, `khoa-mat` (giới thiệu "tôi là…"), `mo-tron`
+   (mở đầu/kết: mở tròn từ mặt). Tối đa 1 hiệu ứng "sau lưng" mỗi 10–15 s, chữ sau lưng ≤ 12 ký tự. Script tự tách
+   người khỏi nền + bám mặt (`tach`, ~0,15 s xử lý/khung hình, chạy 1 lần, dùng lại) và ghép 3 lớp:
+   nền → hiệu ứng sau lưng → người → hiệu ứng trước + phụ đề. Người chiếm ít khung / quay xa: tránh các hiệu ứng này.
 3. `python scripts/dung-video-quay.py anh <du-an> 3,8,15,…` → `render/stills/9x16/luoi.png` (hiệu ứng + phụ đề đè lên
    khung hình thật). XEM: chữ đè mặt, đè nhau, sai chính tả. Sửa rồi xem lại.
 4. `python scripts/dung-video-quay.py dung <du-an> [--nhac nhac.mp3]` → `video.mp4` (lớp hiệu ứng + phụ đề kiểu TikTok,
    tiếng hiệu ứng, nhạc nền tự nhỏ khi có lời, chuẩn -14 LUFS, + phần giữ nguyên ở cuối).
 
 Cần skill **motion-studio** (thư viện hiệu ứng) và môi trường `~/.motion-studio/asr-venv` có faster-whisper + opencv
-(`pip install opencv-python-headless`); script tự chuyển sang Python đó. Đã chạy thử: clip MC AI 40 s
-+ thẻ kết 6,5 s (21/11/2026). Thời gian: nghe lời ~1 phút, lớp hiệu ứng ~2,5 s xử lý cho 1 s video.
+(`pip install opencv-python-headless`); script tự chuyển sang Python đó. Hiệu ứng bám người cần thêm 2 model ONNX trong
+`~/.motion-studio/models` (MODNet tách người + YuNet dò mặt; `setup-asr` của motion-studio tải và kiểm tra checksum).
+Đã chạy thử: clip MC AI 40 s + thẻ kết 6,5 s (21/11/2026); đủ 8 hiệu ứng bám người trên cùng clip (26/11/2026,
+`Gabee/video/thu-hieu-ung-nguoi`). Thời gian: nghe lời ~1 phút, tách người ~3 phút cho 40 s, lớp hiệu ứng ~2,5 s
+xử lý cho 1 s video (gấp đôi khi có lớp sau lưng).
 
 ## Nhiều góc máy / mic rời (trước bước chuan-bi)
 

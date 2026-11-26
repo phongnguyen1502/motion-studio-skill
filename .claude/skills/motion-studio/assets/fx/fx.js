@@ -1,4 +1,5 @@
-// fx.js — Motion Studio effect library: 20 reusable on-screen effects for talking-head and voiceover videos.
+// fx.js — Motion Studio effect library: 28 reusable on-screen effects for talking-head and voiceover videos
+// (8 of them need a speaker on screen: text behind the person, and effects that follow the face — see the end of FX).
 // Self-contained (no import from kit.js). Every effect is a pure function of time t, like the rest of the studio.
 //
 //   import { createFx, resolvePlan, fxSounds } from './fx/fx.js';
@@ -234,6 +235,26 @@ const CSS = `
 .fx-st .old{position:relative;color:var(--fx-free);opacity:1}
 .fx-st .line{position:absolute;left:-4%;right:-4%;top:52%;height:.13em;background:var(--fx-accent2);transform-origin:0 50%;border-radius:1em}
 .fx-st .new{color:var(--fx-accent);transform-origin:50% 0}
+/* behind the speaker (layer "sau") */
+.fx-bk{position:absolute;left:0;width:100%;text-align:center;transform-origin:50% 50%}
+.fx-bk .ln{display:block;width:max-content;margin:0 auto;white-space:nowrap;font-weight:900;line-height:.94;letter-spacing:-.02em;text-transform:uppercase;text-shadow:0 .02em .09em rgba(0,0,0,.22)}
+.fx-bk .ln span{display:inline-block}
+.fx-bk.vien .ln{color:transparent!important;-webkit-text-stroke:.022em var(--fx-bk-c);text-shadow:none}
+.fx-bk.vien .ln em{-webkit-text-stroke-color:var(--fx-accent)}
+.fx-dim{position:absolute;inset:0;background:#000}
+.fx-neon .ln{display:block;width:max-content;margin:0 auto;white-space:nowrap;font-weight:700;line-height:1.05;color:#fff;-webkit-text-stroke:.012em var(--nc);
+  text-shadow:0 0 .02em #fff,0 0 .07em var(--nc),0 0 .18em var(--nc),0 0 .42em var(--nc),0 0 .9em var(--nc)}
+.fx-neon .ln em{color:#fff}
+.fx-mq{position:absolute;left:0;white-space:nowrap;font-weight:900;line-height:1;text-transform:uppercase;letter-spacing:-.01em;color:var(--fx-bk-c)}
+.fx-mq.vien{color:transparent;-webkit-text-stroke:.02em var(--fx-bk-c)}
+/* around the face */
+.fx-sk{position:absolute;left:0;top:0;transform-origin:50% 50%}
+.fx-sk.emo{font-size:3.4em;line-height:1;font-family:'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif;filter:drop-shadow(0 .06em .12em rgba(0,0,0,.35))}
+.fx-sk.txt{font-size:1.45em;font-weight:900;white-space:nowrap;background:var(--fx-card);color:var(--fx-ink);padding:.16em .55em .2em;border-radius:.45em;border:.13em solid #fff;box-shadow:0 .25em .7em rgba(0,0,0,.3)}
+.fx-sk.txt em{color:var(--fx-accent)}
+.fx-lock{position:absolute;left:0;top:0;text-align:center;white-space:nowrap}
+.fx-lock .nm{display:inline-block;font-weight:900;font-size:1.35em;background:var(--fx-accent);color:#fff;padding:.14em .55em .18em;border-radius:.2em}
+.fx-lock .sb{display:block;margin-top:.25em;font-weight:700;font-size:.8em;color:#fff;text-shadow:0 .05em .25em rgba(0,0,0,.6);letter-spacing:.04em}
 `;
 function injectCSS() {
   if (document.getElementById('fx-css')) return;
@@ -279,6 +300,67 @@ function enterExit(node, kind, t, start, end) {
   if (q > 0) { o *= 1 - q; tf += ` translateY(${-q * 0.6}em) scale(${1 - q * 0.05})`; }
   node.style.opacity = o; node.style.transform = tf;
 }
+
+// ---------- the speaker (talking-head mode) ----------
+// c.face(t) -> { x, y, w, h, top, cx, cy } in stage px: the face box from spec.track (mat.json, loaded by overlay.html),
+// else derived from the plan's avoid box, else a centred guess. top = top of the head (hair), from the person matte.
+function faceFn(spec, F) {
+  const a = spec.avoid?.[0];
+  let fb;
+  if (a) { const w = a.w / 1.5, h = a.h / 1.75; fb = { x: a.x + w * 0.25, y: a.y + h * 0.45, w, h }; }
+  else fb = { x: F.w * 0.36, y: F.h * 0.24, w: F.w * 0.28, h: F.w * 0.34 };
+  fb.top = fb.y - fb.h * 0.35;
+  const done = b => ({ ...b, cx: b.x + b.w / 2, cy: b.y + b.h / 2 });
+  const FB = done(fb);
+  return t => { const b = spec.track?.(t); return b ? done(b) : FB; };
+}
+function faceAvg(face, a, b) {
+  const n = 9, s = { x: 0, y: 0, w: 0, h: 0, top: 0 };
+  for (let i = 0; i < n; i++) { const f = face(a + ((b - a) * i) / (n - 1)); for (const k in s) s[k] += f[k] / n; }
+  return { ...s, cx: s.x + s.w / 2, cy: s.y + s.h / 2 };
+}
+// Lines of big text made of letter spans (for per-letter motion); *từ* = accent colour, \n = new line.
+function letterLines(parent, s, cls, maxW) {
+  const lines = [];
+  for (const raw of String(s ?? '').split('\n')) {
+    const ln = h('div', cls, parent), letters = [];
+    for (const w of richWords(raw)) {
+      if (w.br) continue;
+      if (ln.childNodes.length) ln.appendChild(document.createTextNode(' '));
+      const host = w.hl ? h('em', null, ln) : ln;
+      for (const ch of Array.from(w.w.normalize('NFC'))) letters.push(h('span', null, host, esc(ch)));
+    }
+    if (maxW) fit(ln, maxW, 0.2);
+    lines.push({ ln, letters });
+  }
+  return lines;
+}
+const fadeOut = (t, end, d = 0.3) => 1 - prog(t, end - d, d, E.inCubic);
+// Big text behind the head: the head may cover only the lower ~35 % of the block, so the word stays readable.
+// When the head is high in the frame the text shrinks (down to 60 %) to fit the room above it; y (0–1) overrides.
+function placeBehindHead(blocks, f, H, y) {
+  const top0 = H * 0.04;
+  if (y == null) {
+    const bh = Math.max(...blocks.map(b => b.offsetHeight)), room = (f.top - top0) / 0.65;
+    const s = clamp(room / bh, 0.6, 1);
+    if (s < 1) for (const b of blocks) for (const ln of b.querySelectorAll('.ln')) ln.style.fontSize = parseFloat(getComputedStyle(ln).fontSize) * s + 'px';
+  }
+  const bh = Math.max(...blocks.map(b => b.offsetHeight));
+  const yc = y != null ? y * H : clamp(f.top + bh * 0.35 - bh / 2, top0 + bh / 2, H * 0.6);
+  for (const b of blocks) b.style.top = yc - b.offsetHeight / 2 + 'px';
+}
+const STAR = (r, n = 5) => Array.from({ length: n * 2 }, (_, i) => { const a = (i * Math.PI) / n - Math.PI / 2, q = i % 2 ? r * 0.45 : r; return `${(Math.cos(a) * q).toFixed(1)} ${(Math.sin(a) * q).toFixed(1)}`; }).join(' L');
+// Doodles in face-width units (100 = face width), drawn from their anchor.
+const DOODLES = {
+  tia: [{ at: f => [f.cx - f.w * 0.66, f.cy - f.h * 0.22], d: 'M0 -20 L-24 -34 M2 0 L-28 0 M0 20 L-24 34' },
+        { at: f => [f.cx + f.w * 0.66, f.cy - f.h * 0.22], d: 'M0 -20 L24 -34 M-2 0 L28 0 M0 20 L24 34' }],
+  sao: [{ at: f => [f.cx - f.w * 0.74, f.top + f.h * 0.02], d: 'M' + STAR(15) + 'Z' },
+        { at: f => [f.cx + f.w * 0.8, f.top + f.h * 0.14], d: 'M' + STAR(10) + 'Z' }],
+  xoan: [{ at: f => [f.cx + f.w * 0.06, f.top - f.h * 0.2], d: 'M' + Array.from({ length: 60 }, (_, i) => { const a = i * 0.24, r = 2 + i * 0.3; return `${(Math.cos(a) * r).toFixed(1)} ${(Math.sin(a) * r * 0.55).toFixed(1)}`; }).join(' L') }],
+  'vuong-mien': [{ at: f => [f.cx, f.top + f.h * 0.03], d: 'M-38 0 L-44 -36 L-21 -15 L0 -44 L21 -15 L44 -36 L38 0 Z' }],
+  tim: [{ at: f => [f.cx + f.w * 0.78, f.cy - f.h * 0.62], d: 'M0 14 C-26 -4 -16 -24 0 -12 C16 -24 26 -4 0 14 Z' }],
+  'dau-hoi': [{ at: f => [f.cx + f.w * 0.72, f.top - f.h * 0.02], d: 'M-10 -14 C-10 -30 14 -30 14 -14 C14 -4 2 -2 2 8 M2 20 L2 21' }],
+};
 
 // ---------- the effects ----------
 // Each: dur (default length), enter, zones (preference), cues {name: default offset from start}, defaults, build().
@@ -758,6 +840,250 @@ export const FX = {
       };
     },
   },
+
+  // ===== talking-head effects: need a speaker on screen. layer 'sau' = drawn BEHIND the person (needs the person
+  // matte, dung-video-quay.py makes it); the others follow the face track. =====
+  'chu-sau-lung': {
+    dur: 3.6, enter: 'none', full: true, layer: 'sau', loud: true, noExit: true, cues: {},
+    defaults: { text: 'Bí quyết', texts: null, style: 'dac', color: '', size: 0.24, y: null },
+    build(el, p, c) {
+      const { w: W, h: H } = c.F, f = c.faceAvg(c.start, c.end);
+      const texts = (p.texts?.length ? p.texts : [p.text]).slice(0, 4);
+      const box = h('div', 'fx-bk' + (p.style === 'vien' ? ' vien' : ''), el);
+      box.style.setProperty('--fx-bk-c', p.color || 'var(--fx-free)');
+      const step = (c.end - c.start - 0.3) / texts.length;
+      const groups = texts.map((s, i) => {
+        const g = h('div', null, box); g.style.cssText = 'position:absolute;left:0;width:100%';
+        g.style.fontSize = W * p.size + 'px';
+        const lines = letterLines(g, s, 'ln', W * 0.94);
+        lines.forEach(l => { l.ln.style.color = p.color || 'var(--fx-free)'; });
+        const at = c.cues['d' + (i + 1)] ?? c.start + i * step;
+        return { g, letters: lines.flatMap(l => l.letters), at };
+      });
+      groups.forEach((g, i) => { g.until = groups[i + 1]?.at ?? Infinity; });
+      placeBehindHead(groups.map(g => g.g), f, H, p.y);
+      return {
+        seek(t) {
+          box.style.transform = `scale(${1.05 - 0.05 * prog(t, c.start, c.end - c.start, E.linear)})`;
+          box.style.opacity = fadeOut(t, c.end);
+          for (const g of groups) {
+            const on = t >= g.at - 0.001 && t < g.until + 0.2;
+            g.g.style.display = on ? '' : 'none';
+            if (!on) continue;
+            const out = prog(t, g.until, 0.2, E.inCubic);
+            g.g.style.opacity = 1 - out; g.g.style.transform = `scale(${1 - 0.12 * out})`;
+            const n = g.letters.length, mid = (n - 1) / 2;
+            g.letters.forEach((s, k) => {
+              const q = spring(t - g.at - Math.abs(k - mid) * 0.035, { stiffness: 230, damping: 17 });
+              s.style.opacity = clamp(q * 2); s.style.transform = `translateY(${(1 - q) * 0.45}em) scale(${0.7 + 0.3 * Math.min(q, 1.1)})`;
+            });
+          }
+        },
+        sounds: groups.flatMap((g, i) => [{ t: g.at, s: 'whoosh', gain: 0.2, opts: { dur: 0.35 } }, ...(i ? [] : [{ t: g.at + 0.12, s: 'kick', gain: 0.45 }])]),
+      };
+    },
+  },
+
+  'neon-sau-lung': {
+    dur: 3.8, enter: 'none', full: true, layer: 'sau', loud: true, noExit: true, cues: { on: 0.15 },
+    defaults: { text: 'Đột phá', color: '#ff2bd6', size: 0.17, toi: 0.45, y: null },
+    build(el, p, c) {
+      const { w: W, h: H } = c.F, f = c.faceAvg(c.start, c.end);
+      const dim = p.toi > 0 ? h('div', 'fx-dim', el) : null;
+      if (dim) Object.assign(dim.style, { width: W + 'px', height: H + 'px' });
+      const box = h('div', 'fx-bk fx-neon', el);
+      box.style.setProperty('--nc', p.color); box.style.fontSize = W * p.size + 'px';
+      letterLines(box, p.text, 'ln', W * 0.92);
+      placeBehindHead([box], f, H, p.y);
+      const T = c.cues.on, N = 18;
+      // flicker on: a fixed random on/off pattern for N frames, then a steady hum
+      const pat = Array.from({ length: N }, (_, i) => (i > N - 4 ? 1 : rng(i * 7 + 3)() > 0.45 ? 1 : 0.12));
+      const sounds = [{ t: c.start, s: 'whoosh', gain: 0.1, opts: { dur: 0.3, from: 200, to: 900 } }];
+      pat.forEach((v, i) => { if (v === 1 && pat[i - 1] !== 1) sounds.push({ t: T + i / 30, s: 'tick', gain: 0.16, opts: { f: 160 } }); });
+      return {
+        seek(t) {
+          const k = Math.floor((t - T) * 30), o = fadeOut(t, c.end);
+          const lit = t < T ? 0 : k < N ? pat[k] : 0.94 + 0.06 * Math.sin(t * 37) * Math.sin(t * 11);
+          box.style.opacity = lit * o;
+          if (dim) dim.style.opacity = p.toi * prog(t, c.start, 0.35) * o;
+        },
+        sounds,
+      };
+    },
+  },
+
+  'chu-truot-sau': {
+    dur: 4, enter: 'none', full: true, layer: 'sau', loud: true, noExit: true, cues: {},
+    defaults: { text: 'Sáng tạo', rows: 3, speed: 0.22, size: 0.15, y: null, color: '' },
+    build(el, p, c) {
+      const { w: W, h: H } = c.F, f = c.faceAvg(c.start, c.end), fs = W * p.size, n = clamp(p.rows | 0, 1, 5);
+      const yc = p.y != null ? p.y * H : clamp(f.top + f.h * 0.45, H * 0.08 + (n * fs) / 2, H * 0.62);
+      const rows = Array.from({ length: n }, (_, i) => {
+        const r = h('div', 'fx-mq' + (i % 2 ? ' vien' : ''), el);
+        r.style.setProperty('--fx-bk-c', p.color || 'var(--fx-free)');
+        r.style.fontSize = fs + 'px'; r.style.top = yc - (n * fs * 1.02) / 2 + i * fs * 1.02 + 'px';
+        const unit = h('span', null, r, rich(String(p.text).replace(/\n/g, ' ')) + '&nbsp;•&nbsp;');
+        const uw = unit.offsetWidth;
+        for (let k = 0; k < Math.ceil((W * 2) / uw) + 1; k++) r.appendChild(unit.cloneNode(true));
+        return { r, uw, dir: i % 2 ? 1 : -1, off: i * 0.37 };
+      });
+      return {
+        seek(t) {
+          const o = prog(t, c.start, 0.3) * fadeOut(t, c.end);
+          for (const k of rows) {
+            const x = (t - c.start) * p.speed * W * k.dir + k.off * k.uw, m = ((x % k.uw) + k.uw) % k.uw;
+            k.r.style.transform = `translateX(${m - k.uw}px)`; k.r.style.opacity = o;
+          }
+        },
+        sounds: [{ t: c.start, s: 'whoosh', gain: 0.18, opts: { dur: 0.6, from: 200, to: 2500 } }],
+      };
+    },
+  },
+
+  'hao-quang': {
+    dur: 3.4, enter: 'none', full: true, noExit: true, cues: {},
+    defaults: { color: '#ffd84a', sparkle: true },
+    build(el, p, c) {
+      const { w: W, h: H } = c.F, fa = c.faceAvg(c.start, c.end);
+      const sv = svg('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}`, style: 'position:absolute;inset:0;overflow:visible' }, el);
+      const glow = `drop-shadow(0 0 ${fa.w * 0.04}px ${p.color}) drop-shadow(0 0 ${fa.w * 0.1}px ${p.color})`;
+      const ring = svg('ellipse', { fill: 'none', stroke: p.color, 'stroke-width': fa.w * 0.055, style: `filter:${glow}` }, sv);
+      const core = svg('ellipse', { fill: 'none', stroke: '#fffbe6', 'stroke-width': fa.w * 0.016 }, sv);
+      const stars = p.sparkle ? Array.from({ length: 5 }, (_, i) => svg('path', { d: 'M0 -1 L.22 -.22 L1 0 L.22 .22 L0 1 L-.22 .22 L-1 0 L-.22 -.22Z', fill: '#fff', style: `filter:drop-shadow(0 0 4px ${p.color})` }, sv)) : [];
+      return {
+        seek(t) {
+          const f = c.face(t), s = spring(t - c.start, { stiffness: 150, damping: 13 }), o = clamp((t - c.start) / 0.15) * fadeOut(t, c.end);
+          const rx = f.w * 0.43, ry = rx * 0.22, cx = f.cx, cy = f.top - ry * 1.5 - (1 - s) * f.h * 0.5 + Math.sin(t * 2.6) * f.h * 0.015;
+          for (const e of [ring, core]) { e.setAttribute('cx', cx); e.setAttribute('cy', cy); e.setAttribute('rx', rx); e.setAttribute('ry', ry); }
+          sv.style.opacity = o;
+          stars.forEach((st, i) => {
+            const a = -2.6 + i * 1.3, k = Math.max(0, Math.sin(t * 4.5 + i * 1.9)) * f.w * 0.07 * clamp(s);
+            st.setAttribute('transform', `translate(${cx + Math.cos(a) * rx * 1.25} ${cy + Math.sin(a) * ry * 2.4}) scale(${k})`);
+          });
+        },
+        sounds: [{ t: c.start, s: 'whoosh', gain: 0.14, opts: { dur: 0.5, from: 1500, to: 7000 } }, ...[0.35, 0.5, 0.62].map((d, i) => ({ t: c.start + d, s: 'tick', gain: 0.07, opts: { f: 3200 + i * 900 } }))],
+      };
+    },
+  },
+
+  'sticker-quanh-dau': {
+    dur: 3.4, enter: 'none', full: true, noExit: true, cues: {},
+    defaults: { items: ['🔥', 'Đỉnh!', '💯'], size: 1 },
+    build(el, p, c) {
+      const { w: W, h: H } = c.F;
+      const SLOTS = [[-1.0, -0.55], [1.02, -0.62], [-1.12, 0.38], [1.12, 0.42], [0, -1.4]];
+      const emoji = s => /^[\p{Extended_Pictographic}‍️\s]+$/u.test(s);
+      const ks = p.items.slice(0, 5).map((s, i) => {
+        const n = h('div', 'fx-sk ' + (emoji(s) ? 'emo' : 'txt'), el, emoji(s) ? esc(s) : rich(s));
+        n.style.fontSize = (emoji(s) ? 3.4 : 1.45) * p.size + 'em';
+        return { n, sl: SLOTS[i], rot: (i % 2 ? 9 : -8), at: c.cues['s' + (i + 1)] ?? c.start + 0.1 + i * 0.32, w: n.offsetWidth, h: n.offsetHeight };
+      });
+      return {
+        seek(t) {
+          const f = c.face(t), o = fadeOut(t, c.end);
+          for (const k of ks) {
+            const s = spring(t - k.at, { stiffness: 320, damping: 12 });
+            const x = clamp(f.cx + k.sl[0] * f.w, k.w / 2 + 20, W - k.w / 2 - 20), y = clamp(f.cy + k.sl[1] * f.h + Math.sin(t * 2.2 + k.rot) * 6, k.h / 2 + 20, H * 0.72);
+            k.n.style.opacity = t < k.at ? 0 : clamp(s * 3) * o;
+            k.n.style.transform = `translate(${x - k.w / 2}px,${y - k.h / 2}px) rotate(${k.rot}deg) scale(${Math.max(0, s)})`;
+          }
+        },
+        sounds: ks.map(k => ({ t: k.at, s: 'pop', gain: 0.26 })),
+      };
+    },
+  },
+
+  've-tay-quanh-dau': {
+    dur: 3.4, enter: 'none', full: true, noExit: true, cues: {},
+    defaults: { items: ['tia', 'sao'], color: '#ffffff', width: 0 },
+    build(el, p, c) {
+      const { w: W, h: H } = c.F, fa = c.faceAvg(c.start, c.end);
+      const sv = svg('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}`, style: 'position:absolute;inset:0;overflow:visible;filter:drop-shadow(0 3px 5px rgba(0,0,0,.45))' }, el);
+      const fid = 'fx-boil-' + Math.round(c.start * 100);
+      sv.innerHTML = `<filter id="${fid}"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="1" seed="1"/><feDisplacementMap in="SourceGraphic" scale="${(fa.w * 0.025).toFixed(1)}"/></filter>`;
+      const turb = sv.querySelector('feTurbulence');
+      const g0 = svg('g', { filter: `url(#${fid})` }, sv);
+      const sw = p.width || fa.w * 0.03;
+      const parts = p.items.flatMap(k => DOODLES[k] || []).map((d, i) => {
+        const g = svg('g', {}, g0);
+        const path = svg('path', { d: d.d, fill: 'none', stroke: p.color, 'stroke-width': sw, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'vector-effect': 'non-scaling-stroke', pathLength: 1, 'stroke-dasharray': 1 }, g);
+        return { g, path, at: d.at, t0: c.cues['v' + (i + 1)] ?? c.start + 0.08 + i * 0.16 };
+      });
+      return {
+        seek(t) {
+          const f = c.face(t), k = f.w / 100;
+          turb.setAttribute('seed', 1 + (Math.floor(t * 8) % 4));
+          sv.style.opacity = fadeOut(t, c.end);
+          for (const q of parts) {
+            const [x, y] = q.at(f);
+            q.g.setAttribute('transform', `translate(${x} ${y}) scale(${k})`);
+            q.path.setAttribute('stroke-dashoffset', 1 - prog(t, q.t0, 0.38, E.outCubic));
+          }
+        },
+        sounds: parts.map(q => ({ t: q.t0, s: 'whoosh', gain: 0.09, opts: { dur: 0.22, from: 2000, to: 6000 } })),
+      };
+    },
+  },
+
+  'khoa-mat': {
+    dur: 3.6, enter: 'none', full: true, noExit: true, cues: { lock: 0.5 },
+    defaults: { label: '', sub: '', color: '' },
+    build(el, p, c) {
+      const { w: W, h: H } = c.F;
+      const col = p.color || 'var(--fx-accent)';
+      const sv = svg('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}`, style: 'position:absolute;inset:0;overflow:visible;filter:drop-shadow(0 2px 4px rgba(0,0,0,.4))' }, el);
+      const br = svg('path', { fill: 'none', 'stroke-width': c.faceAvg(c.start, c.end).w * 0.028, 'stroke-linecap': 'square' }, sv);
+      let lab = null;
+      if (p.label) { lab = h('div', 'fx-lock', el, `<span class="nm">${rich(p.label)}</span>` + (p.sub ? `<span class="sb">${rich(p.sub)}</span>` : '')); lab.querySelector('.nm').style.background = col; }
+      const L = c.cues.lock, lw = lab?.offsetWidth || 0, lh = lab?.offsetHeight || 0;
+      return {
+        seek(t) {
+          const f = c.face(t), q = prog(t, c.start, L - c.start, E.outExpo), o = clamp((t - c.start) / 0.1) * fadeOut(t, c.end);
+          const pulse = 1 + 0.08 * Math.sin(Math.PI * clamp((t - L) / 0.25)), k = lerp(2.3, 1, q) * pulse;
+          const bw = f.w * 1.45 * k, bh = f.h * 1.55 * k, x0 = f.cx - bw / 2, y0 = f.cy - bh / 2 - f.h * 0.05, x1 = x0 + bw, y1 = y0 + bh, a = Math.min(bw, bh) * 0.2;
+          br.setAttribute('d', `M${x0} ${y0 + a}V${y0}H${x0 + a}M${x1 - a} ${y0}H${x1}V${y0 + a}M${x1} ${y1 - a}V${y1}H${x1 - a}M${x0 + a} ${y1}H${x0}V${y1 - a}`);
+          br.setAttribute('stroke', t >= L ? col : '#ffffff');
+          br.setAttribute('transform', `rotate(${(1 - q) * 18} ${f.cx} ${f.cy})`);
+          sv.style.opacity = o;
+          if (lab) {
+            const r = prog(t, L + 0.05, 0.35, E.outExpo), below = y1 + 16 + lh < H * 0.72;
+            const ly = below ? y1 + 16 : y0 - 16 - lh;
+            lab.style.transform = `translate(${clamp(f.cx - lw / 2, 20, W - lw - 20)}px,${ly}px)`;
+            lab.style.clipPath = `inset(0 ${(1 - r) * 100}% 0 0)`; lab.style.opacity = o;
+          }
+        },
+        sounds: [...[0, 0.12, 0.24, 0.36].map(d => ({ t: c.start + d * (L - c.start) / 0.5, s: 'tick', gain: 0.1, opts: { f: 2600 } })), { t: L, s: 'pop', gain: 0.3 }],
+      };
+    },
+  },
+
+  'mo-tron': {
+    dur: 1.2, enter: 'none', full: true, noExit: true, cues: {},
+    defaults: { mode: 'mo', color: '#000000', time: 0.75, ring: true },
+    build(el, p, c) {
+      const { w: W, h: H } = c.F;
+      const sv = svg('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}`, style: 'position:absolute;inset:0' }, el);
+      const mask = svg('path', { fill: p.color, 'fill-rule': 'evenodd' }, sv);
+      const ring = p.ring ? svg('circle', { fill: 'none', stroke: 'var(--fx-accent)', 'stroke-width': W * 0.012 }, sv) : null;
+      const D = p.time, open = p.mode !== 'dong', close = p.mode !== 'mo';
+      return {
+        seek(t) {
+          const f = c.face(t), cx = f.cx, cy = f.cy;
+          const R = Math.max(...[[0, 0], [W, 0], [0, H], [W, H]].map(([x, y]) => Math.hypot(x - cx, y - cy))) * 1.02;
+          let k = 1;
+          if (open) k = Math.min(k, prog(t, c.start, D, E.inOutCubic));
+          if (close) k = Math.min(k, 1 - prog(t, c.end - D, D, E.inOutCubic));
+          const r = Math.max(0, R * k);
+          mask.setAttribute('d', `M0 0H${W}V${H}H0Z` + (r > 0.5 ? `M${cx - r} ${cy}a${r} ${r} 0 1 0 ${2 * r} 0a${r} ${r} 0 1 0 ${-2 * r} 0Z` : ''));
+          sv.style.display = k >= 0.999 ? 'none' : '';
+          if (ring) { ring.setAttribute('cx', cx); ring.setAttribute('cy', cy); ring.setAttribute('r', r); ring.style.opacity = r > 2 && k < 0.98 ? 1 : 0; }
+        },
+        // kit.js whoosh peaks AT t (it starts dur earlier): peak when the circle is fully open / fully closed
+        sounds: [...(open ? [{ t: c.start + D, s: 'whoosh', gain: 0.22, opts: { dur: D, from: 300, to: 3000 } }] : []),
+                 ...(close ? [{ t: c.end, s: 'whoosh', gain: 0.22, opts: { dur: D, from: 3000, to: 300 } }] : [])],
+      };
+    },
+  },
 };
 
 // ---------- create ----------
@@ -767,6 +1093,7 @@ export function createFx(stage, spec) {
   const def = FX[spec.type];
   if (!def) throw new Error(`fx: unknown type "${spec.type}" (use ${Object.keys(FX).join(', ')})`);
   const F = spec.format || { w: stage.offsetWidth, h: stage.offsetHeight };
+  const face = faceFn(spec, F);
   const p = { ...def.defaults, ...(spec.params || {}) };
   const start = +spec.start, end = spec.end != null ? +spec.end : start + def.dur;
   const cues = {};
@@ -783,7 +1110,7 @@ export function createFx(stage, spec) {
   const build = b => {
     inner.innerHTML = ''; inner.className = 'fx-in'; inner.removeAttribute('style');
     Object.assign(root.style, { left: b.x + 'px', top: b.y + 'px', width: b.w + 'px', fontSize: em(b) + 'px' });
-    return def.build(inner, p, { start, end, cues, F, box: b, root });
+    return def.build(inner, p, { start, end, cues, F, box: b, root, face, faceAvg: (a, z) => faceAvg(face, a, z) });
   };
   if (def.full) {
     box = { x: 0, y: 0, w: F.w, a: 'top', size: Math.min(F.w, F.h) / 24 };
@@ -810,6 +1137,8 @@ export function createFx(stage, spec) {
 
   const fx = {
     type: spec.type, root, start, end, cues, box,
+    layer: spec.layer || def.layer || 'truoc',   // 'sau' = behind the speaker (composited under the person matte)
+    loud: !!def.loud,                            // big free text: the subtitle steps aside while it is up
     rect: () => ({ x: root.offsetLeft, y: root.offsetTop, w: root.offsetWidth, h: root.offsetHeight }),
     sounds: (api.sounds || []).filter(s => s.t >= start - 0.6 && s.t <= end),
     seek(t) {
@@ -828,7 +1157,13 @@ export function createFx(stage, spec) {
 export const fxSounds = list => list.flatMap(f => f.sounds);
 // Plays fx sounds with kit.js `sfx` (import { sfx } from './kit.js'). Missing names fall back to 'pop'.
 export function playFxSounds(ctx, out, sfx, list, { gain = 1 } = {}) {
-  for (const e of list) (sfx[e.s] || sfx.pop)(ctx, out, e.t, { ...(e.opts || {}), gain: (e.gain ?? 0.25) * gain });
+  for (const e of list) {
+    if (e.t < 0.02) continue;
+    const o = { ...(e.opts || {}), gain: (e.gain ?? 0.25) * gain };
+    // sounds that build up before t (whoosh, riser) must not start before 0: Web Audio throws on a negative start
+    if ((e.s === 'whoosh' || e.s === 'riser') && e.t - (o.dur ?? (e.s === 'riser' ? 2 : 0.5)) < 0) o.dur = Math.max(0.05, e.t - 0.01);
+    (sfx[e.s] || sfx.pop)(ctx, out, e.t, o);
+  }
 }
 
 // ---------- cues from spoken words ----------
