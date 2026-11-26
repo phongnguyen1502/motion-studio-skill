@@ -166,11 +166,27 @@ An original soundtrack and SFX synthesized with `OfflineAudioContext`, using **t
 constants** as the grid (BPM, scene times) — that is what locks the sound to the beat.
 **The score changes with the content:** one `cue()` per section, each with its own tempo, key,
 instruments and energy (`ins.piano/bell/strings/pizz` plus the drum kit). Never use one loop
-for the whole video; see the example arc in `studio-rules.md`. Duck the score under a voiceover
-with `duckUnder()`, then measure that the voice sits 7–10 dB above the music in each section.
+for the whole video; see the example arc in `studio-rules.md`. Under a voiceover, keep the music
+at a **constant** level 15–18 dB below the voice. Do not let it pump up in every pause
+(`duckUnder()` only for short promos that ask for it). Measure the gap in each section.
 `assets/template/kit.js` ships kick, snare, clap, hat, bass, pad, pluck, whoosh, riser, impact,
-tick and pop. The user's voiceover or music: load it and mix it in the same context, ducking the
-music under the voice. How the audio reaches the video depends on the engine (see engine file).
+tick and pop. Route voice, music and effects through `buses(ctx, out)` so each can be rendered
+alone (`--query "nomus=1"`, `novoice`, `nofx`). The music can then be replaced and the effects
+retimed without re-rendering frames. The user's voiceover or music: load it in the same context.
+How the audio reaches the video depends on the engine (see engine file).
+
+**Training courses and video series** (many clips that also get joined into one long video):
+use one continuous bed, sliced by each clip's running offset, with `scripts/music-bed.py`. A
+bed made of user-supplied tracks needs tracks in the same key. Then:
+
+- Never layer pitched SFX (bells, chimes) over it.
+- Never play two musics at once. A tense story passage may switch to its own scored cue, but it
+  switches out and back in; it never plays on top of the bed.
+- Send a short listening demo across 3–4 clip joins before remixing the whole series.
+
+**Effects land on the frame where the motion starts.** Derive every SFX time from the same
+variable as the animation it belongs to. Then check with `scripts/fx-retime.py --check` before
+delivery. It moves stray effects onto the motion onset and drops effects with no visible motion.
 
 ## 7. Critique loop (before showing anything)
 
@@ -188,10 +204,12 @@ Never deliver the first render. Run rounds:
 
 Follow "Final render" in the engine file. Before announcing, check with `ffprobe` (duration,
 resolution, audio stream), pull 2–3 frames from the final MP4 and look at them; audio peak
-≤ -1 dBFS.
+≤ -1 dBFS. With effects: run `fx-retime.py --check` and fix anything off by more than 0.1 s.
 
 Long videos (YouTube): work scene by scene (30–90 s each), render and review each scene, then
-join them at the end.
+join them at the end with the ffmpeg `concat` **filter**. The concat demuxer (`-f concat`) can
+break the timestamps; one 44-minute join came out at 2 h 56 min. Build the joined video only
+after the user has approved every part.
 
 Deliver: MP4 paths, the engine used, the final score table, and what you decided on your own.
 

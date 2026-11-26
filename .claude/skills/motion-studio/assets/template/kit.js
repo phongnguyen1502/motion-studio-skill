@@ -251,3 +251,15 @@ export function cue(ctx, musicBus, a, b, bpm, fn, { level = 1, fadeIn = 0.5, fad
   const each = (f, from = a, to = b) => { for (let n = 0; from + n * spb < to - 0.02; n++) f(from + n * spb, n % 4, Math.floor(n / 4), n); };
   fn(o, { spb, each });
 }
+
+// ---------- stems: voice / music / fx on their own buses ----------
+// const B = buses(ctx, out); voice -> B.voice, cue() -> B.music, every sfx.x(ctx, B.fx, ...) -> B.fx.
+// URL flags render one stem only (node scripts/render.mjs PROJ --audio-only --query "nomus=1&nofx=1" ...):
+//   nomus  drops the music bus   novoice  drops the voice bus   nofx  drops the effects bus
+// scripts/fx-log.mjs finds the effects through the `role` tag; scripts/music-bed.py and
+// scripts/fx-retime.py work on these stems, so music can be replaced without re-rendering frames.
+export function buses(ctx, out, { voice = 1.15, music = 1, fx = 0.55 } = {}) {
+  const q = typeof location !== 'undefined' ? new URLSearchParams(location.search) : new URLSearchParams();
+  const mk = (role, g, off) => { const n = ctx.createGain(); n.gain.value = g; n.role = role; if (!q.has(off)) n.connect(out); return n; };
+  return { voice: mk('voice', voice, 'novoice'), music: mk('music', music, 'nomus'), fx: mk('fx', fx, 'nofx') };
+}

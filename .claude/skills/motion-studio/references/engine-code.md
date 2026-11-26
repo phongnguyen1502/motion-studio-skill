@@ -56,6 +56,21 @@ Write `window.renderAudio` in the page itself with `renderMix` + `sfx` from the 
 renderer exports the WAV and muxes it into the MP4 on its own. The kit normalizes the peak to
 -1.5 dBFS.
 
+Stems, so sound can change without re-rendering frames (route through `buses(ctx, out)`):
+
+```bash
+node SKILL_DIR/scripts/render.mjs PROJ --audio-only --query "nomus=1" --out stem --name vfx            # voice + effects
+node SKILL_DIR/scripts/render.mjs PROJ --audio-only --query "nomus=1&nofx=1" --out stem --name vo      # voice only
+node SKILL_DIR/scripts/render.mjs PROJ --audio-only --query "nomus=1&novoice=1" --out stem --name fx   # effects only
+node SKILL_DIR/scripts/fx-log.mjs PROJ                                                                  # stem/fx.json: effect start times
+python SKILL_DIR/scripts/fx-retime.py PROJ --video PROJ/render/x-16x9.mp4 --check                      # how far each effect is from its motion
+python SKILL_DIR/scripts/fx-retime.py PROJ --video PROJ/render/x-16x9.mp4 -v                           # writes stem/vfx.wav with effects on their onsets
+python SKILL_DIR/scripts/music-bed.py bed.json mix                                                      # bed + stem, muxed onto the video (video copied)
+```
+
+An audio-only stem renders in seconds, and remixing 40 clips takes minutes. Python needs
+numpy; the ASR venv (`~/.motion-studio/asr-venv`) has it.
+
 ## 7.1 Frames for the critique
 
 ```bash
@@ -76,7 +91,11 @@ Output: `PROJ/render/<name>-<format>.mp4` (H.264 + AAC, yuv420p, faststart). Opt
 `--workers 6`, `--from 10 --to 20` (a segment), `--crf 16` (higher quality), `--keep-frames`.
 The script prints duration, resolution and the audio peak.
 
-Long videos: render scene by scene with `--from/--to` and join with `ffmpeg -f concat`, or use
-one page per scene.
+Long videos: render scene by scene with `--from/--to`, or use one page per scene. Join them
+with the concat **filter**, re-encoding once:
+`ffmpeg -i a.mp4 -i b.mp4 ... -filter_complex "[0:v][0:a][1:v][1:a]...concat=n=N:v=1:a=1[v][a]" -map "[v]" -map "[a]" -c:v libx264 -crf 18 -c:a aac out.mp4`.
+With 30+ inputs, put the graph in a file and pass `-filter_complex_script`. The concat demuxer
+(`-f concat`, with or without `-c copy`) produced a video track 4× too long on Windows. Always
+compare the video and audio stream durations afterwards.
 
 Reference speed: an 8 s 1080p video (240 frames) captures in ~6 s on an Apple M-series laptop.

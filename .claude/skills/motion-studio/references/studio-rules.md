@@ -75,7 +75,12 @@ Full rules in `references/typography.md`; use `assets/template/typeset.js`.
   reveals, ticks for typing/counters, a riser before a "drop". Don't sonify every move.
 - Silence and a "drop" (pulling the beat for one bar) create emphasis.
 - Mix: peak ≤ -1 dBFS, no clipping; kick and bass not fighting (cut the pad's lows);
-  voiceover +6 to +10 dB above the music, with ducking.
+  voiceover 15–18 dB above the music at a constant level (see "Voiceover videos").
+- **Sync:** every SFX starts on the frame where its motion starts. Take its time from the same
+  variable as the animation, not from a copied number. `whoosh(t)` and `riser(t)` *end* on `t`,
+  and their build-up starts before it. Keep `t - dur` ≥ 0, because a negative start time makes
+  WebAudio throw and the render fails. No sound without visible motion. Check with
+  `scripts/fx-retime.py --check`.
 - 0.3–1 s fade at the end; the last frame and the last sound end together.
 - **The music follows the story; it is never one loop.** For anything over ~30 s, write one cue
   per section or scene (`cue()` in kit.js). Each cue gets its own tempo, key, instruments and
@@ -91,8 +96,18 @@ Full rules in `references/typography.md`; use `assets/template/typeset.js`.
 
   Use `ins.piano / ins.bell / ins.strings / ins.pizz` beside the drum kit.
 - **Voiceover videos:** lead with the voice and pin visuals and SFX to word timestamps
-  (`scripts/voice-timing.py`). Duck the music under the voice (`duckUnder()`). Measure the result:
-  the voice should sit 7–10 dB above the music in every section; lower the busy cues if not.
+  (`scripts/voice-timing.py`). Keep the music at one constant level, 15–18 dB below the voice.
+  Do not duck it in every phrase. Learners hear the music swelling in each pause and lose focus,
+  as one user reported on a 44-minute course. Measure each section and lower busy cues if needed.
+- **Bright, not muffled:** under a voice, avoid a minor key, a low register and a low-pass on
+  everything. A score that sits there sounds "dark and muffled". Prefer major keys, plucks and
+  piano an octave up, and light percussion. Keep dark cues for passages that are really tense
+  (risk, warnings).
+- **Licensed tracks from the user** (training series): build one continuous bed with
+  `scripts/music-bed.py`. It levels the tracks, crossfades tracks in the same key, gives each
+  clip the slice that follows the previous clip, holds a constant level under the voice and
+  normalizes linearly. Keep a dark scored passage only where the story needs it, switched in
+  and out, never layered. Remove pitched SFX (bells) whose key clashes with the bed.
 - **"No music" requests:** when the user will add music later, remove every bed (pads, drums, bass,
   arps) but keep the event SFX (bells on reveals, pops, ticks, risers, impacts, soft whooshes on
   scene changes). Check that pauses in the voice are truly silent.

@@ -9,7 +9,9 @@ So với bản gốc, **motion-studio** có thêm:
 
 - **Ngắt dòng theo nghĩa tiếng Việt và canh đều chữ (Justify)** có kiểm soát khoảng trắng (`typeset.js`, `references/typography.md`).
 - **Font Be Vietnam Pro** có đủ dấu tiếng Việt, chạy offline.
-- **Nhạc nền đổi theo từng phần nội dung**: piano, chuông, dàn dây, dây gảy, `cue()`, tự hạ nhạc khi có giọng nói.
+- **Nhạc nền đổi theo từng phần nội dung**: piano, chuông, dàn dây, dây gảy, `cue()`. Dưới giọng đọc, nhạc giữ một mức cố định, thấp hơn giọng 15–18 dB, không lên xuống theo từng câu.
+- **Nhạc nền xuyên suốt cho khóa học nhiều clip** (`music-bed.py`): dùng các bài nhạc người dùng cung cấp. Clip sau nối tiếp đúng đoạn nhạc clip trước, nên khi ghép thành video dài nhạc chạy liền mạch. Thay nhạc chỉ cần ghép lại tiếng, không phải dựng lại hình.
+- **Tiếng hiệu ứng khớp với chuyển động** (`fx-log.mjs`, `fx-retime.py`): đo từng tiếng so với khung hình đang chuyển động. Tiếng lệch thì dời cho khớp, tiếng không có hình đi kèm thì bỏ.
 - **Video dùng voiceover**: lấy thời điểm từng chữ ngay trên máy bằng faster-whisper (`voice-timing.py`), không cần khóa API.
 - Quy tắc "bỏ nhạc nền, giữ hiệu ứng âm thanh", và đề xuất 2–3 hướng phong cách trước khi dựng.
 
