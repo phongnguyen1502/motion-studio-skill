@@ -18,9 +18,13 @@ New-Item -ItemType Directory -Force $models | Out-Null
 $want = @(
   @('modnet.onnx', 'https://huggingface.co/Xenova/modnet/resolve/main/onnx/model.onnx', '07c308cf0fc7e6e8b2065a12ed7fc07e1de8febb7dc7839d7b7f15dd66584df9'),
   @('face_detection_yunet_2023mar.onnx', 'https://github.com/opencv/opencv_zoo/raw/main/models/face_detection_yunet/face_detection_yunet_2023mar.onnx', '8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4'))
+# a blocked download only disables the speaker effects, so it warns instead of failing the whole setup;
+# offline: copy the two .onnx files into %USERPROFILE%\.motion-studio\models beforehand (the company kit does)
 foreach ($m in $want) {
   $f = Join-Path $models $m[0]
-  if (-not (Test-Path $f)) { Invoke-WebRequest -Uri $m[1] -OutFile $f -UseBasicParsing }
-  if ((Get-FileHash $f -Algorithm SHA256).Hash.ToLower() -ne $m[2]) { Remove-Item $f; throw "checksum mismatch: $($m[0])" }
+  try {
+    if (-not (Test-Path $f)) { Invoke-WebRequest -Uri $m[1] -OutFile $f -UseBasicParsing }
+    if ((Get-FileHash $f -Algorithm SHA256).Hash.ToLower() -ne $m[2]) { Remove-Item $f; throw "checksum mismatch" }
+  } catch { Write-Warning "Model $($m[0]) not installed ($($_.Exception.Message)): talking-head speaker effects stay off." }
 }
 Write-Host "ASR ready: $venv\Scripts\python.exe $dir\voice-timing.py <voice> <script.txt> <timing.json>"
