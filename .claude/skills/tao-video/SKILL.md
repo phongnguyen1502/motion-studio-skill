@@ -59,6 +59,13 @@ Không viết kịch bản, không làm hình: video đã có. `scripts/dung-vid
    terminal, hoá đơn in, hồ sơ + bấm theo dõi, ô tìm kiếm, thẻ đánh giá, CTA bình luận, bìa tạp chí, polaroid, lịch xé,
    storyboard, băng giấy xé, giấy note. Ảnh trong polaroid/storyboard: `"img": "khung:12.5"` = ảnh chụp từ video lúc
    12,5 s (script tự cắt). Không làm giả tin nhắn/đánh giá/hoá đơn/giao diện của người hay hãng có thật như bằng chứng.
+   **Máy quay, màu, chuyển cảnh trên chính hình quay**: khoá `"canh": [...]` trong fx-plan.json (`scripts/canh_may.py`,
+   chạy tự động trong anh/dung, cut.mp4 → work/may.mp4; lớp người + khung mặt được dịch theo nên hiệu ứng bám người vẫn
+   khớp). Máy quay: `nhay-cat` (che chỗ cắt bằng zoom xen kẽ — nên dùng cho hầu hết video quay), `di-mat` (dí sát mặt,
+   gắn vào từ nhấn), `di-trai-phai`, `day-may`, `ken-burns`, `rung-may`, `zoom-giat`. Màu: `mau-phim` (am, lanh-cam,
+   den-trang, u-buon, phim-cu, tuoi, log), `vuot-mau` (vuốt từ LOG/gốc sang màu chỉnh), `hat-phim`, `vhs`. Chuyển cảnh:
+   `chop-trang`, `mo-den`. Lớp phủ đi kèm trong fx: `khung-dien-anh`, `may-quay-rec`, `light-leak`, `osd-vhs`.
+   Mỗi video 1 màu chủ đạo (có thể đổi ở đoạn hồi tưởng); dí mặt ≤ 1 lần/8–10 s.
 3. `python scripts/dung-video-quay.py anh <du-an> 3,8,15,…` → `render/stills/9x16/luoi.png` (hiệu ứng + phụ đề đè lên
    khung hình thật). XEM: chữ đè mặt, đè nhau, sai chính tả. Sửa rồi xem lại.
 4. `python scripts/dung-video-quay.py dung <du-an> [--nhac nhac.mp3]` → `video.mp4` (lớp hiệu ứng + phụ đề kiểu TikTok,

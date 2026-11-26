@@ -18,6 +18,7 @@ Hai bước, giữa hai bước là việc của agent (điền nội dung hiệ
      → du-an/render/fx-9x16.webm (lớp hiệu ứng + phụ đề, nền trong suốt) rồi du-an/video.mp4
        (= cut.mp4 + lớp hiệu ứng + tiếng hiệu ứng + nhạc nền tự nhỏ khi có lời, chuẩn -14 LUFS, + tail.mp4)
   python dung-video-quay.py anh <du-an> 3,8,15      ảnh tĩnh để kiểm (du-an/render/stills/9x16/luoi.png)
+  "canh" trong fx-plan.json: zoom/dí mặt/lắc máy, màu phim, VHS, chớp trắng… trên chính hình quay → xem canh_may.py.
   python dung-video-quay.py tach <du-an> [--lam-lai] tách người khỏi nền + bám mặt (anh/dung tự gọi khi plan có hiệu ứng
      cần người: chữ sau lưng, neon sau lưng, chữ trượt sau lưng, hào quang, sticker/vẽ tay quanh đầu, khoá mặt, mở tròn)
      → du-an/work/nguoi.mkv (lớp người) + du-an/mat.json (khung mặt + đỉnh đầu từng khung hình). Model MODNet + YuNet
@@ -370,7 +371,7 @@ def chuan_bi(a):
         run(["node", MS / "scripts/fx-suggest.mjs", du / "timing.json", "--out", plan, "--theme", a.theme,
              *(["--nguoi"] if face else [])])
         p = json.loads(plan.read_text(encoding="utf-8"))
-        p.update({"avoid": avoid, "duration": round(total, 2), "subtitles": True, "voice": None})
+        p.update({"avoid": avoid, "duration": round(total, 2), "subtitles": True, "voice": None, "canh": []})   # canh: canh_may.py
         plan.write_text(json.dumps(p, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"\nXong bước 1. Việc tiếp: điền params trong {plan} theo đúng lời nói, xoá _dien; rồi\n"
           f"  python {Path(__file__).name} anh \"{du}\" 3,8      (kiểm ảnh)\n  python {Path(__file__).name} dung \"{du}\"")
@@ -480,17 +481,24 @@ def extract_stills(du):
 
 
 def prepare_person(du):
-    """Matte + track when the plan needs them; points the plan at mat.json. Returns True when there is a back layer."""
+    """Stills, matte + track, camera/colour pass ("canh", canh_may.py). Returns (has back layer, base video, matte)."""
     extract_stills(du)
     back, need = plan_layers(du)
+    pf = du / "fx-plan.json"
+    p = json.loads(pf.read_text(encoding="utf-8"))
+    if need or p.get("canh"):
+        need_libs()
     if need:
         tach(du)
-        pf = du / "fx-plan.json"
-        p = json.loads(pf.read_text(encoding="utf-8"))
-        if p.get("track") != "mat.json":
-            p["track"] = "mat.json"
-            pf.write_text(json.dumps(p, ensure_ascii=False, indent=2), encoding="utf-8")
-    return back
+    base, mask, track = du / "cut.mp4", du / "work/nguoi.mkv", "mat.json"
+    if p.get("canh"):
+        sys.path.insert(0, str(Path(__file__).parent))
+        import canh_may
+        base, mask, track = canh_may.apply(du)
+    if need and p.get("track") != track:
+        p["track"] = track
+        pf.write_text(json.dumps(p, ensure_ascii=False, indent=2), encoding="utf-8")
+    return back, base, mask
 
 
 def comp_graph(base, front, back=None, mask=None, out="v"):
@@ -528,7 +536,7 @@ def anh(a):
     """Transparent stills of the layer (Playwright's Chromium cannot decode H.264), laid on cut.mp4 frames by ffmpeg."""
     du = Path(a.du_an).resolve()
     copy_fx(du); check_plan(du)
-    back = prepare_person(du)
+    back, base, mask = prepare_person(du)
     sd = du / "render/stills/9x16"
     times = [float(x) for x in a.times.split(",")]
     name = lambda t: sd / ("t_" + f"{t:.2f}".zfill(6) + ".png")   # render.mjs naming
@@ -544,9 +552,9 @@ def anh(a):
         o = sd / f"anh_{t:.2f}.png"
         # -loop 1: a one-frame PNG ends at once, and with eof_action=pass the overlay would drop it when the
         # person branch of the 3-layer graph arrives later
-        ins = ["-ss", t, "-i", du / "cut.mp4", "-loop", "1", "-i", name(t)]
+        ins = ["-ss", t, "-i", base, "-loop", "1", "-i", name(t)]
         if back:
-            ins += ["-loop", "1", "-i", bd / f"sau_{t:.2f}.png", "-ss", t, "-i", du / "work/nguoi.mkv"]
+            ins += ["-loop", "1", "-i", bd / f"sau_{t:.2f}.png", "-ss", t, "-i", mask]
         fc = comp_graph(0, 1, 2 if back else None, 3 if back else None, "c") + ";[c]scale=540:-2[o]"
         run(["ffmpeg", "-v", "error", "-y", *ins, "-filter_complex", fc, "-map", "[o]", "-frames:v", "1", o])
         outs.append(o)
@@ -565,7 +573,7 @@ def dung(a):
     if a.khong_phu_de:
         p["subtitles"] = False
         (du / "fx-plan.json").write_text(json.dumps(p, ensure_ascii=False, indent=2), encoding="utf-8")
-    back = prepare_person(du)
+    back, base, mask = prepare_person(du)
     if back:
         print("Dựng lớp hiệu ứng SAU LƯNG người (nền trong suốt)…")
         render_layer(du, ["--alpha", "--name", "fx-sau"], "sau")
@@ -586,13 +594,13 @@ def dung(a):
         else:
             rs.append([cut["den"], src_dur])
     n = len(rs)
-    ins = ["-i", du / "cut.mp4", "-c:v", "libvpx-vp9", "-i", layer, "-i", cut["video"]]
+    ins = ["-i", base, "-c:v", "libvpx-vp9", "-i", layer, "-i", cut["video"]]
     k = 3
     if tail.exists():
         ins += ["-i", tail]; ti = k; k += 1
     bi = mi = None
     if back:
-        ins += ["-c:v", "libvpx-vp9", "-i", du / "render/fx-sau-9x16.webm", "-i", du / "work/nguoi.mkv"]; bi, mi = k, k + 1; k += 2
+        ins += ["-c:v", "libvpx-vp9", "-i", du / "render/fx-sau-9x16.webm", "-i", mask]; bi, mi = k, k + 1; k += 2
     fc = comp_graph(0, 1, bi, mi, "bv" if tail.exists() else "v") + (f";[bv][{ti}:v]concat=n=2:v=1:a=0[v];" if tail.exists() else ";")
     fc += f"[2:a]aresample=48000,asplit={n}" + "".join(f"[s{i}]" for i in range(n)) + ";"
     for i, (x, y) in enumerate(rs):

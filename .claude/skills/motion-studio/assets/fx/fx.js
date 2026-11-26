@@ -347,6 +347,16 @@ const CSS = `
 .fx-nt2 .t svg{position:absolute;left:-.1em;bottom:-.35em;width:110%;height:.5em;overflow:visible}
 .fx-nt2 .it{font-weight:700;font-size:.85em;margin-top:.5em;display:flex;gap:.45em;line-height:1.25}.fx-nt2 .it::before{content:'–';flex:none}
 .fx-nt2 em{color:#d62d20}
+/* wave 3: film overlays */
+.fx-bar{position:absolute;left:0;width:100%;background:#000;display:flex;align-items:center;justify-content:center}
+.fx-bar span{color:#fff;font-weight:600;letter-spacing:.35em;font-size:.62em;text-transform:uppercase;opacity:.9}
+.fx-hud{position:absolute;color:#fff;font-family:'Cascadia Mono',Consolas,'Courier New',monospace;font-weight:700;text-shadow:0 0 .2em rgba(0,0,0,.6),0 .05em .1em rgba(0,0,0,.6);white-space:nowrap}
+.fx-hud .dot{display:inline-block;width:.7em;height:.7em;border-radius:50%;background:#ff2d2d;margin-right:.4em;vertical-align:-.02em;box-shadow:0 0 .4em #ff2d2d}
+.fx-bat{display:inline-block;width:1.9em;height:.9em;border:.12em solid #fff;border-radius:.15em;position:relative;vertical-align:-.1em;margin-left:.4em}
+.fx-bat::after{content:'';position:absolute;right:-.32em;top:.2em;width:.18em;height:.35em;background:#fff;border-radius:0 .1em .1em 0}
+.fx-bat i{position:absolute;left:.1em;top:.1em;bottom:.1em;background:#fff}
+.fx-leak{position:absolute;left:0;top:0;border-radius:50%;pointer-events:none}
+.fx-osd{position:absolute;color:#f4f4f4;font-family:'Cascadia Mono',Consolas,'Courier New',monospace;font-weight:700;letter-spacing:.06em;white-space:nowrap;text-shadow:.06em 0 0 rgba(255,40,80,.7),-.06em 0 0 rgba(40,200,255,.7),0 0 .25em rgba(255,255,255,.35)}
 `;
 function injectCSS() {
   if (document.getElementById('fx-css')) return;
@@ -1627,6 +1637,99 @@ export const FX = {
       };
     },
     noExit: true,
+  },
+
+  // ===== wave 3: film overlays (the camera moves and colour looks themselves are footage passes: tao-video canh_may.py) =====
+  'khung-dien-anh': {
+    dur: 4, enter: 'none', full: true, noExit: true, cues: {},
+    defaults: { visible: 0.62, text: '', color: '#000000', time: 0.5 },
+    build(el, p, c) {
+      const { w: W, h: H } = c.F, bh = (H * (1 - p.visible)) / 2;
+      const top = h('div', 'fx-bar', el), bot = h('div', 'fx-bar', el);
+      for (const b of [top, bot]) Object.assign(b.style, { height: bh + 'px', background: p.color, fontSize: W * 0.045 + 'px' });
+      top.style.top = '0px'; bot.style.top = H - bh + 'px';
+      const tx = p.text ? h('span', null, bot, rich(p.text)) : null;
+      return {
+        seek(t) {
+          const q = prog(t, c.start, p.time, E.outCubic) * (1 - prog(t, c.end - p.time, p.time, E.inCubic));
+          top.style.transform = `translateY(${-(1 - q) * 100}%)`; bot.style.transform = `translateY(${(1 - q) * 100}%)`;
+          if (tx) tx.style.opacity = prog(t, c.start + p.time, 0.4) * (1 - prog(t, c.end - p.time - 0.2, 0.2));
+        },
+        sounds: [{ t: c.start + p.time, s: 'whoosh', gain: 0.14, opts: { dur: p.time, from: 200, to: 900 } }],
+      };
+    },
+  },
+
+  'may-quay-rec': {
+    dur: 4, enter: 'none', full: true, noExit: true, cues: {},
+    defaults: { label: 'REC', info: '4K · 30FPS', pin: 72 },
+    build(el, p, c) {
+      const { w: W, h: H } = c.F, m = W * 0.06, fs = W * 0.042;
+      const sv = svg('svg', { width: W, height: H, viewBox: `0 0 ${W} ${H}`, style: 'position:absolute;inset:0;filter:drop-shadow(0 0 3px rgba(0,0,0,.5))' }, el);
+      const L = W * 0.08, y0 = H * 0.08, y1 = H * 0.9;
+      svg('path', { d: `M${m} ${y0 + L}V${y0}H${m + L}M${W - m - L} ${y0}H${W - m}V${y0 + L}M${W - m} ${y1 - L}V${y1}H${W - m - L}M${m + L} ${y1}H${m}V${y1 - L}`, fill: 'none', stroke: '#fff', 'stroke-width': W * 0.006 }, sv);
+      svg('path', { d: `M${W / 2 - L * 0.3} ${H / 2}H${W / 2 + L * 0.3}M${W / 2} ${H / 2 - L * 0.3}V${H / 2 + L * 0.3}`, stroke: 'rgba(255,255,255,.6)', 'stroke-width': W * 0.003 }, sv);
+      const hud = (x, y, html, right) => { const n = h('div', 'fx-hud', el, html); n.style.fontSize = fs + 'px'; n.style.top = y + 'px'; n.style[right ? 'right' : 'left'] = x + 'px'; return n; };
+      const rec = hud(m + W * 0.03, y0 + W * 0.03, `<span class="dot"></span>${esc(p.label)}`);
+      hud(m + W * 0.03, y0 + W * 0.03, `${clamp(p.pin, 0, 100) | 0}%<span class="fx-bat"><i style="width:${clamp(p.pin, 5, 100) * 0.0145}em"></i></span>`, true);
+      const tc = hud(m + W * 0.03, y1 - W * 0.03 - fs * 1.3, '00:00:00:00');
+      hud(m + W * 0.03, y1 - W * 0.03 - fs * 1.3, esc(p.info), true);
+      const dot = rec.querySelector('.dot');
+      return {
+        seek(t) {
+          const a = Math.max(0, t - c.start), fr = Math.floor(a * 30), ss = Math.floor(a);
+          tc.textContent = `00:${String(Math.floor(ss / 60)).padStart(2, '0')}:${String(ss % 60).padStart(2, '0')}:${String(fr % 30).padStart(2, '0')}`;
+          dot.style.opacity = Math.floor(a * 1.6) % 2 === 0 ? 1 : 0.15;
+          el.style.opacity = clamp((t - c.start) / 0.15) * fadeOut(t, c.end, 0.2);
+        },
+        sounds: [{ t: c.start, s: 'tick', gain: 0.2, opts: { f: 1000 } }, { t: c.start + 0.08, s: 'tick', gain: 0.15, opts: { f: 1500 } }],
+      };
+    },
+  },
+
+  'light-leak': {
+    dur: 2.2, enter: 'none', full: true, noExit: true, cues: {},
+    defaults: { color: '#ff7a2f', color2: '#ffd36b', manh: 0.6 },
+    build(el, p, c) {
+      const { w: W, h: H } = c.F, D = c.end - c.start;
+      const blobs = [[p.color, 1.2, 0], [p.color2, 0.8, 0.15], [p.color, 0.7, 0.35]].map(([col, sz, off]) => {
+        const b = h('div', 'fx-leak', el), r = W * sz;
+        Object.assign(b.style, { width: r + 'px', height: r * 1.3 + 'px', background: `radial-gradient(closest-side, ${col}, transparent)` });
+        return { b, r, off };
+      });
+      return {
+        seek(t) {
+          const q = clamp((t - c.start) / D), env = Math.sin(Math.PI * q);
+          blobs.forEach((k, i) => {
+            const u = clamp(q * 1.2 - k.off * 0.5);
+            k.b.style.opacity = p.manh * env * (i ? 0.8 : 1);
+            k.b.style.transform = `translate(${-k.r * 0.6 + (W + k.r * 0.2) * u}px,${H * (0.05 + 0.25 * i) - k.r * 0.4 + H * 0.12 * u}px)`;
+          });
+        },
+        sounds: [{ t: c.start + D * 0.45, s: 'whoosh', gain: 0.1, opts: { dur: D * 0.4, from: 300, to: 1500 } }],
+      };
+    },
+  },
+
+  'osd-vhs': {
+    dur: 4, enter: 'none', full: true, noExit: true, cues: {},
+    defaults: { text: 'PLAY ►', date: '26.11.2026', clock: '20:15:00' },
+    build(el, p, c) {
+      const { w: W, h: H } = c.F, fs = W * 0.055;
+      const at = (x, y, s) => { const n = h('div', 'fx-osd', el, s); Object.assign(n.style, { left: x + 'px', top: y + 'px', fontSize: fs + 'px' }); return n; };
+      const play = at(W * 0.07, H * 0.06, esc(p.text));
+      at(W * 0.07, H * 0.855, esc(p.date));
+      const clk = at(W * 0.07, H * 0.855 + fs * 1.25, ''), [hh, mm, s0] = String(p.clock).split(':').map(Number);
+      return {
+        seek(t) {
+          const s = (hh * 3600 + mm * 60 + (s0 || 0) + Math.floor(Math.max(0, t - c.start))) % 86400;
+          clk.textContent = [Math.floor(s / 3600), Math.floor(s / 60) % 60, s % 60].map(v => String(v).padStart(2, '0')).join(':');
+          play.style.opacity = t - c.start < 2 ? (Math.floor((t - c.start) * 2.5) % 2 ? 0.25 : 1) : 1;
+          el.style.opacity = clamp((t - c.start) / 0.1) * fadeOut(t, c.end, 0.15) * (0.9 + 0.1 * Math.sin(t * 50));
+        },
+        sounds: [{ t: c.start, s: 'tick', gain: 0.18, opts: { f: 700 } }],
+      };
+    },
   },
 };
 

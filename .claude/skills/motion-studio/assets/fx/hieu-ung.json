@@ -1,5 +1,5 @@
 {
-  "_ve": "Danh mục 44 hiệu ứng của fx.js. Mỗi mục: ten (tên đọc), nhom, lop (\"sau\" = vẽ SAU LƯNG người nói, cần lớp tách người), can_nguoi (cần người nói trong khung — chỉ dùng cho video quay người), hop_voi (loại câu nói hợp), tu_khoa (từ trong lời nói gợi ý hiệu ứng này), cues (mốc thời gian + mặc định tính từ lúc bắt đầu), params (nội dung cần điền + giới hạn), nang (hiệu ứng mạnh, không đặt liền nhau), khong_dung_khi (tránh), am_thanh. Thời lượng mặc định: dur (giây). Không bịa số liệu: chỉ điền số có trong lời nói hoặc tài liệu gốc.",
+  "_ve": "Danh mục 48 hiệu ứng của fx.js. Mỗi mục: ten (tên đọc), nhom, lop (\"sau\" = vẽ SAU LƯNG người nói, cần lớp tách người), can_nguoi (cần người nói trong khung — chỉ dùng cho video quay người), tu_chon (không tự gợi ý, agent tự chọn khi hợp), hop_voi (loại câu nói hợp), tu_khoa (từ trong lời nói gợi ý hiệu ứng này), cues (mốc thời gian + mặc định tính từ lúc bắt đầu), params (nội dung cần điền + giới hạn), nang (hiệu ứng mạnh, không đặt liền nhau), khong_dung_khi (tránh), am_thanh. Thời lượng mặc định: dur (giây). Không bịa số liệu: chỉ điền số có trong lời nói hoặc tài liệu gốc.",
   "dem-so": {
     "ten": "Đếm số", "nhom": "so-lieu", "dur": 3.6,
     "hop_voi": "Câu có MỘT con số nổi bật: doanh thu, số khách hàng, số tiền, số năm.",
@@ -356,5 +356,37 @@
     "cues": { "i1…i5": "lúc mỗi ý hiện (mặc định cách 0.4 s)" },
     "params": { "title": "≤ 16 ký tự", "items": "2–5 ý ≤ 28 ký tự, *từ* tô đỏ", "color": "màu giấy: #ffe066 vàng, #ffc6d9 hồng, #c9f2d8 xanh", "rotate": "độ, mặc định 3" },
     "nang": false, "am_thanh": "pop + tick"
+  },
+  "khung-dien-anh": {
+    "ten": "Khung điện ảnh", "nhom": "phim", "dur": 4, "tu_chon": true,
+    "hop_voi": "Đoạn kể chuyện/cao trào: hai dải đen trượt vào trên dưới (letterbox), có thể ghi 1 dòng chữ ở dải dưới. Đi cùng 'mau-phim' trong canh.",
+    "tu_khoa": [],
+    "cues": {},
+    "params": { "visible": "phần hình còn thấy 0.4–0.9, mặc định 0.62", "text": "chữ ở dải dưới ≤ 24 ký tự (tuỳ chọn)", "color": "màu dải, mặc định đen", "time": "giây trượt vào/ra, mặc định 0.5" },
+    "nang": false, "khong_dung_khi": "đang có phụ đề quan trọng ở dải dưới (dải đen che phụ đề) — đặt subY lên cao hơn", "am_thanh": "whoosh trầm"
+  },
+  "may-quay-rec": {
+    "ten": "Máy quay REC", "nhom": "phim", "dur": 4, "tu_chon": true,
+    "hop_voi": "Cảnh 'quay lén', hậu trường, vlog đời thường: 4 góc khung ngắm, chấm REC nhấp nháy, timecode chạy, pin.",
+    "tu_khoa": [],
+    "cues": {},
+    "params": { "label": "mặc định 'REC'", "info": "góc dưới phải, mặc định '4K · 30FPS'", "pin": "% pin 0–100" },
+    "nang": false, "am_thanh": "tách tách"
+  },
+  "light-leak": {
+    "ten": "Light leak", "nhom": "phim", "dur": 2.2, "tu_chon": true,
+    "hop_voi": "Chuyển đoạn nhẹ nhàng, hoài niệm: vệt sáng cam ấm lướt qua khung. Đặt ở chỗ nối hai ý.",
+    "tu_khoa": [],
+    "cues": {},
+    "params": { "color": "màu chính, mặc định #ff7a2f", "color2": "màu phụ, mặc định #ffd36b", "manh": "độ đậm 0–1, mặc định 0.6" },
+    "nang": false, "am_thanh": "whoosh nhẹ"
+  },
+  "osd-vhs": {
+    "ten": "Chữ băng VHS", "nhom": "phim", "dur": 4, "tu_chon": true,
+    "hop_voi": "Hồi tưởng, 'ngày xưa', clip cũ: chữ PLAY ► nhấp nháy, ngày giờ góc dưới kiểu đầu băng. Đi cùng 'vhs' trong canh (hình nhiễu sọc).",
+    "tu_khoa": [],
+    "cues": {},
+    "params": { "text": "mặc định 'PLAY ►'", "date": "ngày hiển thị, vd '26.11.2026'", "clock": "giờ bắt đầu chạy 'hh:mm:ss'" },
+    "nang": false, "am_thanh": "tách"
   }
 }

@@ -1,13 +1,14 @@
 # Effect library (`assets/fx/`)
 
-Forty-four ready-made on-screen effects for talking-head and voiceover videos: counters, charts,
+Forty-eight ready-made on-screen effects for talking-head and voiceover videos: counters, charts,
 checklists, comparisons, timelines, quotes, stamps, typewriter, word slams, name bars, hand-drawn
 arrows and circles, phone notifications, polls, disclaimers, donut charts and stickers; 8 that need a
 speaker on screen (see "Speaker effects" below): text behind the person, neon behind the person, scrolling rows
 behind the person, halo, stickers and doodles around the head, face lock, iris open/close from the face; and 16 more
 ("App-like UI, paper and magazine" below): chat, comment with flying hearts, incoming call, browser, terminal,
 printed receipt, profile + follow click, search box, review card, comment CTA, magazine cover, polaroid, tear-off
-calendar, storyboard, torn paper strip, sticky note.
+calendar, storyboard, torn paper strip, sticky note; plus 4 film overlays (letterbox, camcorder REC, light leak,
+VHS on-screen text).
 Written for this studio (not copied from any other package). Everything is a pure function of `t`.
 
 | File | What |
@@ -120,6 +121,15 @@ Groups `giao-dien` and `giay` in the catalogue. They work in any video (no speak
 - **Pictures** (`polaroid.img`, `storyboard.panels[].img`): a path relative to the PROJECT folder, or `"khung:12.5"` =
   a still of the footage at 12.5 s (tao-video's `dung-video-quay.py` extracts it to `work/khung_12.50.jpg`).
   `overlay.html` and `video.html` wait for every picture to decode before the first frame.
+
+## Film overlays
+
+`khung-dien-anh` (letterbox bars, optional line in the bottom bar), `may-quay-rec` (camcorder HUD: corners, blinking
+REC, running timecode, battery), `light-leak` (warm leak sweeping across, a soft transition), `osd-vhs` (PLAY ► and a
+running date/clock in tape style). Catalogue flag `tu_chon`: fx-suggest never picks them; choose them with the look.
+The looks themselves (colour grades, VHS tape noise, grain, zoom/punch-in/shake, white flash, fade) change the
+footage, so they are not fx: in a talking-head video they are the `"canh"` list of the plan, run by tao-video's
+`scripts/canh_may.py`.
 
 ## Subtitles (shared)
 

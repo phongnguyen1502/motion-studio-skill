@@ -62,6 +62,7 @@ const scored = lines.map((line, i) => {
   if (i === N - 1) sc['nhan-dan'] += ['theo dõi', 'đăng ký', 'bình luận', 'comment', 'chia sẻ', 'nhắn'].some(k => has(f, k)) ? 6 : 2;
   // need a picture or a speaker: only on clear request
   for (const t of ['mui-ten', 'khoanh-tron', 'mo-tron', 'polaroid']) sc[t] = 0;
+  for (const t of TYPES) if (CAT[t].tu_chon) sc[t] = 0;   // film overlays: an editing choice, never auto-picked
   if (i === N - 1) {   // CTA line: the UI version of the ask beats a plain sticker
     if (has(f, 'theo dõi') || has(f, 'follow')) sc['theo-doi'] += 7;
     if (has(f, 'bình luận') || has(f, 'comment')) sc['cta-binh-luan'] += 7;
