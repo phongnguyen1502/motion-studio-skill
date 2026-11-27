@@ -237,15 +237,15 @@ const CSS = `
 .fx-st .new{color:var(--fx-accent);transform-origin:50% 0}
 /* behind the speaker (layer "sau") */
 .fx-bk{position:absolute;left:0;width:100%;text-align:center;transform-origin:50% 50%}
-.fx-bk .ln{display:block;width:max-content;margin:0 auto;white-space:nowrap;font-weight:900;line-height:.94;letter-spacing:-.02em;text-transform:uppercase;text-shadow:0 .02em .09em rgba(0,0,0,.22)}
+.fx-bk .ln{display:block;width:max-content;margin:0 auto;white-space:nowrap;font-weight:900;line-height:1.02;letter-spacing:-.02em;text-transform:uppercase;text-shadow:0 .02em .09em rgba(0,0,0,.22)}
 .fx-bk .ln span{display:inline-block}
 .fx-bk.vien .ln{color:transparent!important;-webkit-text-stroke:.022em var(--fx-bk-c);text-shadow:none}
 .fx-bk.vien .ln em{-webkit-text-stroke-color:var(--fx-accent)}
 .fx-dim{position:absolute;inset:0;background:#000}
-.fx-neon .ln{display:block;width:max-content;margin:0 auto;white-space:nowrap;font-weight:700;line-height:1.05;color:#fff;-webkit-text-stroke:.012em var(--nc);
+.fx-neon .ln{display:block;width:max-content;margin:0 auto;white-space:nowrap;font-weight:700;line-height:1.1;color:#fff;-webkit-text-stroke:.012em var(--nc);
   text-shadow:0 0 .02em #fff,0 0 .07em var(--nc),0 0 .18em var(--nc),0 0 .42em var(--nc),0 0 .9em var(--nc)}
 .fx-neon .ln em{color:#fff}
-.fx-mq{position:absolute;left:0;white-space:nowrap;font-weight:900;line-height:1;text-transform:uppercase;letter-spacing:-.01em;color:var(--fx-bk-c)}
+.fx-mq{position:absolute;left:0;white-space:nowrap;font-weight:900;line-height:1.2;text-transform:uppercase;letter-spacing:-.01em;color:var(--fx-bk-c)}
 .fx-mq.vien{color:transparent;-webkit-text-stroke:.02em var(--fx-bk-c)}
 /* around the face */
 .fx-sk{position:absolute;left:0;top:0;transform-origin:50% 50%}
@@ -438,14 +438,55 @@ function letterLines(parent, s, cls, maxW) {
   return lines;
 }
 const fadeOut = (t, end, d = 0.3) => 1 - prog(t, end - d, d, E.inCubic);
+// ---------- stacked lines of Vietnamese capitals ----------
+// Marks reach 1.17 em above the baseline (Ỗ, Ẫ, Ế) and 0.26 em below it (Ọ, Ậ), so a fixed tight line-height lets the
+// dot of one line land on the hat of the next ("GIỌNG / VIỆT"), and a fixed loose one leaves lines without such marks
+// far apart. stackLines measures the real ink and adds space only where a mark below meets a mark above.
+let _ink;
+function inkOf(el, s) {
+  const cs = getComputedStyle(el);
+  _ink ??= document.createElement('canvas').getContext('2d');
+  _ink.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+  if (cs.textTransform === 'uppercase') s = s.toUpperCase();
+  const m = _ink.measureText(s);
+  return { up: m.actualBoundingBoxAscent, down: m.actualBoundingBoxDescent, fa: m.fontBoundingBoxAscent, fd: m.fontBoundingBoxDescent, fs: parseFloat(cs.fontSize) };
+}
+// Ink of a line: per letter (x range + up/down) when it is made of one-letter spans (letterLines), else the whole text.
+function lineInk(el) {
+  const sp = [...el.querySelectorAll('span')].filter(s => Array.from(s.textContent).length === 1 && s.textContent.trim());
+  const all = inkOf(el, el.textContent);
+  if (!sp.length) return { ...all, parts: [{ x0: -1e9, x1: 1e9, up: all.up, down: all.down }] };
+  return { ...all, parts: sp.map(s => { const r = s.getBoundingClientRect(), k = inkOf(s, s.textContent); return { x0: r.left, x1: r.right, up: k.up, down: k.down }; }) };
+}
+// Adds margin-top to each line after the first so that marks never touch (gap in em of the smaller line).
+export function stackLines(els, gap = 0.1) {
+  els = els.filter(Boolean);
+  for (const e of els.slice(1)) e.style.marginTop = '';
+  for (let i = 1; i < els.length; i++) {
+    const A = lineInk(els[i - 1]), B = lineInk(els[i]);
+    let need = 0;
+    for (const a of A.parts) for (const c of B.parts) if (a.x1 > c.x0 && c.x1 > a.x0) need = Math.max(need, a.down + c.up);
+    need += gap * Math.min(A.fs, B.fs);
+    // baseline-to-baseline distance the CSS boxes give now
+    const lh = e => { const v = parseFloat(getComputedStyle(e).lineHeight); return isNaN(v) ? parseFloat(getComputedStyle(e).fontSize) * 1.2 : v; };
+    const pitch = lh(els[i - 1]) / 2 - (A.fa - A.fd) / 2 + lh(els[i]) / 2 + (B.fa - B.fd) / 2;
+    if (need > pitch) els[i].style.marginTop = need - pitch + 'px';
+  }
+}
+// Wrapped text of one element: a line-height that keeps the marks of consecutive lines apart (whole-text ink).
+function safeLineHeight(el, min = 1.05, gap = 0.1) {
+  const k = inkOf(el, el.textContent);
+  el.style.lineHeight = Math.max(min, (k.up + k.down) / k.fs + gap);
+}
 // Big text behind the head: the head may cover only the lower ~35 % of the block, so the word stays readable.
 // When the head is high in the frame the text shrinks (down to 60 %) to fit the room above it; y (0–1) overrides.
 function placeBehindHead(blocks, f, H, y) {
-  const top0 = H * 0.04;
+  const top0 = H * 0.04, stack = () => blocks.forEach(b => stackLines([...b.querySelectorAll('.ln')]));
+  stack();
   if (y == null) {
     const bh = Math.max(...blocks.map(b => b.offsetHeight)), room = (f.top - top0) / 0.65;
     const s = clamp(room / bh, 0.6, 1);
-    if (s < 1) for (const b of blocks) for (const ln of b.querySelectorAll('.ln')) ln.style.fontSize = parseFloat(getComputedStyle(ln).fontSize) * s + 'px';
+    if (s < 1) { for (const b of blocks) for (const ln of b.querySelectorAll('.ln')) ln.style.fontSize = parseFloat(getComputedStyle(ln).fontSize) * s + 'px'; stack(); }
   }
   const bh = Math.max(...blocks.map(b => b.offsetHeight));
   const yc = y != null ? y * H : clamp(f.top + bh * 0.35 - bh / 2, top0 + bh / 2, H * 0.6);
@@ -864,6 +905,7 @@ export const FX = {
       const st = h('div', 'fx-free fx-st', el); st.style.fontSize = p.size + 'em';
       const old = h('div', 'old', st, rich(p.old)), line = h('div', 'line', old), nw = h('div', 'new', st, rich(p.new));
       fit(old, c.box.w * 0.9); fit(nw, c.box.w * 0.9);
+      stackLines([old, nw], 0.12);
       return {
         seek(t) {
           const a = prog(t, c.start, 0.3);
@@ -1060,11 +1102,14 @@ export const FX = {
     defaults: { text: 'Sáng tạo', rows: 3, speed: 0.22, size: 0.15, y: null, color: '' },
     build(el, p, c) {
       const { w: W, h: H } = c.F, f = c.faceAvg(c.start, c.end), fs = W * p.size, n = clamp(p.rows | 0, 1, 5);
-      const yc = p.y != null ? p.y * H : clamp(f.top + f.h * 0.45, H * 0.08 + (n * fs) / 2, H * 0.62);
+      const yc = p.y != null ? p.y * H : clamp(f.top + f.h * 0.45, H * 0.08 + (n * fs * 1.45) / 2, H * 0.62);
+      const text = String(p.text).replace(/\n/g, ' ') + ' • ';
+      const k0 = (() => { const t = h('div', 'fx-mq', el); t.style.fontSize = fs + 'px'; const k = inkOf(t, text); t.remove(); return k; })();
+      const pitch = Math.max(fs * 1.05, k0.down + k0.up + fs * 0.1);   // every row has the same text: Ọ of one row vs Ế of the next
       const rows = Array.from({ length: n }, (_, i) => {
         const r = h('div', 'fx-mq' + (i % 2 ? ' vien' : ''), el);
         r.style.setProperty('--fx-bk-c', p.color || 'var(--fx-free)');
-        r.style.fontSize = fs + 'px'; r.style.top = yc - (n * fs * 1.02) / 2 + i * fs * 1.02 + 'px';
+        r.style.fontSize = fs + 'px'; r.style.top = yc - (n * pitch) / 2 + i * pitch + 'px';
         const unit = h('span', null, r, rich(String(p.text).replace(/\n/g, ' ')) + '&nbsp;•&nbsp;');
         const uw = unit.offsetWidth;
         for (let k = 0; k < Math.ceil((W * 2) / uw) + 1; k++) r.appendChild(unit.cloneNode(true));
@@ -1508,6 +1553,7 @@ export const FX = {
         const l = h('div', 'fx-mag-l', el), parts = String(s).match(/^\*([^*]+)\*\s*(.*)$/);
         l.innerHTML = parts ? `<em>${esc(parts[1])}</em>${esc(parts[2])}` : rich(s);
         Object.assign(l.style, { left: W * 0.06 + 'px', width: W * 0.4 + 'px', fontSize: W * 0.042 + 'px', color: p.color });
+        safeLineHeight(l);
         return l;
       });
       let y = H * 0.5;
